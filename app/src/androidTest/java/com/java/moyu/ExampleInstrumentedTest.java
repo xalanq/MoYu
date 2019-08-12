@@ -1,4 +1,4 @@
-package com.example.moyu;
+package com.java.moyu;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.moyu", appContext.getPackageName());
+        assertEquals("com.moyu.moyu", appContext.getPackageName());
     }
 }

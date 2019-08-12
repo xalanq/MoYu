@@ -1,4 +1,4 @@
-package com.example.moyu;
+package com.java.moyu;
 
 import androidx.appcompat.app.AppCompatActivity;
 
