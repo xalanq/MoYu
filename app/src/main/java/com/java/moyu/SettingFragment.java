@@ -9,18 +9,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
- * 首页碎片
+ * 设置碎片
  */
-class IndexFragment extends BasicFragment {
-
-    public IndexFragment() {
-        super();
-        setTitleId(R.string.index_fragment_title);
-    }
+class SettingFragment extends BasicFragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    public SettingFragment() {
+        super();
+        setTitleId(R.string.setting_fragment_title);
     }
 }

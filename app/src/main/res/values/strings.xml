@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">摸鱼</string>
+    <string name="app_version">v0.1.0</string>
+    <string name="app_author">\@<a href='https://github.com/xalanq'>xalanq</a>\ \ \ \@<a href='https://github.com/Konano'>Konano</a></string>
 
     <string name="main_navigation_login">登录</string>
     <string name="main_navigation_drawer_open">打开菜单</string>
@@ -11,6 +13,13 @@
     <string name="main_navigation_menu_setting">设置</string>
     <string name="main_navigation_menu_about">关于</string>
 
-    <string name="index_title">首页</string>
+    <string name="index_fragment_title">首页</string>
+    <string name="favorite_fragment_title">收藏</string>
+    <string name="history_fragment_title">历史</string>
+    <string name="setting_fragment_title">设置</string>
+    <string name="about_fragment_title">关于</string>
+
+    <string name="about_update">检查更新</string>
+    <string name="about_feedback">反馈问题</string>
 
 </resources>

@@ -76,6 +76,14 @@ public class MainActivity extends BasicActivity implements NavigationView.OnNavi
         int id = item.getItemId();
         if (id == R.id.main_navigation_menu_index) {
             switchFragment(fragmentAllocator.getIndexFragment());
+        } else if (id == R.id.main_navigation_menu_favorite) {
+            switchFragment(fragmentAllocator.getFavoriteFragment());
+        } else if (id == R.id.main_navigation_menu_history) {
+            switchFragment(fragmentAllocator.getHistoryFragment());
+        } else if (id == R.id.main_navigation_menu_setting) {
+            switchFragment(fragmentAllocator.getSettingFragment());
+        } else if (id == R.id.main_navigation_menu_about) {
+            switchFragment(fragmentAllocator.getAboutFragment());
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
