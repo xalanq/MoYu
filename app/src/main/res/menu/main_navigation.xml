@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:id="@+id/main_navigation_group_1"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/main_navigation_menu_index"
+            android:title="@string/main_navigation_menu_index"/>
+        <item
+            android:id="@+id/main_navigation_menu_favorite"
+            android:title="@string/main_navigation_menu_favorite"/>
+        <item
+            android:id="@+id/main_navigation_menu_history"
+            android:title="@string/main_navigation_menu_history"/>
+    </group>
+    <group android:id="@+id/main_navigation_group_2"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/main_navigation_menu_night_mode"
+            android:title="@string/main_navigation_menu_night_mode"
+            app:actionViewClass="android.widget.Switch"
+            app:showAsAction="always"/>
+        <item
+            android:id="@+id/main_navigation_menu_setting"
+            android:title="@string/main_navigation_menu_setting"/>
+        <item
+            android:id="@+id/main_navigation_menu_about"
+            android:title="@string/main_navigation_menu_about"/>
+    </group>
+
+</menu>
