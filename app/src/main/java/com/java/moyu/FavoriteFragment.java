@@ -19,8 +19,4 @@ class FavoriteFragment extends BasicFragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    public FavoriteFragment() {
-        super();
-        setTitleId(R.string.favorite_fragment_title);
-    }
 }

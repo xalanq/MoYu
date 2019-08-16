@@ -19,8 +19,4 @@ class HistoryFragment extends BasicFragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    public HistoryFragment() {
-        super();
-        setTitleId(R.string.history_fragment_title);
-    }
 }

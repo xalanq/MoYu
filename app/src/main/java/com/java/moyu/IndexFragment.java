@@ -16,6 +16,9 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -28,26 +31,26 @@ class IndexFragment extends BasicFragment {
 
     private CardAdapter adapter;
 
-    public IndexFragment() {
-        super();
-        setTitleId(R.string.index_fragment_title);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.index_fragment, container, false);
-        init(view);
-        test();
-        return view;
-    }
 
+        MainActivity a = (MainActivity)getActivity();
+        Toolbar toolbar = view.findViewById(R.id.index_toolbar);
+        a.setSupportActionBar(toolbar);
+        a.getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                a, a.drawerLayout, toolbar, R.string.main_navigation_drawer_open, R.string.main_navigation_drawer_close);
+        a.drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
-    private void init(View view) {
         adapter = new CardAdapter();
         RecyclerView recyclerView = view.findViewById(R.id.index_fragment_layout);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+        test();
+        return view;
     }
 
     private void test() {

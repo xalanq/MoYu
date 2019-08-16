@@ -19,8 +19,4 @@ class SettingFragment extends BasicFragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    public SettingFragment() {
-        super();
-        setTitleId(R.string.setting_fragment_title);
-    }
 }

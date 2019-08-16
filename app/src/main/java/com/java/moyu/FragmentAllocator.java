@@ -1,7 +1,5 @@
 package com.java.moyu;
 
-import java.util.Set;
-
 class FragmentAllocator {
     private IndexFragment indexFragment;
     private FavoriteFragment favoriteFragment;
