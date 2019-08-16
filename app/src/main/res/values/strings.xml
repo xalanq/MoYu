@@ -22,4 +22,20 @@
     <string name="about_update">检查更新</string>
     <string name="about_feedback">反馈问题</string>
 
+    <string name="default_news_title">这是标题</string>
+    <string name="default_news_publisher">发布者</string>
+    <string name="default_news_comment_count">%d评</string>
+    <string name="default_news_time">刚刚</string>
+
+    <string name="time_error">时间错误</string>
+    <string name="time_recent">刚刚</string>
+    <string name="time_minute">%d分钟前</string>
+    <string name="time_hour">%d小时前</string>
+    <string name="time_last_day">昨天</string>
+    <string name="time_last_last_day">前天</string>
+    <string name="time_day">%d天前</string>
+    <string name="time_week">%d周前</string>
+    <string name="time_month">%d月前</string>
+    <string name="time_year">%d年前</string>
+
 </resources>
