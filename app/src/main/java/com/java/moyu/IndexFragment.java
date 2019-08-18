@@ -5,9 +5,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.tabs.TabLayout;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -17,7 +20,6 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +32,8 @@ import butterknife.ButterKnife;
 class IndexFragment extends BasicFragment {
 
     private CardAdapter adapter;
+    private TabLayout tabLayout;
+    private EditText searchBox;
 
     @Nullable
     @Override
@@ -44,6 +48,9 @@ class IndexFragment extends BasicFragment {
                 a, a.drawerLayout, toolbar, R.string.main_navigation_drawer_open, R.string.main_navigation_drawer_close);
         a.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        searchBox = toolbar.findViewById(R.id.index_search_box);
+        tabLayout = view.findViewById(R.id.index_tab_layout);
 
         adapter = new CardAdapter();
         RecyclerView recyclerView = view.findViewById(R.id.index_fragment_layout);
@@ -61,6 +68,14 @@ class IndexFragment extends BasicFragment {
             news.publishTime = LocalDateTime.now().minusMinutes(i * i * i * i * 30);
             adapter.add(news);
         }
+        tabLayout.addTab(tabLayout.newTab().setText("全部"));
+        tabLayout.addTab(tabLayout.newTab().setText("推荐"));
+        tabLayout.addTab(tabLayout.newTab().setText("国内"));
+        tabLayout.addTab(tabLayout.newTab().setText("国际"));
+        tabLayout.addTab(tabLayout.newTab().setText("军事"));
+        tabLayout.addTab(tabLayout.newTab().setText("体育"));
+        tabLayout.addTab(tabLayout.newTab().setText("娱乐"));
+        tabLayout.addTab(tabLayout.newTab().setText("游戏"));
     }
 
     public static class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {

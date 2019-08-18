@@ -17,16 +17,54 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:fitsSystemWindows="true"
+            android:paddingStart="0dp"
             android:paddingEnd="20dp"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:contentInsetStartWithNavigation="0dp">
 
-            <include layout="@layout/search_box" />
+            <EditText
+                android:id="@+id/index_search_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:imeOptions="actionSearch"
+                android:inputType="none"
+                android:autofillHints="none"
+                android:hint="@string/default_search_hint"
+                android:background="@drawable/search_box_background"
+                android:focusable="false"
+                android:textSize="14sp"
+                android:drawableStart="@drawable/ic_search"
+                android:drawablePadding="5dp"
+                android:textColorHint="#888888" />
 
         </androidx.appcompat.widget.Toolbar>
 
-        <include layout="@layout/tab_layout" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/index_tab_layout"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                app:tabBackground="@color/cardview_light_background"
+                app:tabTextColor="#888888"
+                app:tabRippleColor="#CCCCCC"
+                app:tabSelectedTextColor="@color/colorAccent"
+                app:tabIndicatorHeight="2dp"
+                app:tabMode="scrollable" />
+
+            <ImageButton
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_add"
+                android:background="#ffffff" />
+
+        </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
