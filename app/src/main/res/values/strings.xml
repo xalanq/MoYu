@@ -38,4 +38,6 @@
     <string name="time_month">%d月前</string>
     <string name="time_year">%d年前</string>
 
+    <string name="default_search_hint">搜索</string>
+
 </resources>

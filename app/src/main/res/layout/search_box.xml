@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EditText
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_box"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:singleLine="true"
+    android:imeOptions="actionSearch"
+    android:inputType="none"
+    android:autofillHints="none"
+    android:hint="@string/default_search_hint"
+    android:background="@drawable/search_box_background"
+    android:focusable="false"
+    android:textSize="14sp"
+    android:drawableStart="@drawable/ic_search"
+    android:drawablePadding="5dp"
+    android:textColorHint="#888888"/>
