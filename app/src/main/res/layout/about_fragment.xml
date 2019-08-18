@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/about_fragment_title"
-                style="@style/Base.DialogWindowTitle.AppCompat" />
+                style="@style/Base.DialogWindowTitle.AppCompat"/>
 
         </androidx.appcompat.widget.Toolbar>
 

@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -32,13 +34,15 @@ import butterknife.ButterKnife;
 class IndexFragment extends BasicFragment {
 
     private CardAdapter adapter;
-    private TabLayout tabLayout;
-    private EditText searchBox;
+    @BindView(R.id.index_search_box) EditText searchBox;
+    @BindView(R.id.index_tab_layout) TabLayout tabLayout;
+    @BindView(R.id.index_refresh_layout) RefreshLayout refreshLayout;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.index_fragment, container, false);
+        ButterKnife.bind(this, view);
 
         MainActivity a = (MainActivity)getActivity();
         Toolbar toolbar = view.findViewById(R.id.index_toolbar);
@@ -49,25 +53,26 @@ class IndexFragment extends BasicFragment {
         a.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        searchBox = toolbar.findViewById(R.id.index_search_box);
-        tabLayout = view.findViewById(R.id.index_tab_layout);
-
         adapter = new CardAdapter();
         RecyclerView recyclerView = view.findViewById(R.id.index_fragment_layout);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
-        test();
+
+        test(view);
+
         return view;
     }
 
-    private void test() {
-        for (int i = 0; i < 20; ++i) {
+    private void test(View view) {
+        List<News> data = new ArrayList<>();
+        for (int i = 0; i < 10; ++i) {
             News news = new News();
             news.title = String.format("这是标题 %d 啊", i);
             news.publisher = String.format("第%d号", i);
             news.publishTime = LocalDateTime.now().minusMinutes(i * i * i * i * 30);
-            adapter.add(news);
+            data.add(news);
         }
+        adapter.add(data);
         tabLayout.addTab(tabLayout.newTab().setText("全部"));
         tabLayout.addTab(tabLayout.newTab().setText("推荐"));
         tabLayout.addTab(tabLayout.newTab().setText("国内"));
@@ -76,6 +81,31 @@ class IndexFragment extends BasicFragment {
         tabLayout.addTab(tabLayout.newTab().setText("体育"));
         tabLayout.addTab(tabLayout.newTab().setText("娱乐"));
         tabLayout.addTab(tabLayout.newTab().setText("游戏"));
+        refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull final RefreshLayout refreshLayout) {
+                refreshLayout.getLayout().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<News> data = new ArrayList<>();
+                        for (int i = 0; i < 10; ++i) {
+                            News news = new News();
+                            news.title = String.format("这是标题 %d 啊", i);
+                            news.publisher = String.format("第%d号", i);
+                            news.publishTime = LocalDateTime.now().minusMinutes(i * i * i * i * 30);
+                            data.add(news);
+                        }
+                        adapter.add(data);
+                        refreshLayout.finishLoadMore();
+                    }
+                }, 500);
+            }
+
+            @Override
+            public void onRefresh(@NonNull final RefreshLayout refreshLayout) {
+                refreshLayout.finishRefresh(500);
+            }
+        });
     }
 
     public static class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
@@ -94,7 +124,6 @@ class IndexFragment extends BasicFragment {
         void add(News news, int position) {
             data.add(position, news);
             notifyItemInserted(position);
-            notifyItemRangeChanged(position, data.size());
         }
 
         /**
@@ -106,13 +135,30 @@ class IndexFragment extends BasicFragment {
         }
 
         /**
+         * 在第 position 个位置插入 data
+         * @param data 新闻列表
+         * @param position 插入位置
+         */
+        void add(List<News> data, int position) {
+            this.data.addAll(data);
+            notifyItemRangeInserted(position, data.size());
+        }
+
+        /**
+         * 在末尾插入 data
+         * @param data
+         */
+        void add(List<News> data) {
+            add(data, this.data.size());
+        }
+
+        /**
          * 删除第 position 个位置的 news
          * @param position 删除位置
          */
         void remove(int position) {
             data.remove(position);
             notifyItemRemoved(position);
-            notifyItemRangeChanged(position, data.size());
         }
 
         public static class ViewHolder extends RecyclerView.ViewHolder {

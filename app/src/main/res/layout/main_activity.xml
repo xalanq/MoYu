@@ -20,6 +20,6 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/main_navigation_header"
-        app:menu="@menu/main_navigation" />
+        app:menu="@menu/main_navigation"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

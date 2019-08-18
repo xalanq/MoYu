@@ -37,7 +37,7 @@
                 android:textSize="14sp"
                 android:drawableStart="@drawable/ic_search"
                 android:drawablePadding="5dp"
-                android:textColorHint="#888888" />
+                android:textColorHint="#888888"/>
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -56,32 +56,42 @@
                 app:tabRippleColor="#CCCCCC"
                 app:tabSelectedTextColor="@color/colorAccent"
                 app:tabIndicatorHeight="2dp"
-                app:tabMode="scrollable" />
+                app:tabMode="scrollable"/>
 
             <ImageButton
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:src="@drawable/ic_add"
-                android:background="#ffffff" />
+                android:background="#ffffff"/>
 
         </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/index_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
+        app:srlEnableAutoLoadMore="false"
+        app:srlDisableContentWhenRefresh="true"
+        app:srlDisableContentWhenLoading="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.scwang.smart.refresh.header.ClassicsHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/index_fragment_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"/>
 
-        </androidx.recyclerview.widget.RecyclerView>
+        <com.scwang.smart.refresh.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-    </androidx.core.widget.NestedScrollView>
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

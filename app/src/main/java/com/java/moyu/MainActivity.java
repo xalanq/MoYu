@@ -25,15 +25,12 @@ public class MainActivity extends BasicActivity implements NavigationView.OnNavi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        initValues();
+        ButterKnife.bind(this);
+        fragmentAllocator = new FragmentAllocator();
+
         setNavigation();
 
         switchFragment(fragmentAllocator.getDefault());
-    }
-
-    private void initValues() {
-        ButterKnife.bind(this);
-        fragmentAllocator = new FragmentAllocator();
     }
 
     private void setNavigation() {

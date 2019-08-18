@@ -25,6 +25,6 @@
         android:textSize="15sp"
         android:paddingTop="10dp"
         android:textColor="#ffffff"
-        style="@style/Base.DialogWindowTitle.AppCompat" />
+        style="@style/Base.DialogWindowTitle.AppCompat"/>
 
 </RelativeLayout>
