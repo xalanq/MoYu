@@ -10,7 +10,6 @@ import com.google.android.material.navigation.NavigationView;
 
 import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class MainActivity extends BasicActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -21,11 +20,14 @@ public class MainActivity extends BasicActivity implements NavigationView.OnNavi
     private BasicFragment currentFragment;
 
     @Override
+    protected int getLayoutResource() {
+        return R.layout.main_activity;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_activity);
 
-        ButterKnife.bind(this);
         fragmentAllocator = new FragmentAllocator();
 
         setNavigation();

@@ -1,5 +1,6 @@
 package com.java.moyu;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -52,6 +53,13 @@ class IndexFragment extends BasicFragment {
                 a, a.drawerLayout, toolbar, R.string.main_navigation_drawer_open, R.string.main_navigation_drawer_close);
         a.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        searchBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), SearchActivity.class));
+            }
+        });
 
         adapter = new CardAdapter();
         RecyclerView recyclerView = view.findViewById(R.id.index_fragment_layout);
@@ -140,7 +148,7 @@ class IndexFragment extends BasicFragment {
          * @param position 插入位置
          */
         void add(List<News> data, int position) {
-            this.data.addAll(data);
+            this.data.addAll(position, data);
             notifyItemRangeInserted(position, data.size());
         }
 
@@ -163,21 +171,13 @@ class IndexFragment extends BasicFragment {
 
         public static class ViewHolder extends RecyclerView.ViewHolder {
 
-            ViewHolder(View itemView) {
-                super(itemView);
-            }
-
-        }
-
-        static class NewsHolder extends ViewHolder {
-
             @BindView(R.id.title) TextView title;
             @BindView(R.id.publisher) TextView publisher;
-            @BindView(R.id.comment_count) TextView comment_count;
-            @BindView(R.id.publishTime) TextView publishTime;
-            @BindView(R.id.imageThumb) ImageView imageThumb;
+            @BindView(R.id.comment_count) TextView commentCount;
+            @BindView(R.id.publish_time) TextView publishTime;
+            @BindView(R.id.image_thumb) ImageView imageThumb;
 
-            NewsHolder(View itemView) {
+            ViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
             }
@@ -189,7 +189,7 @@ class IndexFragment extends BasicFragment {
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_card, parent, false);
-            final NewsHolder holder = new NewsHolder(view);
+            final ViewHolder holder = new ViewHolder(view);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -234,12 +234,11 @@ class IndexFragment extends BasicFragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder _holder, int position) {
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             News d = data.get(position);
-            NewsHolder holder = (NewsHolder) _holder;
             holder.title.setText(d.title);
             holder.publisher.setText(d.publisher);
-            holder.comment_count.setText(parseCommentCount(0));
+            holder.commentCount.setText(parseCommentCount(0));
             holder.publishTime.setText(parseTime(d.publishTime));
             holder.imageThumb.setImageResource(R.drawable.default_avatar);
         }

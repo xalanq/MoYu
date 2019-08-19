@@ -19,7 +19,7 @@
             android:fitsSystemWindows="true"
             android:paddingStart="0dp"
             android:paddingEnd="20dp"
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_scrollFlags="scroll|snap|enterAlways"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:contentInsetStartWithNavigation="0dp">
 
@@ -28,7 +28,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:imeOptions="actionSearch"
                 android:inputType="none"
                 android:autofillHints="none"
                 android:hint="@string/default_search_hint"
@@ -54,7 +53,8 @@
                 app:tabBackground="@color/cardview_light_background"
                 app:tabTextColor="#888888"
                 app:tabRippleColor="#CCCCCC"
-                app:tabSelectedTextColor="@color/colorAccent"
+                app:tabSelectedTextColor="@color/colorPrimary"
+                app:tabIndicatorColor="@color/colorPrimary"
                 app:tabIndicatorHeight="2dp"
                 app:tabMode="scrollable"/>
 
