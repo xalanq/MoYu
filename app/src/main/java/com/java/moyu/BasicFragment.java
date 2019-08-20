@@ -15,11 +15,12 @@ public abstract class BasicFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(getLayoutResource(), container, false);
         if (getLayoutResource() != 0) {
+            View view = inflater.inflate(getLayoutResource(), container, false);
             ButterKnife.bind(this, view);
+            return view;
         }
-        return view;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     protected abstract int getLayoutResource();
