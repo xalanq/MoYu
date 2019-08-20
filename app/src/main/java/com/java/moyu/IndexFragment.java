@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -38,14 +40,18 @@ class IndexFragment extends BasicFragment {
     @BindView(R.id.index_search_box) EditText searchBox;
     @BindView(R.id.index_tab_layout) TabLayout tabLayout;
     @BindView(R.id.index_refresh_layout) RefreshLayout refreshLayout;
+    @BindView(R.id.index_more_button) ImageButton btnMore;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.index_fragment, container, false);
-        ButterKnife.bind(this, view);
+    protected int getLayoutResource() {
+        return R.layout.index_fragment;
+    }
 
-        MainActivity a = (MainActivity)getActivity();
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        final MainActivity a = (MainActivity)getActivity();
+
         Toolbar toolbar = view.findViewById(R.id.index_toolbar);
         a.setSupportActionBar(toolbar);
         a.getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -61,14 +67,24 @@ class IndexFragment extends BasicFragment {
             }
         });
 
+        btnMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                a.getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_stay, R.anim.slide_stay, R.anim.slide_down_out)
+                    .add(R.id.main_layout, a.fragmentAllocator.getCategoryFragment())
+                    .hide(IndexFragment.this)
+                    .addToBackStack(null)
+                    .commit();
+            }
+        });
+
         adapter = new CardAdapter();
         RecyclerView recyclerView = view.findViewById(R.id.index_fragment_layout);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
         test(view);
-
-        return view;
     }
 
     private void test(View view) {
@@ -248,4 +264,5 @@ class IndexFragment extends BasicFragment {
             return data.size();
         }
     }
+
 }

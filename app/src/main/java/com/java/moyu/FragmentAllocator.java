@@ -1,11 +1,13 @@
 package com.java.moyu;
 
 class FragmentAllocator {
+
     private IndexFragment indexFragment;
     private FavoriteFragment favoriteFragment;
     private HistoryFragment historyFragment;
     private SettingFragment settingFragment;
     private AboutFragment aboutFragment;
+    private CategoryFragment categoryFragment;
 
     BasicFragment getDefault() {
         return getIndexFragment();
@@ -40,4 +42,11 @@ class FragmentAllocator {
             aboutFragment = new AboutFragment();
         return aboutFragment;
     }
+
+    CategoryFragment getCategoryFragment() {
+        if (categoryFragment == null)
+            categoryFragment = new CategoryFragment();
+        return categoryFragment;
+    }
+
 }

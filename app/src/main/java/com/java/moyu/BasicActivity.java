@@ -16,4 +16,5 @@ public abstract class BasicActivity extends AppCompatActivity {
     }
 
     protected abstract int getLayoutResource();
+
 }

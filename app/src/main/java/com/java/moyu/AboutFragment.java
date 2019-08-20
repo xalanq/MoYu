@@ -7,26 +7,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
+import butterknife.BindView;
 
 /**
  * 设置碎片
  */
 class AboutFragment extends BasicFragment {
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.about_fragment, container, false);
+    @BindView(R.id.about_author) TextView author;
+    @BindView(R.id.about_toolbar) Toolbar toolbar;
 
-        TextView author = view.findViewById(R.id.about_author);
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.about_fragment;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        final MainActivity a = (MainActivity)getActivity();
+
         author.setText(R.string.app_author);
         author.setMovementMethod(LinkMovementMethod.getInstance());
 
-        MainActivity a = (MainActivity)getActivity();
-        Toolbar toolbar = view.findViewById(R.id.about_toolbar);
         a.setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 a, a.drawerLayout, toolbar, R.string.main_navigation_drawer_open, R.string.main_navigation_drawer_close);
@@ -34,6 +41,6 @@ class AboutFragment extends BasicFragment {
         toggle.syncState();
 
         a.getSupportActionBar().setDisplayShowTitleEnabled(false);
-        return view;
     }
+
 }

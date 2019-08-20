@@ -16,7 +16,7 @@ public class MainActivity extends BasicActivity implements NavigationView.OnNavi
     @BindView(R.id.main_drawer_layout) DrawerLayout drawerLayout;
     @BindView(R.id.main_navigation_view) NavigationView navigationView;
 
-    private FragmentAllocator fragmentAllocator;
+    public FragmentAllocator fragmentAllocator;
     private BasicFragment currentFragment;
 
     @Override
@@ -72,4 +72,5 @@ public class MainActivity extends BasicActivity implements NavigationView.OnNavi
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }

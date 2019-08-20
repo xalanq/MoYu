@@ -59,10 +59,12 @@
                 app:tabMode="scrollable"/>
 
             <ImageButton
+                android:id="@+id/index_more_button"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:src="@drawable/ic_add"
-                android:background="#ffffff"/>
+                android:src="@drawable/ic_more"
+                android:background="#ffffff"
+                android:contentDescription="@string/more"/>
 
         </LinearLayout>
 
