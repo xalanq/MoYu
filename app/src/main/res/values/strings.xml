@@ -54,5 +54,7 @@
     <string name="yes">是</string>
     <string name="no">否</string>
     <string name="more">更多</string>
+    <string name="loading">加载中</string>
+    <string name="no_empty">输入不能为空</string>
 
 </resources>

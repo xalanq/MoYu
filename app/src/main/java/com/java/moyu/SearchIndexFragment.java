@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.chip.Chip;
 
@@ -34,11 +33,14 @@ public class SearchIndexFragment extends BasicFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        final SearchActivity a = (SearchActivity)getActivity();
 
         hotAdapter = ChipAdapter.newAdapter(getContext(), view.findViewById(R.id.search_hot_layout), new ChipAdapter.OnClick() {
             @Override
             public void click(Chip chip, int position) {
-                Toast.makeText(getContext(), "click hot", Toast.LENGTH_SHORT).show();
+                String text = hotAdapter.get(position);
+                historyAdapter.add(text);
+                a.searchText(text);
             }
 
             @Override
@@ -50,7 +52,10 @@ public class SearchIndexFragment extends BasicFragment {
         historyAdapter = ChipAdapter.newAdapter(getContext(), view.findViewById(R.id.search_history_layout), new ChipAdapter.OnClick() {
             @Override
             public void click(Chip chip, int position) {
-                Toast.makeText(getContext(), "click history", Toast.LENGTH_SHORT).show();
+                String text = historyAdapter.get(position);
+                historyAdapter.remove(position);
+                historyAdapter.add(text, 0);
+                a.searchText(text);
             }
 
             @Override
