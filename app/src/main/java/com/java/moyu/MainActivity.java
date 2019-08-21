@@ -1,8 +1,11 @@
 package com.java.moyu;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MenuItem;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -18,6 +21,7 @@ public class MainActivity extends BasicActivity implements NavigationView.OnNavi
 
     public FragmentAllocator fragmentAllocator;
     private BasicFragment currentFragment;
+    boolean checkExit;
 
     @Override
     protected int getLayoutResource() {
@@ -32,12 +36,11 @@ public class MainActivity extends BasicActivity implements NavigationView.OnNavi
 
         setNavigation();
 
-        switchFragment(fragmentAllocator.getDefault());
+        backDefault();
     }
 
     private void setNavigation() {
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.getMenu().findItem(R.id.main_navigation_menu_index).setChecked(true);
         final TextView username = navigationView.getHeaderView(0).findViewById(R.id.main_navigation_username);
         username.setText(R.string.main_navigation_login);
     }
@@ -68,9 +71,95 @@ public class MainActivity extends BasicActivity implements NavigationView.OnNavi
             switchFragment(fragmentAllocator.getSettingFragment());
         } else if (id == R.id.main_navigation_menu_about) {
             switchFragment(fragmentAllocator.getAboutFragment());
+        } else if (id == R.id.main_navigation_menu_night_mode) {
+            switchNightMode();
+            return false;
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (currentFragment == fragmentAllocator.getIndexFragment()) {
+            if (!checkExit) {
+                Toast.makeText(this, R.string.check_exit, Toast.LENGTH_SHORT).show();
+                checkExit = true;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        checkExit = false;
+                    }
+                }, 2000);
+                return;
+            }
+        } else {
+            backDefault();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    private void backDefault() {
+        navigationView.getMenu().findItem(R.id.main_navigation_menu_index).setChecked(true);
+        switchFragment(fragmentAllocator.getIndexFragment());
+    }
+
+    private void switchNightMode() {
+        Switch mode = (Switch)navigationView.getMenu().findItem(R.id.main_navigation_menu_night_mode).getActionView();
+        if (mode.isChecked()) {
+
+        } else {
+
+        }
+        mode.setChecked(!mode.isChecked());
+    }
+
+}
+
+class FragmentAllocator {
+
+    private IndexFragment indexFragment;
+    private FavoriteFragment favoriteFragment;
+    private HistoryFragment historyFragment;
+    private SettingFragment settingFragment;
+    private AboutFragment aboutFragment;
+    private CategoryFragment categoryFragment;
+
+    IndexFragment getIndexFragment() {
+        if (indexFragment == null)
+            indexFragment = new IndexFragment();
+        return indexFragment;
+    }
+
+    FavoriteFragment getFavoriteFragment() {
+        if (favoriteFragment == null)
+            favoriteFragment = new FavoriteFragment();
+        return favoriteFragment;
+    }
+
+    HistoryFragment getHistoryFragment() {
+        if (historyFragment == null)
+            historyFragment = new HistoryFragment();
+        return historyFragment;
+    }
+
+    SettingFragment getSettingFragment() {
+        if (settingFragment == null)
+            settingFragment = new SettingFragment();
+        return settingFragment;
+    }
+
+    AboutFragment getAboutFragment() {
+        if (aboutFragment == null)
+            aboutFragment = new AboutFragment();
+        return aboutFragment;
+    }
+
+    CategoryFragment getCategoryFragment() {
+        if (categoryFragment == null)
+            categoryFragment = new CategoryFragment();
+        return categoryFragment;
     }
 
 }

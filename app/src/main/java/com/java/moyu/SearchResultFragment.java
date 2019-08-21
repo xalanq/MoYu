@@ -40,33 +40,26 @@ public class SearchResultFragment extends BasicFragment {
     }
 
     private void test() {
-        List<News> data = new ArrayList<>();
-        for (int i = 0; i < 10; ++i) {
-            News news = new News();
-            news.title = String.format("这是标题 %d 啊", i);
-            news.publisher = String.format("第%d号", i);
-            news.publishTime = LocalDateTime.now().minusMinutes(i * i * i * i * 30);
-            data.add(news);
-        }
-        adapter.add(data);
+        final Runnable loadMore = new Runnable() {
+            @Override
+            public void run() {
+                List<News> data = new ArrayList<>();
+                for (int i = 0; i < 10; ++i) {
+                    News news = new News();
+                    news.title = String.format("搜索结果 %d 啊", i);
+                    news.publisher = String.format("第%d号", i);
+                    news.publishTime = LocalDateTime.now().minusMinutes(i * i * i * i * 30);
+                    data.add(news);
+                }
+                adapter.add(data);
+                refreshLayout.finishLoadMore();
+            }
+        };
+        loadMore.run();
         refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull final RefreshLayout refreshLayout) {
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<News> data = new ArrayList<>();
-                        for (int i = 0; i < 10; ++i) {
-                            News news = new News();
-                            news.title = String.format("这是标题 %d 啊", i);
-                            news.publisher = String.format("第%d号", i);
-                            news.publishTime = LocalDateTime.now().minusMinutes(i * i * i * i * 30);
-                            data.add(news);
-                        }
-                        adapter.add(data);
-                        refreshLayout.finishLoadMore();
-                    }
-                }, 500);
+                refreshLayout.getLayout().postDelayed(loadMore, 500);
             }
 
             @Override
