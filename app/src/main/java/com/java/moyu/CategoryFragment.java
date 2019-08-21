@@ -1,9 +1,7 @@
 package com.java.moyu;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,7 +14,6 @@ import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
 public class CategoryFragment extends BasicFragment {
@@ -35,31 +32,30 @@ public class CategoryFragment extends BasicFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        allAdapter = ChipAdapter.newAdapter(view.getContext(), (RecyclerView) view.findViewById(R.id.category_all_layout),
-            new ChipAdapter.OnClick() {
-                @Override
-                public void click(Chip chip, int position) {
-                    currentAdapter.add(allAdapter.get(position));
-                    allAdapter.remove(position);
-                }
+        allAdapter = ChipAdapter.newAdapter(view.getContext(), view.findViewById(R.id.category_all_layout), new ChipAdapter.OnClick() {
+            @Override
+            public void click(Chip chip, int position) {
+                currentAdapter.add(allAdapter.get(position));
+                allAdapter.remove(position);
+            }
 
-                @Override
-                public void close(Chip chip, int position) {
-                }
-            });
-        currentAdapter = ChipAdapter.newAdapter(view.getContext(), (RecyclerView) view.findViewById(R.id.category_current_layout),
-            new ChipAdapter.OnClick() {
-                @Override
-                public void click(Chip chip, int position) {
-                    Toast.makeText(getActivity(), "click chip", Toast.LENGTH_SHORT).show();
-                }
+            @Override
+            public void close(Chip chip, int position) {
+            }
+        });
 
-                @Override
-                public void close(Chip chip, int position) {
-                    allAdapter.add(currentAdapter.get(position));
-                    currentAdapter.remove(position);
-                }
-            });
+        currentAdapter = ChipAdapter.newAdapter(view.getContext(), view.findViewById(R.id.category_current_layout), new ChipAdapter.OnClick() {
+            @Override
+            public void click(Chip chip, int position) {
+                Toast.makeText(getActivity(), "click chip", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void close(Chip chip, int position) {
+                allAdapter.add(currentAdapter.get(position));
+                currentAdapter.remove(position);
+            }
+        });
 
         editCurrent.setOnClickListener(new View.OnClickListener() {
             @Override

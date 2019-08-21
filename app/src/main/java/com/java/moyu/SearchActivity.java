@@ -4,10 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +19,6 @@ import java.util.Random;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
 class SearchActivity extends BasicActivity {
@@ -47,30 +44,29 @@ class SearchActivity extends BasicActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         searchBox.requestFocus();
 
-        hotAdapter = ChipAdapter.newAdapter(this, (RecyclerView) findViewById(R.id.search_hot_layout),
-            new ChipAdapter.OnClick() {
-                @Override
-                public void click(Chip chip, int position) {
-                    Toast.makeText(SearchActivity.this, "click hot", Toast.LENGTH_SHORT).show();
-                }
+        hotAdapter = ChipAdapter.newAdapter(this, findViewById(R.id.search_hot_layout), new ChipAdapter.OnClick() {
+            @Override
+            public void click(Chip chip, int position) {
+                Toast.makeText(SearchActivity.this, "click hot", Toast.LENGTH_SHORT).show();
+            }
 
-                @Override
-                public void close(Chip chip, int position) {
+            @Override
+            public void close(Chip chip, int position) {
 
-                }
-            });
-        historyAdapter = ChipAdapter.newAdapter(this, (RecyclerView) findViewById(R.id.search_history_layout),
-            new ChipAdapter.OnClick() {
-                @Override
-                public void click(Chip chip, int position) {
-                    Toast.makeText(SearchActivity.this, "click history", Toast.LENGTH_SHORT).show();
-                }
+            }
+        });
 
-                @Override
-                public void close(Chip chip, int position) {
-                    historyAdapter.remove(position);
-                }
-            });
+        historyAdapter = ChipAdapter.newAdapter(this, findViewById(R.id.search_history_layout), new ChipAdapter.OnClick() {
+            @Override
+            public void click(Chip chip, int position) {
+                Toast.makeText(SearchActivity.this, "click history", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void close(Chip chip, int position) {
+                                                     historyAdapter.remove(position);
+                                                                                     }
+        });
 
         editHistory.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +78,7 @@ class SearchActivity extends BasicActivity {
                 }
             }
         });
+
         clearHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

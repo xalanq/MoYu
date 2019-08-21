@@ -22,15 +22,16 @@ class ChipAdapter extends RecyclerView.Adapter<ChipAdapter.ViewHolder> {
     private boolean isEdit;
     private OnClick onClick;
 
-    ChipAdapter(OnClick onClick) {
+    private ChipAdapter(OnClick onClick) {
         data = new ArrayList<>();
         isEdit = false;
         this.onClick = onClick;
     }
 
-    static ChipAdapter newAdapter(Context context, RecyclerView rv, OnClick onClick) {
+    static ChipAdapter newAdapter(Context context, View view, OnClick onClick) {
         ChipAdapter adapter = new ChipAdapter(onClick);
         ChipsLayoutManager.Builder c = ChipsLayoutManager.newBuilder(context);
+        RecyclerView rv = (RecyclerView)view;
         rv.setLayoutManager(c.build());
         rv.setAdapter(adapter);
         rv.addItemDecoration(new SpacingItemDecoration(20, 20));
@@ -102,6 +103,7 @@ class ChipAdapter extends RecyclerView.Adapter<ChipAdapter.ViewHolder> {
     public interface OnClick {
 
         void click(Chip chip, int position);
+
         void close(Chip chip, int position);
 
     }
