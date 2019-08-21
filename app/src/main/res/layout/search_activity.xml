@@ -47,84 +47,11 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <ScrollView
+        <FrameLayout
+            android:id="@+id/search_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="?attr/actionBarSize">
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="20dp"
-                android:paddingHorizontal="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/search_hot"
-                    android:textSize="16sp"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="10dp"
-                    android:gravity="center_vertical"
-                    android:textColor="#000000"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/search_hot_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layoutDirection="locale"
-                    android:nestedScrollingEnabled="false"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="10dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/search_history"
-                        android:textSize="16sp"
-                        android:gravity="center_vertical"
-                        android:textColor="#000000"/>
-
-                    <TextView
-                        android:id="@+id/search_edit_history"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/edit"
-                        android:clickable="true"
-                        android:gravity="center_vertical"
-                        android:textColor="@color/colorPrimary"/>
-
-                </LinearLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/search_history_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layoutDirection="locale"/>
-
-                <TextView
-                    android:id="@+id/search_clear_history"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:padding="8dp"
-                    android:text="@string/search_clear_history"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:drawableStart="@drawable/ic_bin"
-                    android:textColor="@color/colorPrimary"/>
-
-            </LinearLayout>
-
-        </ScrollView>
+            android:layout_marginTop="?attr/actionBarSize"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

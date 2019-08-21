@@ -1,0 +1,112 @@
+package com.java.moyu;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.chip.Chip;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import butterknife.BindView;
+
+public class SearchIndexFragment extends BasicFragment {
+
+    @BindView(R.id.search_edit_history) TextView editHistory;
+    @BindView(R.id.search_clear_history) TextView clearHistory;
+
+    private ChipAdapter hotAdapter;
+    private ChipAdapter historyAdapter;
+
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.search_index_fragment;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        hotAdapter = ChipAdapter.newAdapter(getContext(), view.findViewById(R.id.search_hot_layout), new ChipAdapter.OnClick() {
+            @Override
+            public void click(Chip chip, int position) {
+                Toast.makeText(getContext(), "click hot", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void close(Chip chip, int position) {
+
+            }
+        });
+
+        historyAdapter = ChipAdapter.newAdapter(getContext(), view.findViewById(R.id.search_history_layout), new ChipAdapter.OnClick() {
+            @Override
+            public void click(Chip chip, int position) {
+                Toast.makeText(getContext(), "click history", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void close(Chip chip, int position) {
+                historyAdapter.remove(position);
+            }
+        });
+
+        editHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (historyAdapter.toggleEdit()) {
+                    editHistory.setText(getResources().getText(R.string.complete));
+                } else {
+                    editHistory.setText(getResources().getText(R.string.edit));
+                }
+            }
+        });
+
+        clearHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(getContext())
+                    .setMessage(getResources().getString(R.string.search_clear_history_confirm))
+                    .setPositiveButton(getResources().getText(R.string.yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            historyAdapter.clear();
+                        }
+                    })
+                    .setNegativeButton(getResources().getText(R.string.no), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    }).show();
+            }
+        });
+        test();
+    }
+
+    private void test() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                List<String> a = new ArrayList<>();
+                for (int i = 0; i < 9; ++i) {
+                    a.add(String.format("热搜%d", new Random().nextInt() % 999));
+                }
+                hotAdapter.add(a);
+                a = new ArrayList<>();
+                for (int i = 0; i < 100; ++i) {
+                    a.add(String.format("记录%d", new Random().nextInt() % 999));
+                }
+                historyAdapter.add(a);
+            }
+        }, 10);
+    }
+}

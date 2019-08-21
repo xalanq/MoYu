@@ -43,16 +43,16 @@ public class MainActivity extends BasicActivity implements NavigationView.OnNavi
     }
 
     private void switchFragment(BasicFragment fragment) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (currentFragment == fragment)
             return;
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (!fragment.isAdded())
-            fragmentTransaction.add(R.id.main_layout, fragment);
+            ft.add(R.id.main_layout, fragment);
         if (currentFragment != null)
-            fragmentTransaction.hide(currentFragment);
+            ft.hide(currentFragment);
         currentFragment = fragment;
-        fragmentTransaction.show(fragment);
-        fragmentTransaction.commit();
+        ft.show(fragment);
+        ft.commit();
     }
 
     @Override
