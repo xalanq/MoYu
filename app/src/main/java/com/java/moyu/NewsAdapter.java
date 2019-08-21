@@ -79,6 +79,10 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         notifyItemRemoved(position);
     }
 
+    News get(int position) {
+        return data.get(position);
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.title) TextView title;
