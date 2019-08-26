@@ -6,14 +6,20 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import android.os.StrictMode;
 
 import com.google.android.material.tabs.TabLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
+import org.json.*;
+
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,6 +47,9 @@ class IndexFragment extends BasicFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         final MainActivity a = (MainActivity)getActivity();
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         Toolbar toolbar = view.findViewById(R.id.index_toolbar);
         a.setSupportActionBar(toolbar);
@@ -87,15 +96,31 @@ class IndexFragment extends BasicFragment {
         final Runnable loadMore = new Runnable() {
             @Override
             public void run() {
-                List<News> data = new ArrayList<>();
-                for (int i = 0; i < 10; ++i) {
-                    News news = new News();
-                    news.title = String.format("这是标题 %d 啊", i);
-                    news.publisher = String.format("第%d号", i);
-                    news.publishTime = LocalDateTime.now().minusMinutes(i * i * i * i * 30);
-                    data.add(news);
+                // TODO This maybe a sample
+                String requestUrl = "https://api2.newsminer.net/svc/news/queryNewsList";
+                Map params = new HashMap();
+                params.put("size", "10");
+                params.put("endDate", "2019-07-03");
+                params.put("categories", "娱乐");
+                String string = NetConnection.httpRequest(requestUrl, params);
+                try {
+                    JSONObject jsonData = new JSONObject(string);
+                    JSONArray allNewsData = jsonData.getJSONArray("data");
+                    List<News> data = new ArrayList<>();
+                    DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    for (int i = 0; i < 4; ++i) {
+                        JSONObject newsData = allNewsData.getJSONObject(i);
+                        News news = new News();
+                        news.title = newsData.getString("title");
+                        news.publisher = newsData.getString("publisher");
+                        news.publishTime = LocalDateTime.parse(newsData.getString("publishTime"), dataFormatter);
+                        data.add(news);
+                    }
+                    adapter.add(data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                adapter.add(data);
+
                 refreshLayout.finishLoadMore();
             }
         };
