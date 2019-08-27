@@ -16,7 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 
-class SearchActivity extends BasicActivity {
+public class SearchActivity extends BasicActivity {
 
     @BindView(R.id.search_toolbar) Toolbar toolbar;
     @BindView(R.id.search_box) EditText searchBox;
