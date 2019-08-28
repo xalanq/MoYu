@@ -75,7 +75,7 @@
 
         <ImageView
             android:id="@+id/image_thumb"
-            android:layout_width="100dp"
+            android:layout_width="116dp"
             android:layout_height="75dp"
             android:layout_gravity="center"
             android:scaleType="centerCrop"/>

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -93,6 +94,7 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         @BindView(R.id.publisher) TextView publisher;
         @BindView(R.id.comment_count) TextView commentCount;
         @BindView(R.id.publish_time) TextView publishTime;
+        @BindView(R.id.image_card) CardView imageCard;
         @BindView(R.id.image_thumb) ImageView imageThumb;
 
         ViewHolder(View itemView, final OnClick onClick) {
@@ -130,9 +132,11 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         holder.commentCount.setText(Util.parseCommentCount(0));
         holder.publishTime.setText(Util.parseTime(d.publishTime));
         if (d.image != null && !d.image.isEmpty()) {
+            holder.imageThumb.setImageBitmap(null);
+            holder.imageCard.setVisibility(View.VISIBLE);
             new DownloadImageTask(holder.imageThumb).execute(d.image);
         } else {
-            holder.imageThumb.setImageResource(R.drawable.default_avatar);
+            holder.imageCard.setVisibility(View.GONE);
         }
     }
 
