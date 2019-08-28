@@ -20,7 +20,7 @@ import butterknife.BindView;
 /**
  * 历史碎片
  */
-class HistoryFragment extends BasicFragment {
+public class HistoryFragment extends BasicFragment {
 
     @BindView(R.id.refresh_layout) RefreshLayout refreshLayout;
     @BindView(R.id.history_toolbar) Toolbar toolbar;

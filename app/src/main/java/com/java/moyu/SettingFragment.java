@@ -12,7 +12,7 @@ import butterknife.BindView;
 /**
  * 设置碎片
  */
-class SettingFragment extends BasicFragment {
+public class SettingFragment extends BasicFragment {
 
     @BindView(R.id.setting_toolbar) Toolbar toolbar;
 

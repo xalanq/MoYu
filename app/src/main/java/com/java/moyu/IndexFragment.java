@@ -30,7 +30,7 @@ import butterknife.BindView;
 /**
  * 首页碎片
  */
-class IndexFragment extends BasicFragment {
+public class IndexFragment extends BasicFragment {
 
     private NewsAdapter adapter;
     @BindView(R.id.index_search_box) EditText searchBox;
@@ -99,21 +99,29 @@ class IndexFragment extends BasicFragment {
                 // TODO This maybe a sample
                 String requestUrl = "https://api2.newsminer.net/svc/news/queryNewsList";
                 Map params = new HashMap();
-                params.put("size", "10");
-                params.put("endDate", "2019-07-03");
-                params.put("categories", "娱乐");
+                params.put("size", "100");
+                params.put("words", "特朗普");
+                params.put("categories", "科技");
                 String string = NetConnection.httpRequest(requestUrl, params);
                 try {
                     JSONObject jsonData = new JSONObject(string);
                     JSONArray allNewsData = jsonData.getJSONArray("data");
                     List<News> data = new ArrayList<>();
                     DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                    for (int i = 0; i < 4; ++i) {
+                    for (int i = 0; i < 10; ++i) {
                         JSONObject newsData = allNewsData.getJSONObject(i);
                         News news = new News();
                         news.title = newsData.getString("title");
                         news.publisher = newsData.getString("publisher");
                         news.publishTime = LocalDateTime.parse(newsData.getString("publishTime"), dataFormatter);
+                        String images = newsData.getString("image");
+                        String arr = images.substring(1, images.length() - 1);
+                        if (!arr.isEmpty()) {
+                            int pos = arr.indexOf(',');
+                            if (pos == -1)
+                                pos = arr.length();
+                            news.image = arr.substring(0, pos);
+                        }
                         data.add(news);
                     }
                     adapter.add(data);

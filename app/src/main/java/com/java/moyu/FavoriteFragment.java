@@ -20,7 +20,7 @@ import butterknife.BindView;
 /**
  * 收藏碎片
  */
-class FavoriteFragment extends BasicFragment {
+public class FavoriteFragment extends BasicFragment {
 
     @BindView(R.id.refresh_layout) RefreshLayout refreshLayout;
     @BindView(R.id.favorite_toolbar) Toolbar toolbar;

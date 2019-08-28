@@ -2,9 +2,7 @@ package com.java.moyu;
 
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +14,7 @@ import butterknife.BindView;
 /**
  * 设置碎片
  */
-class AboutFragment extends BasicFragment {
+public class AboutFragment extends BasicFragment {
 
     @BindView(R.id.about_author) TextView author;
     @BindView(R.id.about_toolbar) Toolbar toolbar;
