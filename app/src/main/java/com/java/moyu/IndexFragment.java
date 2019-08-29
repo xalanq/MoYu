@@ -104,10 +104,11 @@ public class IndexFragment extends BasicFragment {
             public void run() {
                 // TODO This maybe a sample
                 String requestUrl = "https://api2.newsminer.net/svc/news/queryNewsList";
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 Map params = new HashMap();
-                params.put("size", "100");
+                params.put("size", "20");
                 params.put("words", "特朗普");
-                params.put("categories", "科技");
+                params.put("endDate", LocalDateTime.now().format(formatter));
                 String string = NetConnection.httpRequest(requestUrl, params);
                 try {
                     JSONObject jsonData = new JSONObject(string);
