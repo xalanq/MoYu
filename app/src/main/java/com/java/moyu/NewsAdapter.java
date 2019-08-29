@@ -4,10 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.InputStream;
@@ -96,6 +98,7 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         @BindView(R.id.publish_time) TextView publishTime;
         @BindView(R.id.image_card) CardView imageCard;
         @BindView(R.id.image_thumb) ImageView imageThumb;
+        @BindView(R.id.image_loading) ProgressBar imageLoading;
 
         ViewHolder(View itemView, final OnClick onClick) {
             super(itemView);
@@ -125,26 +128,39 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         News d = data.get(position);
         holder.title.setText(d.title);
         holder.publisher.setText(d.publisher);
         holder.commentCount.setText(Util.parseCommentCount(0));
         holder.publishTime.setText(Util.parseTime(d.publishTime));
         if (d.image != null && !d.image.isEmpty()) {
-            holder.imageThumb.setImageBitmap(null);
+            holder.imageThumb.setVisibility(View.GONE);
+            holder.imageLoading.setVisibility(View.VISIBLE);
             holder.imageCard.setVisibility(View.VISIBLE);
-            new DownloadImageTask(holder.imageThumb).execute(d.image);
+            new DownloadImageTask(holder.imageThumb, new OnTaskCompleted() {
+                @Override
+                public void onTaskCompleted() {
+                    holder.imageThumb.setVisibility(View.VISIBLE);
+                    holder.imageLoading.setVisibility(View.GONE);
+                }
+            }).execute(d.image);
         } else {
             holder.imageCard.setVisibility(View.GONE);
         }
     }
 
+    public interface OnTaskCompleted{
+        void onTaskCompleted();
+    }
+
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
+        OnTaskCompleted callback;
 
-        public DownloadImageTask(ImageView bmImage) {
+        public DownloadImageTask(ImageView bmImage, OnTaskCompleted callback) {
             this.bmImage = bmImage;
+            this.callback = callback;
         }
 
         protected Bitmap doInBackground(String... urls) {
@@ -155,12 +171,14 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
                 mIcon11 = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
                 e.printStackTrace();
+                Log.d("image", urldisplay);
             }
             return mIcon11;
         }
 
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
+            callback.onTaskCompleted();
         }
     }
 

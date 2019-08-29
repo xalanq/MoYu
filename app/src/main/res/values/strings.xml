@@ -49,6 +49,8 @@
     <string name="category_all">全部分类</string>
     <string name="category">分类列表</string>
 
+    <string name="news_cover">新闻封面</string>
+
     <string name="edit">编辑</string>
     <string name="complete">完成</string>
     <string name="yes">是</string>
