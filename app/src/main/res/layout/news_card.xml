@@ -83,15 +83,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
-            android:contentDescription="@string/news_cover"
-            android:visibility="gone"/>
-
-        <ProgressBar
-            android:id="@+id/image_loading"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:indeterminate="true" />
+            android:src="@drawable/loading_cover"
+            android:contentDescription="@string/news_cover"/>
 
     </androidx.cardview.widget.CardView>
 

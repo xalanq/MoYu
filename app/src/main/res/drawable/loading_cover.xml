@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetLeft="160dp"
+    android:insetRight="160dp"
+    android:insetTop="64dp"
+    android:insetBottom="64dp">
+    <layer-list>
+        <item android:gravity="center">
+            <animated-rotate
+                android:drawable="@drawable/loading_img"
+                android:pivotX="50%"
+                android:pivotY="50%" />
+        </item>
+    </layer-list>
+</inset>

@@ -1,15 +1,26 @@
 package com.java.moyu;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.cache.DiskCache;
 import com.google.android.material.navigation.NavigationView;
+
+import java.io.File;
 
 import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
@@ -67,12 +78,14 @@ public class MainActivity extends BasicActivity implements NavigationView.OnNavi
             switchFragment(fragmentAllocator.getFavoriteFragment());
         } else if (id == R.id.main_navigation_menu_history) {
             switchFragment(fragmentAllocator.getHistoryFragment());
-        } else if (id == R.id.main_navigation_menu_setting) {
-            switchFragment(fragmentAllocator.getSettingFragment());
         } else if (id == R.id.main_navigation_menu_about) {
             switchFragment(fragmentAllocator.getAboutFragment());
         } else if (id == R.id.main_navigation_menu_night_mode) {
             switchNightMode();
+            return false;
+        } else if (id == R.id.main_navigation_menu_clear_cache) {
+            clearCache();
+            drawerLayout.closeDrawer(GravityCompat.START);
             return false;
         }
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -115,6 +128,29 @@ public class MainActivity extends BasicActivity implements NavigationView.OnNavi
         mode.setChecked(!mode.isChecked());
     }
 
+    private void clearCache() {
+        final TextView resultView = new TextView(this);
+        resultView.setPadding(64, 16, 64, 16);
+        resultView.setTextSize(16);
+        resultView.setTextColor(Color.parseColor("#000000"));
+        new AlertDialog.Builder(this)
+            .setTitle(R.string.cache_title).setView(resultView)
+            .setPositiveButton(getResources().getText(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    new Cache.ClearCacheTask(getApplicationContext()).execute();
+                    dialogInterface.dismiss();
+                }
+            })
+            .setNegativeButton(getResources().getText(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                }
+            }).show();
+        new Cache.GetSizeTask(resultView).execute(new File(getCacheDir(), DiskCache.Factory.DEFAULT_DISK_CACHE_DIR));
+    }
+
 }
 
 class FragmentAllocator {
@@ -122,7 +158,6 @@ class FragmentAllocator {
     private IndexFragment indexFragment;
     private FavoriteFragment favoriteFragment;
     private HistoryFragment historyFragment;
-    private SettingFragment settingFragment;
     private AboutFragment aboutFragment;
     private CategoryFragment categoryFragment;
 
@@ -142,12 +177,6 @@ class FragmentAllocator {
         if (historyFragment == null)
             historyFragment = new HistoryFragment();
         return historyFragment;
-    }
-
-    SettingFragment getSettingFragment() {
-        if (settingFragment == null)
-            settingFragment = new SettingFragment();
-        return settingFragment;
     }
 
     AboutFragment getAboutFragment() {

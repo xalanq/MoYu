@@ -19,10 +19,10 @@
             android:id="@+id/main_navigation_menu_night_mode"
             android:title="@string/main_navigation_menu_night_mode"
             app:actionViewClass="android.widget.Switch"
-            app:showAsAction="always"/>
+            app:showAsAction="ifRoom"/>
         <item
-            android:id="@+id/main_navigation_menu_setting"
-            android:title="@string/main_navigation_menu_setting"/>
+            android:id="@+id/main_navigation_menu_clear_cache"
+            android:title="@string/main_navigation_menu_clear_cache"/>
         <item
             android:id="@+id/main_navigation_menu_about"
             android:title="@string/main_navigation_menu_about"/>

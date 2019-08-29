@@ -78,7 +78,7 @@ public class SearchIndexFragment extends BasicFragment {
         clearHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AlertDialog.Builder(getContext())
+                new AlertDialog.Builder(getContext()).setTitle(R.string.search_clear_history)
                     .setMessage(getResources().getString(R.string.search_clear_history_confirm))
                     .setPositiveButton(getResources().getText(R.string.yes), new DialogInterface.OnClickListener() {
                         @Override
@@ -89,7 +89,7 @@ public class SearchIndexFragment extends BasicFragment {
                     .setNegativeButton(getResources().getText(R.string.no), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
+                            dialogInterface.cancel();
                         }
                     }).show();
             }
