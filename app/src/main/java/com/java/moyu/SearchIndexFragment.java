@@ -19,8 +19,10 @@ import butterknife.BindView;
 
 public class SearchIndexFragment extends BasicFragment {
 
-    @BindView(R.id.search_edit_history) TextView editHistory;
-    @BindView(R.id.search_clear_history) TextView clearHistory;
+    @BindView(R.id.search_edit_history)
+    TextView editHistory;
+    @BindView(R.id.search_clear_history)
+    TextView clearHistory;
 
     private ChipAdapter hotAdapter;
     private ChipAdapter historyAdapter;
@@ -33,7 +35,7 @@ public class SearchIndexFragment extends BasicFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final SearchActivity a = (SearchActivity)getActivity();
+        final SearchActivity a = (SearchActivity) getActivity();
 
         hotAdapter = ChipAdapter.newAdapter(getContext(), view.findViewById(R.id.search_hot_layout), new ChipAdapter.OnClick() {
             @Override
@@ -114,4 +116,5 @@ public class SearchIndexFragment extends BasicFragment {
             }
         }, 10);
     }
+
 }

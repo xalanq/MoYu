@@ -18,8 +18,10 @@ import butterknife.BindView;
 
 public class CategoryFragment extends BasicFragment {
 
-    @BindView(R.id.category_edit_current) TextView editCurrent;
-    @BindView(R.id.category_close) ImageButton btnClose;
+    @BindView(R.id.category_edit_current)
+    TextView editCurrent;
+    @BindView(R.id.category_close)
+    ImageButton btnClose;
     private ChipAdapter allAdapter;
     private ChipAdapter currentAdapter;
 

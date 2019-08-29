@@ -16,8 +16,10 @@ import butterknife.BindView;
  */
 public class AboutFragment extends BasicFragment {
 
-    @BindView(R.id.about_author) TextView author;
-    @BindView(R.id.about_toolbar) Toolbar toolbar;
+    @BindView(R.id.about_author)
+    TextView author;
+    @BindView(R.id.about_toolbar)
+    Toolbar toolbar;
 
     @Override
     protected int getLayoutResource() {
@@ -27,14 +29,14 @@ public class AboutFragment extends BasicFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final MainActivity a = (MainActivity)getActivity();
+        final MainActivity a = (MainActivity) getActivity();
 
         author.setText(R.string.app_author);
         author.setMovementMethod(LinkMovementMethod.getInstance());
 
         a.setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                a, a.drawerLayout, toolbar, R.string.main_navigation_drawer_open, R.string.main_navigation_drawer_close);
+            a, a.drawerLayout, toolbar, R.string.main_navigation_drawer_open, R.string.main_navigation_drawer_close);
         a.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 

@@ -31,7 +31,7 @@ class ChipAdapter extends RecyclerView.Adapter<ChipAdapter.ViewHolder> {
     static ChipAdapter newAdapter(Context context, View view, OnClick onClick) {
         ChipAdapter adapter = new ChipAdapter(onClick);
         ChipsLayoutManager.Builder c = ChipsLayoutManager.newBuilder(context);
-        RecyclerView rv = (RecyclerView)view;
+        RecyclerView rv = (RecyclerView) view;
         rv.setLayoutManager(c.build());
         rv.setAdapter(adapter);
         rv.addItemDecoration(new SpacingItemDecoration(20, 20));
@@ -77,37 +77,6 @@ class ChipAdapter extends RecyclerView.Adapter<ChipAdapter.ViewHolder> {
         return isEdit;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        Chip chip;
-
-        ViewHolder(View itemView, final OnClick onClick) {
-            super(itemView);
-            chip = (Chip)itemView;
-            chip.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onClick.click((Chip)view, getAdapterPosition());
-                }
-            });
-            chip.setOnCloseIconClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onClick.close((Chip)view, getAdapterPosition());
-                }
-            });
-        }
-
-    }
-
-    public interface OnClick {
-
-        void click(Chip chip, int position);
-
-        void close(Chip chip, int position);
-
-    }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -127,6 +96,37 @@ class ChipAdapter extends RecyclerView.Adapter<ChipAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    public interface OnClick {
+
+        void click(Chip chip, int position);
+
+        void close(Chip chip, int position);
+
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        Chip chip;
+
+        ViewHolder(View itemView, final OnClick onClick) {
+            super(itemView);
+            chip = (Chip) itemView;
+            chip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onClick.click((Chip) view, getAdapterPosition());
+                }
+            });
+            chip.setOnCloseIconClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onClick.close((Chip) view, getAdapterPosition());
+                }
+            });
+        }
+
     }
 
 }

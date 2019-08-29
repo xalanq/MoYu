@@ -17,7 +17,8 @@ import butterknife.BindView;
 
 public class SearchResultFragment extends BasicFragment {
 
-    @BindView(R.id.refresh_layout) RefreshLayout refreshLayout;
+    @BindView(R.id.refresh_layout)
+    RefreshLayout refreshLayout;
 
     private NewsAdapter adapter;
 

@@ -2,37 +2,33 @@ package com.java.moyu;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.cache.DiskCache;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
 
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 
 public class MainActivity extends BasicActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    @BindView(R.id.main_drawer_layout) DrawerLayout drawerLayout;
-    @BindView(R.id.main_navigation_view) NavigationView navigationView;
-
     public FragmentAllocator fragmentAllocator;
-    private BasicFragment currentFragment;
+    @BindView(R.id.main_drawer_layout)
+    DrawerLayout drawerLayout;
+    @BindView(R.id.main_navigation_view)
+    NavigationView navigationView;
     boolean checkExit;
+    private BasicFragment currentFragment;
 
     @Override
     protected int getLayoutResource() {
@@ -119,7 +115,7 @@ public class MainActivity extends BasicActivity implements NavigationView.OnNavi
     }
 
     private void switchNightMode() {
-        Switch mode = (Switch)navigationView.getMenu().findItem(R.id.main_navigation_menu_night_mode).getActionView();
+        Switch mode = (Switch) navigationView.getMenu().findItem(R.id.main_navigation_menu_night_mode).getActionView();
         if (mode.isChecked()) {
 
         } else {

@@ -22,8 +22,10 @@ import butterknife.BindView;
  */
 public class FavoriteFragment extends BasicFragment {
 
-    @BindView(R.id.refresh_layout) RefreshLayout refreshLayout;
-    @BindView(R.id.favorite_toolbar) Toolbar toolbar;
+    @BindView(R.id.refresh_layout)
+    RefreshLayout refreshLayout;
+    @BindView(R.id.favorite_toolbar)
+    Toolbar toolbar;
 
     private NewsAdapter adapter;
 
@@ -35,11 +37,11 @@ public class FavoriteFragment extends BasicFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final MainActivity a = (MainActivity)getActivity();
+        final MainActivity a = (MainActivity) getActivity();
 
         a.setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                a, a.drawerLayout, toolbar, R.string.main_navigation_drawer_open, R.string.main_navigation_drawer_close);
+            a, a.drawerLayout, toolbar, R.string.main_navigation_drawer_open, R.string.main_navigation_drawer_close);
         a.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 

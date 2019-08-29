@@ -18,8 +18,10 @@ import butterknife.BindView;
 
 public class SearchActivity extends BasicActivity {
 
-    @BindView(R.id.search_toolbar) Toolbar toolbar;
-    @BindView(R.id.search_box) EditText searchBox;
+    @BindView(R.id.search_toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.search_box)
+    EditText searchBox;
 
     @Override
     protected int getLayoutResource() {
@@ -59,16 +61,16 @@ public class SearchActivity extends BasicActivity {
 
     private void switchFragment(BasicFragment fragment) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.search_layout, fragment)
-                .commit();
+            .replace(R.id.search_layout, fragment)
+            .commit();
     }
 
     private void startLoading() {
         BasicFragment fragment = new SearchLoadingFragment();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.search_layout, fragment)
-                .addToBackStack(null)
-                .commit();
+            .replace(R.id.search_layout, fragment)
+            .addToBackStack(null)
+            .commit();
     }
 
     public void searchText(String text) {
@@ -78,7 +80,7 @@ public class SearchActivity extends BasicActivity {
     }
 
     void goSearch() {
-        InputMethodManager imm = (InputMethodManager)searchBox.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) searchBox.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
         final String text = searchBox.getText().toString();
         startLoading();

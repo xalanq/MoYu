@@ -1,8 +1,6 @@
 package com.java.moyu;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +33,7 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     static NewsAdapter newAdapter(Context context, View view, OnClick onClick) {
         NewsAdapter adapter = new NewsAdapter(context, onClick);
-        RecyclerView rv = (RecyclerView)view;
+        RecyclerView rv = (RecyclerView) view;
         rv.setLayoutManager(new LinearLayoutManager(context));
         rv.setAdapter(adapter);
         return adapter;
@@ -43,7 +41,8 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     /**
      * 在第 position 个位置插入 News
-     * @param news 新闻
+     *
+     * @param news     新闻
      * @param position 插入位置
      */
     void add(News news, int position) {
@@ -53,6 +52,7 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     /**
      * 在末尾插入 News
+     *
      * @param news
      */
     void add(News news) {
@@ -61,7 +61,8 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     /**
      * 在第 position 个位置插入 data
-     * @param data 新闻列表
+     *
+     * @param data     新闻列表
      * @param position 插入位置
      */
     void add(List<News> data, int position) {
@@ -71,6 +72,7 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     /**
      * 在末尾插入 data
+     *
      * @param data
      */
     void add(List<News> data) {
@@ -79,6 +81,7 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     /**
      * 删除第 position 个位置的 news
+     *
      * @param position 删除位置
      */
     void remove(int position) {
@@ -88,34 +91,6 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     News get(int position) {
         return data.get(position);
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.title) TextView title;
-        @BindView(R.id.publisher) TextView publisher;
-        @BindView(R.id.comment_count) TextView commentCount;
-        @BindView(R.id.publish_time) TextView publishTime;
-        @BindView(R.id.image_card) CardView imageCard;
-        @BindView(R.id.image_thumb) ImageView imageThumb;
-
-        ViewHolder(View itemView, final OnClick onClick) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onClick.click(view, getAdapterPosition());
-                }
-            });
-        }
-
-    }
-
-    public interface OnClick {
-
-        void click(View view, int position);
-
     }
 
     @NonNull
@@ -134,7 +109,7 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         holder.publishTime.setText(Util.parseTime(d.publishTime));
         if (d.image != null && !d.image.isEmpty()) {
             Glide.with(context).load(d.image).placeholder(R.drawable.loading_cover)
-                    .error(R.drawable.error).centerCrop().into(holder.imageThumb);
+                .error(R.drawable.error).centerCrop().into(holder.imageThumb);
             holder.imageCard.setVisibility(View.VISIBLE);
         } else {
             holder.imageCard.setVisibility(View.GONE);
@@ -144,6 +119,40 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    public interface OnClick {
+
+        void click(View view, int position);
+
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.title)
+        TextView title;
+        @BindView(R.id.publisher)
+        TextView publisher;
+        @BindView(R.id.comment_count)
+        TextView commentCount;
+        @BindView(R.id.publish_time)
+        TextView publishTime;
+        @BindView(R.id.image_card)
+        CardView imageCard;
+        @BindView(R.id.image_thumb)
+        ImageView imageThumb;
+
+        ViewHolder(View itemView, final OnClick onClick) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onClick.click(view, getAdapterPosition());
+                }
+            });
+        }
+
     }
 
 }

@@ -3,6 +3,7 @@ package com.java.moyu;
 import java.time.LocalDateTime;
 
 class News {
+
     String id; // 新闻ID
     String title; // 新闻题目
     String content; // 正文
@@ -19,23 +20,30 @@ class News {
     MentionData[] organization; // 发布新闻组织
     MentionData[] person; // 新闻提及人物，提及次数和在 xlore 中的知识卡片 URL
     LocationData location; // 新闻提及位置，位置经纬度，提及次数
+
 }
 
 class ScoreData {
+
     Double score; // 相关度，数值在 0 ~ 1 之间
     String word; // 关键字
+
 }
 
 class MentionData {
+
     Integer count; // 出现次数
     String url; // 相关链接
     String word; // 关键字
+
 }
 
 class LocationData {
+
     Double longitude; // 经度
     Double latitude; // 纬度
     Integer count; // 出现次数
     String url; // 相关链接
     String word; // 关键字
+
 }

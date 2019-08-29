@@ -6,7 +6,8 @@ import butterknife.BindView;
 
 public class SearchLoadingFragment extends BasicFragment {
 
-    @BindView(R.id.loading_text) TextView loadingText;
+    @BindView(R.id.loading_text)
+    TextView loadingText;
 
     @Override
     protected int getLayoutResource() {

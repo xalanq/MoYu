@@ -21,6 +21,17 @@ public class Cache {
             this.resultView = resultView;
         }
 
+        private static long calculateSize(File dir) {
+            if (dir == null) return 0;
+            if (!dir.isDirectory()) return dir.length();
+            long result = 0;
+            File[] children = dir.listFiles();
+            if (children != null)
+                for (File child : children)
+                    result += calculateSize(child);
+            return result;
+        }
+
         @Override
         protected void onPreExecute() {
             resultView.setText(R.string.cache_calculate);
@@ -45,24 +56,13 @@ public class Cache {
                     }
                 });
             }
-            return (long)-1;
+            return (long) -1;
         }
 
         @Override
         protected void onPostExecute(Long size) {
             String sizeText = android.text.format.Formatter.formatFileSize(resultView.getContext(), size);
             resultView.setText(String.format(resultView.getResources().getString(R.string.cache_content), sizeText));
-        }
-
-        private static long calculateSize(File dir) {
-            if (dir == null) return 0;
-            if (!dir.isDirectory()) return dir.length();
-            long result = 0;
-            File[] children = dir.listFiles();
-            if (children != null)
-                for (File child : children)
-                    result += calculateSize(child);
-            return result;
         }
 
     }
@@ -88,4 +88,5 @@ public class Cache {
         }
 
     }
+
 }

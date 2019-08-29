@@ -2,24 +2,26 @@ package com.java.moyu;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import android.os.StrictMode;
 
 import com.google.android.material.tabs.TabLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,11 +34,15 @@ import butterknife.BindView;
  */
 public class IndexFragment extends BasicFragment {
 
+    @BindView(R.id.index_search_box)
+    EditText searchBox;
+    @BindView(R.id.index_tab_layout)
+    TabLayout tabLayout;
+    @BindView(R.id.refresh_layout)
+    RefreshLayout refreshLayout;
+    @BindView(R.id.index_more_button)
+    ImageButton btnMore;
     private NewsAdapter adapter;
-    @BindView(R.id.index_search_box) EditText searchBox;
-    @BindView(R.id.index_tab_layout) TabLayout tabLayout;
-    @BindView(R.id.refresh_layout) RefreshLayout refreshLayout;
-    @BindView(R.id.index_more_button) ImageButton btnMore;
 
     @Override
     protected int getLayoutResource() {
@@ -46,7 +52,7 @@ public class IndexFragment extends BasicFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final MainActivity a = (MainActivity)getActivity();
+        final MainActivity a = (MainActivity) getActivity();
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -55,7 +61,7 @@ public class IndexFragment extends BasicFragment {
         a.setSupportActionBar(toolbar);
         a.getSupportActionBar().setDisplayShowTitleEnabled(false);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                a, a.drawerLayout, toolbar, R.string.main_navigation_drawer_open, R.string.main_navigation_drawer_close);
+            a, a.drawerLayout, toolbar, R.string.main_navigation_drawer_open, R.string.main_navigation_drawer_close);
         a.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
