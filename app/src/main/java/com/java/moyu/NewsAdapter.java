@@ -1,14 +1,15 @@
 package com.java.moyu;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
+import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +36,33 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         this.context = context;
     }
 
-    static NewsAdapter newAdapter(Context context, View view, OnClick onClick) {
-        NewsAdapter adapter = new NewsAdapter(context, onClick);
+    static NewsAdapter newAdapter(final Context context, View view, OnClick onClick) {
+        final NewsAdapter adapter = new NewsAdapter(context, onClick);
         RecyclerView rv = (RecyclerView) view;
-        rv.setLayoutManager(new LinearLayoutManager(context));
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        rv.setLayoutManager(layoutManager);
         rv.setAdapter(adapter);
+        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (GSYVideoManager.instance().getPlayPosition() >= 0) {
+                    int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+                    int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                    int position = GSYVideoManager.instance().getPlayPosition();
+                    if ((position < firstVisibleItem || position > lastVisibleItem) &&
+                        !GSYVideoManager.isFullState((Activity) context)) {
+                        GSYVideoManager.releaseAllVideos();
+                        adapter.notifyItemChanged(position);
+                    }
+                }
+            }
+        });
         return adapter;
     }
 
@@ -134,22 +157,41 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         holder.publisher.setText(d.publisher);
         holder.publishTime.setText(Util.parseTime(d.publishTime));
         if (viewType == SINGLE) {
-            Glide.with(context).load(d.image[0]).placeholder(R.drawable.loading_cover)
+            Glide.with(context.getApplicationContext()).load(d.image[0])
+                .placeholder(R.drawable.loading_cover)
                 .error(R.drawable.error).centerCrop()
                 .into((ImageView) holder.itemView.findViewById(R.id.image_view));
         } else if (viewType == MULTI) {
-            Glide.with(context).load(d.image[0]).placeholder(R.drawable.loading_cover)
+            Glide.with(context.getApplicationContext()).load(d.image[0])
+                .placeholder(R.drawable.loading_cover)
                 .error(R.drawable.error).centerCrop()
                 .into((ImageView) holder.itemView.findViewById(R.id.image_view_1));
-            Glide.with(context).load(d.image[1]).placeholder(R.drawable.loading_cover)
+            Glide.with(context.getApplicationContext()).load(d.image[1])
+                .placeholder(R.drawable.loading_cover)
                 .error(R.drawable.error).centerCrop()
                 .into((ImageView) holder.itemView.findViewById(R.id.image_view_2));
-            Glide.with(context).load(d.image[2]).placeholder(R.drawable.loading_cover)
+            Glide.with(context.getApplicationContext()).load(d.image[2])
+                .placeholder(R.drawable.loading_cover)
                 .error(R.drawable.error).centerCrop()
                 .into((ImageView) holder.itemView.findViewById(R.id.image_view_3));
         } else if (viewType == VIDEO) {
-            VideoView v = holder.itemView.findViewById(R.id.video_view);
-            v.setVideoPath(d.video);
+            String url = d.video;
+            final CoverVideoPlayer player = holder.itemView.findViewById(R.id.video_player);
+            player.loadCoverImage(url, R.drawable.error);
+            player.setUpLazy(url, true, context.getApplicationContext().getCacheDir(), null, String.valueOf(d.title));
+            player.getTitleTextView().setVisibility(View.GONE);
+            player.getBackButton().setVisibility(View.GONE);
+            player.setPlayPosition(position);
+            player.setTag("news_adapter");
+            player.getFullscreenButton().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    player.startWindowFullscreen(context, false, true);
+                }
+            });
+            player.setShowFullAnimation(true);
+            player.setReleaseWhenLossAudio(false);
+            player.setIsTouchWiget(false);
         }
     }
 

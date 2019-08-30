@@ -144,7 +144,9 @@ public class MainActivity extends BasicActivity implements NavigationView.OnNavi
                     dialogInterface.cancel();
                 }
             }).show();
-        new Cache.GetSizeTask(resultView).execute(new File(getCacheDir(), DiskCache.Factory.DEFAULT_DISK_CACHE_DIR));
+        new Cache.GetSizeTask(resultView).execute(
+            new File(getApplicationContext().getCacheDir(),
+                DiskCache.Factory.DEFAULT_DISK_CACHE_DIR));
     }
 
 }
