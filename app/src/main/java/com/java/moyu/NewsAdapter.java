@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -21,6 +21,10 @@ import butterknife.ButterKnife;
 
 class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
+    private static final int PLAIN = 0;
+    private static final int SINGLE = 1;
+    private static final int MULTI = 2;
+    private static final int VIDEO = 3;
     private List<News> data;
     private OnClick onClick;
     private Context context;
@@ -93,18 +97,13 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         return data.get(position);
     }
 
-    private static final int PLAIN = 0;
-    private static final int SINGLE = 1;
-    private static final int MULTI = 2;
-    private static final int VIDEO = 3;
-
     @Override
     public int getItemViewType(int position) {
         News news = data.get(position);
-        if (news.image == null && news.video == null) {
-            return PLAIN;
-        } else if (news.video != null) {
+        if (!news.video.isEmpty()) {
             return VIDEO;
+        } else if (news.image == null) {
+            return PLAIN;
         } else if (news.image.length <= 2) {
             return SINGLE;
         }
@@ -149,6 +148,8 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
                 .error(R.drawable.error).centerCrop()
                 .into((ImageView) holder.itemView.findViewById(R.id.image_view_3));
         } else if (viewType == VIDEO) {
+            VideoView v = holder.itemView.findViewById(R.id.video_view);
+            v.setVideoPath(d.video);
         }
     }
 

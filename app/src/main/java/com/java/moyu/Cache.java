@@ -8,10 +8,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.danikula.videocache.HttpProxyCacheServer;
 
 import java.io.File;
 
 public class Cache {
+
+    private static HttpProxyCacheServer videoProxy;
+
+    public static String getVideoProxyUrl(Context context, String url) {
+        if (videoProxy == null)
+            videoProxy = new HttpProxyCacheServer(context.getApplicationContext());
+        return videoProxy.getProxyUrl(url);
+    }
 
     public static class GetSizeTask extends AsyncTask<File, Long, Long> {
 

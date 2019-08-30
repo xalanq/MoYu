@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/news_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:foreground="?android:attr/selectableItemBackground"
     android:focusable="true"
     android:clickable="true"
@@ -12,7 +13,7 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="start"
         android:text="@string/default_news_title"
@@ -20,22 +21,18 @@
         android:textColor="#000000"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="0dp"
-        app:layout_constraintEnd_toStartOf="@+id/image_card"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:layout_marginStart="0dp"/>
+
+    <VideoView
+        android:id="@+id/video_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="bottom"
-        android:layout_marginVertical="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/title"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@+id/title"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        app:layout_constraintVertical_bias="1">
+        android:layout_marginVertical="12dp">
 
         <TextView
             android:id="@+id/publisher"
@@ -57,27 +54,6 @@
 
     </LinearLayout>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/image_card"
-        android:layout_width="100dp"
-        android:layout_height="75dp"
-        android:layout_marginVertical="12dp"
-        app:cardElevation="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/image_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:scaleType="centerCrop"
-            android:src="@drawable/loading_cover"
-            android:contentDescription="@string/news_cover"/>
-
-    </androidx.cardview.widget.CardView>
-
     <View
         android:id="@+id/divider"
         android:background="?android:attr/listDivider"
@@ -87,4 +63,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
