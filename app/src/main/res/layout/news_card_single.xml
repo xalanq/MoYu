@@ -46,16 +46,6 @@
             android:textSize="12sp"/>
 
         <TextView
-            android:id="@+id/comment_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="18dp"
-            android:paddingEnd="0dp"
-            android:gravity="start"
-            android:text="@string/default_news_comment_count"
-            android:textSize="12sp"/>
-
-        <TextView
             android:id="@+id/publish_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -78,7 +68,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/image_thumb"
+            android:id="@+id/image_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"

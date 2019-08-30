@@ -3,6 +3,7 @@ package com.java.moyu;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -104,32 +105,30 @@ public class IndexFragment extends BasicFragment {
             public void run() {
                 // TODO This maybe a sample
                 String requestUrl = "https://api2.newsminer.net/svc/news/queryNewsList";
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                Map params = new HashMap();
-                params.put("size", "20");
-                params.put("words", "特朗普");
-                params.put("endDate", LocalDateTime.now().format(formatter));
-                String string = NetConnection.httpRequest(requestUrl, params);
-                try {
-                    JSONObject jsonData = new JSONObject(string);
-                    JSONArray allNewsData = jsonData.getJSONArray("data");
-                    List<News> data = new ArrayList<>();
-                    DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                    for (int i = 0; i < 10; ++i) {
-                        JSONObject newsData = allNewsData.getJSONObject(i);
-                        News news = new News();
-                        news.title = newsData.getString("title");
-                        news.publisher = newsData.getString("publisher");
-                        news.publishTime = LocalDateTime.parse(newsData.getString("publishTime"), dataFormatter);
-                        String images = newsData.getString("image");
-                        String arr = images.substring(1, images.length() - 1);
-                        if (!arr.isEmpty()) {
-                            int pos = arr.indexOf(',');
-                            if (pos == -1)
-                                pos = arr.length();
-                            news.image = arr.substring(0, pos);
-                        }
-                        data.add(news);
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                        Map params = new HashMap();
+                        params.put("size", "20");
+                        params.put("words", "特朗普");
+                        params.put("endDate", LocalDateTime.now().format(formatter));
+                        String string = NetConnection.httpRequest(requestUrl, params);
+                        try {
+                            JSONObject jsonData = new JSONObject(string);
+                            JSONArray allNewsData = jsonData.getJSONArray("data");
+                            List<News> data = new ArrayList<>();
+                            DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                            for (int i = 0; i < 10; ++i) {
+                                JSONObject newsData = allNewsData.getJSONObject(i);
+                                News news = new News();
+                                news.title = newsData.getString("title");
+                                news.publisher = newsData.getString("publisher");
+                                news.publishTime = LocalDateTime.parse(newsData.getString("publishTime"), dataFormatter);
+                                String images = newsData.getString("image");
+                                String arr = images.substring(1, images.length() - 1);
+                                if (!arr.isEmpty()) {
+                                    news.image = arr.split("\\s*,\\s*");
+                                    Log.d("ggmf", "".join("\n", news.image));
+                                }
+                                data.add(news);
                     }
                     adapter.add(data);
                 } catch (JSONException e) {

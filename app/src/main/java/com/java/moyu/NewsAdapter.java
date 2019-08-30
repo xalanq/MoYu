@@ -93,26 +93,62 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         return data.get(position);
     }
 
+    private static final int PLAIN = 0;
+    private static final int SINGLE = 1;
+    private static final int MULTI = 2;
+    private static final int VIDEO = 3;
+
+    @Override
+    public int getItemViewType(int position) {
+        News news = data.get(position);
+        if (news.image == null && news.video == null) {
+            return PLAIN;
+        } else if (news.video != null) {
+            return VIDEO;
+        } else if (news.image.length <= 2) {
+            return SINGLE;
+        }
+        return MULTI;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_card, parent, false);
+        View view;
+        if (viewType == PLAIN) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_card_plain, parent, false);
+        } else if (viewType == SINGLE) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_card_single, parent, false);
+        } else if (viewType == MULTI) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_card_multi, parent, false);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_card_video, parent, false);
+        }
         return new ViewHolder(view, onClick);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        News d = data.get(position);
+        News d = get(position);
+        int viewType = getItemViewType(position);
         holder.title.setText(d.title);
         holder.publisher.setText(d.publisher);
-        holder.commentCount.setText(Util.parseCommentCount(0));
         holder.publishTime.setText(Util.parseTime(d.publishTime));
-        if (d.image != null && !d.image.isEmpty()) {
-            Glide.with(context).load(d.image).placeholder(R.drawable.loading_cover)
-                .error(R.drawable.error).centerCrop().into(holder.imageThumb);
-            holder.imageCard.setVisibility(View.VISIBLE);
-        } else {
-            holder.imageCard.setVisibility(View.GONE);
+        if (viewType == SINGLE) {
+            Glide.with(context).load(d.image[0]).placeholder(R.drawable.loading_cover)
+                .error(R.drawable.error).centerCrop()
+                .into((ImageView) holder.itemView.findViewById(R.id.image_view));
+        } else if (viewType == MULTI) {
+            Glide.with(context).load(d.image[0]).placeholder(R.drawable.loading_cover)
+                .error(R.drawable.error).centerCrop()
+                .into((ImageView) holder.itemView.findViewById(R.id.image_view_1));
+            Glide.with(context).load(d.image[1]).placeholder(R.drawable.loading_cover)
+                .error(R.drawable.error).centerCrop()
+                .into((ImageView) holder.itemView.findViewById(R.id.image_view_2));
+            Glide.with(context).load(d.image[2]).placeholder(R.drawable.loading_cover)
+                .error(R.drawable.error).centerCrop()
+                .into((ImageView) holder.itemView.findViewById(R.id.image_view_3));
+        } else if (viewType == VIDEO) {
         }
     }
 
@@ -133,14 +169,8 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         TextView title;
         @BindView(R.id.publisher)
         TextView publisher;
-        @BindView(R.id.comment_count)
-        TextView commentCount;
         @BindView(R.id.publish_time)
         TextView publishTime;
-        @BindView(R.id.image_card)
-        CardView imageCard;
-        @BindView(R.id.image_thumb)
-        ImageView imageThumb;
 
         ViewHolder(View itemView, final OnClick onClick) {
             super(itemView);
