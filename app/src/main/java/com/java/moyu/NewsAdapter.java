@@ -123,7 +123,7 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         News news = data.get(position);
-        if (!news.video.isEmpty()) {
+        if (news.video != null && !news.video.isEmpty()) {
             return VIDEO;
         } else if (news.image == null) {
             return PLAIN;
