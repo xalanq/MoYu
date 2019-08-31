@@ -28,12 +28,12 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     private static final int VIDEO = 3;
     private List<News> data;
     private OnClick onClick;
-    private Context context;
+    private final Context context;
 
     private NewsAdapter(Context context, OnClick onClick) {
         data = new ArrayList<>();
         this.onClick = onClick;
-        this.context = context;
+        this.context = context.getApplicationContext();
     }
 
     static NewsAdapter newAdapter(final Context context, View view, OnClick onClick) {
@@ -157,20 +157,20 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         holder.publisher.setText(d.publisher);
         holder.publishTime.setText(Util.parseTime(d.publishTime));
         if (viewType == SINGLE) {
-            Glide.with(context.getApplicationContext()).load(d.image[0])
+            Glide.with(context).load(d.image[0])
                 .placeholder(R.drawable.loading_cover)
                 .error(R.drawable.error).centerCrop()
                 .into((ImageView) holder.itemView.findViewById(R.id.image_view));
         } else if (viewType == MULTI) {
-            Glide.with(context.getApplicationContext()).load(d.image[0])
+            Glide.with(context).load(d.image[0])
                 .placeholder(R.drawable.loading_cover)
                 .error(R.drawable.error).centerCrop()
                 .into((ImageView) holder.itemView.findViewById(R.id.image_view_1));
-            Glide.with(context.getApplicationContext()).load(d.image[1])
+            Glide.with(context).load(d.image[1])
                 .placeholder(R.drawable.loading_cover)
                 .error(R.drawable.error).centerCrop()
                 .into((ImageView) holder.itemView.findViewById(R.id.image_view_2));
-            Glide.with(context.getApplicationContext()).load(d.image[2])
+            Glide.with(context).load(d.image[2])
                 .placeholder(R.drawable.loading_cover)
                 .error(R.drawable.error).centerCrop()
                 .into((ImageView) holder.itemView.findViewById(R.id.image_view_3));

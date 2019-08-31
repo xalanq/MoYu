@@ -39,4 +39,7 @@ dependencies {
     implementation 'com.shuyu:GSYVideoPlayer:7.0.2'
     implementation 'com.billy.android:smart-swipe:1.0.7'
     implementation 'com.billy.android:smart-swipe-x:1.0.0'
+    implementation ('github.hellocsl:GalleryLayoutManager:1.0.6') {
+        exclude group: 'com.android.support', module:'recyclerview-v7'
+    }
 }

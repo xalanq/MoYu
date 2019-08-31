@@ -26,6 +26,8 @@
     <string name="default_news_publisher">发布者</string>
     <string name="default_news_comment_count">%d评</string>
     <string name="default_news_time">刚刚</string>
+    <string name="default_category">这是分类</string>
+    <string name="default_content">这是内容</string>
 
     <string name="time_error">时间错误</string>
     <string name="time_recent">刚刚</string>
@@ -69,5 +71,7 @@
     <string name="cache_error">发生了错误</string>
     <string name="cache_done">清理完成</string>
     <string name="cache_content">缓存大小 %s，你确定要清除吗？</string>
+
+    <string name="gallery_hint">&lt;- 滑动可查看多张图片 -&gt;</string>
 
 </resources>
