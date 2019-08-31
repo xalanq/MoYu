@@ -87,7 +87,7 @@ public class IndexFragment extends BasicFragment {
         adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout), new NewsAdapter.OnClick() {
             @Override
             public void click(View view, int position) {
-                Toast.makeText(getContext(), "click news", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), NewsActivity.class));
             }
         });
 
