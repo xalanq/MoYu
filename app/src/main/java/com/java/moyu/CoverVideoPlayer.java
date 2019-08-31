@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.shuyu.gsyvideoplayer.cache.CacheFactory;
 import com.shuyu.gsyvideoplayer.cache.ProxyCacheManager;
+import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack;
 import com.shuyu.gsyvideoplayer.player.IjkPlayerManager;
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
@@ -60,6 +61,32 @@ public class CoverVideoPlayer extends StandardGSYVideoPlayer {
             (mCurrentState == -1 || mCurrentState == CURRENT_STATE_NORMAL || mCurrentState == CURRENT_STATE_ERROR)) {
             mThumbImageViewLayout.setVisibility(VISIBLE);
         }
+    }
+
+    public void setup(final Context context, String url, String title, int position) {
+        getTitleTextView().setVisibility(View.GONE);
+        getBackButton().setVisibility(View.GONE);
+        loadCoverImage(url, R.drawable.error);
+        setUpLazy(url, true, context.getApplicationContext().getCacheDir(), null, title);
+        getTitleTextView().setVisibility(View.GONE);
+        getBackButton().setVisibility(View.GONE);
+        setPlayPosition(position);
+        getFullscreenButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startWindowFullscreen(context, false, true);
+            }
+        });
+        setShowFullAnimation(true);
+        setReleaseWhenLossAudio(false);
+        setIsTouchWiget(false);
+        setVideoAllCallBack(new GSYSampleCallBack() {
+            @Override
+            public void onEnterFullscreen(String url, Object... objects) {
+                super.onEnterFullscreen(url, objects);
+                getCurrentPlayer().getTitleTextView().setText((String) objects[0]);
+            }
+        });
     }
 
     @Override

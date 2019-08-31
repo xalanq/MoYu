@@ -175,23 +175,8 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
                 .error(R.drawable.error).centerCrop()
                 .into((ImageView) holder.itemView.findViewById(R.id.image_view_3));
         } else if (viewType == VIDEO) {
-            String url = d.video;
-            final CoverVideoPlayer player = holder.itemView.findViewById(R.id.video_player);
-            player.loadCoverImage(url, R.drawable.error);
-            player.setUpLazy(url, true, context.getApplicationContext().getCacheDir(), null, String.valueOf(d.title));
-            player.getTitleTextView().setVisibility(View.GONE);
-            player.getBackButton().setVisibility(View.GONE);
-            player.setPlayPosition(position);
-            player.setTag("news_adapter");
-            player.getFullscreenButton().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    player.startWindowFullscreen(context, false, true);
-                }
-            });
-            player.setShowFullAnimation(true);
-            player.setReleaseWhenLossAudio(false);
-            player.setIsTouchWiget(false);
+            CoverVideoPlayer player = holder.itemView.findViewById(R.id.video_player);
+            player.setup(context, d.video, d.title, position);
         }
     }
 
