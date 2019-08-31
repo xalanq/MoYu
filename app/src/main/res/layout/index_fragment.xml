@@ -43,7 +43,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="36dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="#ffffff">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/index_tab_layout"
