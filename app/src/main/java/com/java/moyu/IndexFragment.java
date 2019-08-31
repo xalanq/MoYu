@@ -6,7 +6,6 @@ import android.os.StrictMode;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -76,7 +75,7 @@ public class IndexFragment extends BasicFragment {
             @Override
             public void onClick(View view) {
                 a.getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_stay, R.anim.slide_stay, R.anim.slide_down_out)
+                    .setCustomAnimations(R.anim.slide_up_enter, R.anim.slide_stay, R.anim.slide_stay, R.anim.slide_down_exit)
                     .add(R.id.main_layout, a.fragmentAllocator.getCategoryFragment())
                     .hide(IndexFragment.this)
                     .addToBackStack(null)
@@ -88,6 +87,7 @@ public class IndexFragment extends BasicFragment {
             @Override
             public void click(View view, int position) {
                 startActivity(new Intent(getActivity(), NewsActivity.class));
+                getActivity().overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);
             }
         });
 

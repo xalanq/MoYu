@@ -6,12 +6,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.billy.android.swipe.SmartSwipe;
+import com.billy.android.swipe.consumer.ActivitySlidingBackConsumer;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 
-public class NewsActivity extends BasicActivity {
+public class NewsActivity extends VideoActivity {
 
     @BindView(R.id.news_toolbar)
     Toolbar toolbar;
@@ -27,8 +30,11 @@ public class NewsActivity extends BasicActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        String title = "这是测试的标题啊";
+        String title = "新华社";
         getSupportActionBar().setTitle(title);
+        SmartSwipe.wrap(this)
+            .addConsumer(new ActivitySlidingBackConsumer(this))
+            .enableLeft();
     }
 
     @Override
@@ -38,14 +44,30 @@ public class NewsActivity extends BasicActivity {
     }
 
     @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_stay, R.anim.slide_left_exit);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home)
+        switch (item.getItemId()) {
+        case android.R.id.home:
             finish();
-        if (item.getItemId() == R.id.search_button)
+            return true;
+        case R.id.search_button:
             startActivity(new Intent(this, SearchActivity.class));
-        if (item.getItemId() == R.id.share_button)
+            return true;
+        case R.id.star_button:
+            Toast.makeText(this, "你点击了收藏", Toast.LENGTH_SHORT).show();
+            item.setIcon(R.drawable.ic_starred);
+            return true;
+        case R.id.share_button:
             Toast.makeText(this, "你点击了分享", Toast.LENGTH_SHORT).show();
-        return super.onOptionsItemSelected(item);
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 
 }

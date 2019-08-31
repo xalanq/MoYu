@@ -20,7 +20,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 
-public class MainActivity extends BasicActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends VideoActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public FragmentAllocator fragmentAllocator;
     @BindView(R.id.main_drawer_layout)
@@ -149,44 +149,45 @@ public class MainActivity extends BasicActivity implements NavigationView.OnNavi
                 DiskCache.Factory.DEFAULT_DISK_CACHE_DIR));
     }
 
+    class FragmentAllocator {
+
+        private IndexFragment indexFragment;
+        private FavoriteFragment favoriteFragment;
+        private HistoryFragment historyFragment;
+        private AboutFragment aboutFragment;
+        private CategoryFragment categoryFragment;
+
+        IndexFragment getIndexFragment() {
+            if (indexFragment == null)
+                indexFragment = new IndexFragment();
+            return indexFragment;
+        }
+
+        FavoriteFragment getFavoriteFragment() {
+            if (favoriteFragment == null)
+                favoriteFragment = new FavoriteFragment();
+            return favoriteFragment;
+        }
+
+        HistoryFragment getHistoryFragment() {
+            if (historyFragment == null)
+                historyFragment = new HistoryFragment();
+            return historyFragment;
+        }
+
+        AboutFragment getAboutFragment() {
+            if (aboutFragment == null)
+                aboutFragment = new AboutFragment();
+            return aboutFragment;
+        }
+
+        CategoryFragment getCategoryFragment() {
+            if (categoryFragment == null)
+                categoryFragment = new CategoryFragment();
+            return categoryFragment;
+        }
+
+    }
+
 }
 
-class FragmentAllocator {
-
-    private IndexFragment indexFragment;
-    private FavoriteFragment favoriteFragment;
-    private HistoryFragment historyFragment;
-    private AboutFragment aboutFragment;
-    private CategoryFragment categoryFragment;
-
-    IndexFragment getIndexFragment() {
-        if (indexFragment == null)
-            indexFragment = new IndexFragment();
-        return indexFragment;
-    }
-
-    FavoriteFragment getFavoriteFragment() {
-        if (favoriteFragment == null)
-            favoriteFragment = new FavoriteFragment();
-        return favoriteFragment;
-    }
-
-    HistoryFragment getHistoryFragment() {
-        if (historyFragment == null)
-            historyFragment = new HistoryFragment();
-        return historyFragment;
-    }
-
-    AboutFragment getAboutFragment() {
-        if (aboutFragment == null)
-            aboutFragment = new AboutFragment();
-        return aboutFragment;
-    }
-
-    CategoryFragment getCategoryFragment() {
-        if (categoryFragment == null)
-            categoryFragment = new CategoryFragment();
-        return categoryFragment;
-    }
-
-}

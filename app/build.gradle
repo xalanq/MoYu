@@ -37,4 +37,6 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     implementation 'com.shuyu:GSYVideoPlayer:7.0.2'
+    implementation 'com.billy.android:smart-swipe:1.0.7'
+    implementation 'com.billy.android:smart-swipe-x:1.0.0'
 }

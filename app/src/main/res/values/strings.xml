@@ -60,6 +60,9 @@
     <string name="no_empty">输入不能为空</string>
     <string name="check_exit">再按一次返回键退出</string>
     <string name="error">错误</string>
+    <string name="search">搜索</string>
+    <string name="favorite">收藏</string>
+    <string name="share">分享</string>
 
     <string name="cache_title">清除缓存</string>
     <string name="cache_calculate">正在计算中</string>

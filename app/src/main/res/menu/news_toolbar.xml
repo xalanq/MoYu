@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <group android:checkableBehavior="single">
+    <group>
         <item android:id="@+id/search_button"
             android:icon="@drawable/ic_search_light"
-            android:title="@string/default_search_hint"
+            android:title="@string/search"
             app:showAsAction="ifRoom"/>
-        <item android:id="@+id/share_button"
-            android:icon="@drawable/ic_share_light"
-            android:title="@string/default_search_hint"
+        <item android:id="@+id/star_button"
+            android:icon="@drawable/ic_star_light"
+            android:title="@string/favorite"
             app:showAsAction="ifRoom"/>
+        <item
+            android:id="@+id/share_button"
+            android:icon="@drawable/ic_share_dark"
+            android:title="@string/share"
+            app:showAsAction="withText"/>
     </group>
 </menu>
