@@ -19,12 +19,6 @@ public abstract class VideoActivity extends BasicActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        GSYVideoManager.onResume();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         GSYVideoManager.releaseAllVideos();
