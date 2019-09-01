@@ -58,17 +58,18 @@ public class FavoriteFragment extends BasicFragment {
     }
 
     private void test() {
+        final NewsDatabase db = new NewsDatabase(getActivity(), Constants.DB_NAME, null, Constants.DB_VERSION);
         final Runnable loadMore = new Runnable() {
             @Override
             public void run() {
-                List<News> data = new ArrayList<>();
-                for (int i = 0; i < 10; ++i) {
-                    News news = new News();
-                    news.title = String.format("收藏 %d 啊", i);
-                    news.publisher = String.format("第%d号", i);
-                    news.publishTime = LocalDateTime.now().minusMinutes(i * i * i * i * 30);
-                    data.add(news);
-                }
+                List<News> data = db.queryFavour(0, 10);
+//                for (int i = 0; i < 10; ++i) {
+//                    News news = new News();
+//                    news.title = String.format("收藏 %d 啊", i);
+//                    news.publisher = String.format("第%d号", i);
+//                    news.publishTime = LocalDateTime.now().minusMinutes(i * i * i * i * 30);
+//                    data.add(news);
+//                }
                 adapter.add(data);
                 refreshLayout.finishLoadMore();
             }

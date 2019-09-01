@@ -50,6 +50,9 @@ class News {
                 String arr = images.substring(1, images.length() - 1);
                 if (!arr.isEmpty()) {
                     this.image = arr.split("\\s*,\\s*");
+                    for (int i = 0; i < this.image.length; i++) {
+                        this.image[i] = this.image[i].replaceAll("\\\\/", "/").replaceAll("\"", "");
+                    }
                 }
             }
             this.video = data.getString("video");
@@ -105,7 +108,7 @@ class News {
             json.put("newsID", this.id);
             json.put("title", this.title);
             json.put("content", this.content);
-            json.put("publishTime", this.publishTime.toString());
+            json.put("publishTime", Constants.dataFormatter.format(this.publishTime));
             json.put("language", this.language);
             json.put("category", this.category);
             items_str.clear();
@@ -119,37 +122,37 @@ class News {
             for (int i = 0; i < (this.keyword == null ? 0 : this.keyword.length); i++) {
                 items.add(this.keyword[i].toJSONObject());
             }
-            json.put("keywords", this.keyword);
+            json.put("keywords", new JSONArray(items));
             items.clear();
             for (int i = 0; i < (this.when == null ? 0 : this.when.length); i++) {
                 items.add(this.when[i].toJSONObject());
             }
-            json.put("when", this.when);
+            json.put("when", new JSONArray(items));
             items.clear();
             for (int i = 0; i < (this.where == null ? 0 : this.where.length); i++) {
                 items.add(this.where[i].toJSONObject());
             }
-            json.put("where", this.where);
+            json.put("where", new JSONArray(items));
             items.clear();
             for (int i = 0; i < (this.who == null ? 0 : this.who.length); i++) {
                 items.add(this.who[i].toJSONObject());
             }
-            json.put("who", this.who);
+            json.put("who", new JSONArray(items));
             items.clear();
             for (int i = 0; i < (this.organization == null ? 0 : this.organization.length); i++) {
                 items.add(this.organization[i].toJSONObject());
             }
-            json.put("organizations", this.organization);
+            json.put("organizations", new JSONArray(items));
             items.clear();
             for (int i = 0; i < (this.person == null ? 0 : this.person.length); i++) {
                 items.add(this.person[i].toJSONObject());
             }
-            json.put("persons", this.person);
+            json.put("persons", new JSONArray(items));
             items.clear();
             for (int i = 0; i < (this.location == null ? 0 : this.location.length); i++) {
                 items.add(this.location[i].toJSONObject());
             }
-            json.put("locations", this.location);
+            json.put("locations", new JSONArray(items));
         } catch (JSONException e) {
             e.printStackTrace();
         }

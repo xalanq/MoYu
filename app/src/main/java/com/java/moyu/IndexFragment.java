@@ -16,7 +16,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -145,7 +144,7 @@ public class IndexFragment extends BasicFragment {
                         if (db.addNews(news) == false) {
                             Log.d("IndexFragment", "addNews Fail");
                         }
-                        if (db.addFavour(news.getID()) == false) {
+                        if (db.addFavour(news.getID(), LocalDateTime.now()) == false) {
                             Log.d("IndexFragment", "addFavour Fail");
                         }
                         if (db.addHistory(news.getID(), LocalDateTime.now()) == false) {

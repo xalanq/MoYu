@@ -7,7 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class NewsDatabase extends SQLiteOpenHelper {
@@ -29,7 +32,8 @@ public class NewsDatabase extends SQLiteOpenHelper {
         ")";
     private final String CREATE_FAVOUR = "create table " + TABLE_NAME_FAVOUR + "(" +
         VALUE_ID      + " integer primary key," +
-        VALUE_NEWS_ID + " text not null unique" +
+        VALUE_NEWS_ID + " text not null unique," +
+        VALUE_TIME    + " text not null" +
         ")";
     private final String CREATE_HISTORY = "create table " + TABLE_NAME_HISTORY + "(" +
         VALUE_ID      + " integer primary key," +
@@ -83,10 +87,11 @@ public class NewsDatabase extends SQLiteOpenHelper {
      * @param   news_id
      * @return  conflicted or not
      */
-    public boolean addFavour(String news_id)
+    public boolean addFavour(String news_id, LocalDateTime time)
     {
         ContentValues values = new ContentValues();
         values.put(VALUE_NEWS_ID, news_id);
+        values.put(VALUE_TIME, time.format(Constants.dataFormatter));
 
         long index = getWritableDatabase().insertWithOnConflict(TABLE_NAME_FAVOUR, null, values, SQLiteDatabase.CONFLICT_IGNORE);
         return index > 0;
@@ -107,8 +112,56 @@ public class NewsDatabase extends SQLiteOpenHelper {
         return index > 0;
     }
 
-//    public List<News> queryFavour(int count) {
-//        Cursor cursor = getWritableDatabase().query(TABLE_NAME_NEWS, null, null, null, null, null, null, null);
-//    }
+    final public News queryNews(String news_id) {
+        Cursor cursor = getWritableDatabase().query(TABLE_NAME_NEWS, null, VALUE_NEWS_ID + " = ?", new String[]{news_id}, null, null, null, null);
+
+        News news = new News();
+        try {
+            cursor.moveToFirst();
+            news = new News(new JSONObject(cursor.getString(cursor.getColumnIndex(VALUE_DATA))));
+        } catch (Exception e) {
+            cursor.close();
+            e.printStackTrace();
+        }
+
+        cursor.close();
+        return news;
+    }
+
+    final public List<News> queryFavour(Integer offset, Integer limit) {
+        String str_limit = offset.toString() + "," + limit.toString();
+        Cursor cursor = getWritableDatabase().query(TABLE_NAME_FAVOUR, null, null, null, null, null, VALUE_TIME + " DESC", str_limit);
+
+        List<News> list = new ArrayList<>();
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            for (int i = 0; i < cursor.getCount(); i++) {
+                list.add(this.queryNews(cursor.getString(cursor.getColumnIndex(VALUE_NEWS_ID))));
+                cursor.moveToNext();
+            }
+        }
+
+        cursor.close();
+        getWritableDatabase().close();
+        return list;
+    }
+
+    final public List<News> queryHistory(Integer offset, Integer limit) {
+        String str_limit = offset.toString() + "," + limit.toString();
+        Cursor cursor = getWritableDatabase().query(TABLE_NAME_HISTORY, null, null, null, null, null, VALUE_TIME + " DESC", str_limit);
+
+        List<News> list = new ArrayList<>();
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            for (int i = 0; i < cursor.getCount(); i++) {
+                list.add(this.queryNews(cursor.getString(cursor.getColumnIndex(VALUE_NEWS_ID))));
+                cursor.moveToNext();
+            }
+        }
+
+        cursor.close();
+        getWritableDatabase().close();
+        return list;
+    }
 
 }
