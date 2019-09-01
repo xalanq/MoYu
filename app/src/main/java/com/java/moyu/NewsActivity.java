@@ -4,9 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.billy.android.swipe.SmartSwipe;
+import com.billy.android.swipe.SwipeConsumer;
+import com.billy.android.swipe.consumer.ActivitySlidingBackConsumer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +45,8 @@ public class NewsActivity extends VideoActivity {
     @BindView(R.id.content)
     TextView contentView;
 
+    private SwipeConsumer consumer;
+
     @Override
     protected int getLayoutResource() {
         return R.layout.news_activity;
@@ -51,11 +58,31 @@ public class NewsActivity extends VideoActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        /*
-        SmartSwipe.wrap(this)
+        consumer = SmartSwipe.wrap(this)
             .addConsumer(new ActivitySlidingBackConsumer(this))
             .enableLeft();
-        */
+        galleryView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                switch (e.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    consumer.lockLeft();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    consumer.unlockLeft();
+                    break;
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+            }
+        });
 
         test();
     }

@@ -18,7 +18,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     private final Context context;
     private List<String> data;
 
-    public ImageAdapter(Context context, List<String> data) {
+    ImageAdapter(Context context, List<String> data) {
         this.data = data;
         this.context = context.getApplicationContext();
     }
