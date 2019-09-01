@@ -23,12 +23,13 @@ import butterknife.BindView;
 public class MainActivity extends VideoActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public FragmentAllocator fragmentAllocator;
+    private BasicFragment currentFragment;
+    private boolean checkExit;
+
     @BindView(R.id.main_drawer_layout)
     DrawerLayout drawerLayout;
     @BindView(R.id.main_navigation_view)
     NavigationView navigationView;
-    boolean checkExit;
-    private BasicFragment currentFragment;
 
     @Override
     protected int getLayoutResource() {
@@ -52,7 +53,7 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         username.setText(R.string.main_navigation_login);
     }
 
-    private void switchFragment(BasicFragment fragment) {
+    void switchFragment(BasicFragment fragment) {
         if (currentFragment == fragment)
             return;
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -60,9 +61,9 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
             ft.add(R.id.main_layout, fragment);
         if (currentFragment != null)
             ft.hide(currentFragment);
-        currentFragment = fragment;
         ft.show(fragment);
         ft.commit();
+        currentFragment = fragment;
     }
 
     @Override
@@ -155,7 +156,6 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         private FavoriteFragment favoriteFragment;
         private HistoryFragment historyFragment;
         private AboutFragment aboutFragment;
-        private CategoryFragment categoryFragment;
 
         IndexFragment getIndexFragment() {
             if (indexFragment == null)
@@ -179,12 +179,6 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
             if (aboutFragment == null)
                 aboutFragment = new AboutFragment();
             return aboutFragment;
-        }
-
-        CategoryFragment getCategoryFragment() {
-            if (categoryFragment == null)
-                categoryFragment = new CategoryFragment();
-            return categoryFragment;
         }
 
     }

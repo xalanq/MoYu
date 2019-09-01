@@ -74,12 +74,8 @@ public class IndexFragment extends BasicFragment {
         btnMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                a.getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.slide_up_enter, R.anim.slide_stay, R.anim.slide_stay, R.anim.slide_down_exit)
-                    .add(R.id.main_layout, a.fragmentAllocator.getCategoryFragment())
-                    .hide(IndexFragment.this)
-                    .addToBackStack(null)
-                    .commit();
+                startActivity(new Intent(getActivity(), CategoryActivity.class));
+                getActivity().overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);
             }
         });
 

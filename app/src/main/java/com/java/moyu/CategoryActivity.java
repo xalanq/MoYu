@@ -1,22 +1,24 @@
 package com.java.moyu;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.billy.android.swipe.SmartSwipe;
+import com.billy.android.swipe.consumer.ActivitySlidingBackConsumer;
 import com.google.android.material.chip.Chip;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import butterknife.BindView;
 
-public class CategoryFragment extends BasicFragment {
+public class CategoryActivity extends BasicActivity {
 
     @BindView(R.id.category_edit_current)
     TextView editCurrent;
@@ -27,14 +29,14 @@ public class CategoryFragment extends BasicFragment {
 
     @Override
     protected int getLayoutResource() {
-        return R.layout.category_fragment;
+        return R.layout.category_activity;
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        allAdapter = ChipAdapter.newAdapter(view.getContext(), view.findViewById(R.id.category_all_layout), new ChipAdapter.OnClick() {
+        allAdapter = ChipAdapter.newAdapter(this, findViewById(R.id.category_all_layout), new ChipAdapter.OnClick() {
             @Override
             public void click(Chip chip, int position) {
                 currentAdapter.add(allAdapter.get(position));
@@ -46,10 +48,10 @@ public class CategoryFragment extends BasicFragment {
             }
         });
 
-        currentAdapter = ChipAdapter.newAdapter(view.getContext(), view.findViewById(R.id.category_current_layout), new ChipAdapter.OnClick() {
+        currentAdapter = ChipAdapter.newAdapter(this, findViewById(R.id.category_current_layout), new ChipAdapter.OnClick() {
             @Override
             public void click(Chip chip, int position) {
-                Toast.makeText(getActivity(), "click chip", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CategoryActivity.this, "click chip", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -73,24 +75,39 @@ public class CategoryFragment extends BasicFragment {
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStack();
+                finish();
             }
         });
+
+        SmartSwipe.wrap(this)
+            .addConsumer(new ActivitySlidingBackConsumer(this))
+            .enableLeft();
 
         test();
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_stay, R.anim.slide_left_exit);
+    }
+
     private void test() {
-        List<String> a = new ArrayList<>();
-        for (int i = 0; i < 9; ++i) {
-            a.add(String.format("当前%d", new Random().nextInt() % 999));
-        }
-        currentAdapter.add(a);
-        a = new ArrayList<>();
-        for (int i = 0; i < 20; ++i) {
-            allAdapter.add(String.format("分类%d", new Random().nextInt() % 999));
-        }
-        allAdapter.add(a);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                List<String> a = new ArrayList<>();
+                for (int i = 0; i < 9; ++i) {
+                    a.add(String.format("当前%d", new Random().nextInt() % 999));
+                }
+                currentAdapter.add(a);
+                a = new ArrayList<>();
+                for (int i = 0; i < 20; ++i) {
+                    allAdapter.add(String.format("分类%d", new Random().nextInt() % 999));
+                }
+                allAdapter.add(a);
+            }
+        }, 100);
     }
 
 }

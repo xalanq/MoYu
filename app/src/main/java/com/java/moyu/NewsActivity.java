@@ -59,7 +59,7 @@ public class NewsActivity extends VideoActivity {
         SmartSwipe.wrap(this)
             .addConsumer(new ActivitySlidingBackConsumer(this))
             .enableLeft();
-         */
+        */
 
         test();
     }
