@@ -1,6 +1,10 @@
 package com.java.moyu;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 class News {
 
@@ -20,6 +24,41 @@ class News {
     MentionData[] organization; // 发布新闻组织
     MentionData[] person; // 新闻提及人物，提及次数和在 xlore 中的知识卡片 URL
     LocationData location; // 新闻提及位置，位置经纬度，提及次数
+    String json;
+
+    private final DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public String getID() {
+        return this.id;
+    }
+
+    public String getJSON() {
+        return this.json;
+    }
+
+    public News() {
+
+    }
+
+    public News(JSONObject data) {
+        try {
+            this.id = data.getString("newsID");
+            this.title = data.getString("title");
+            this.publisher = data.getString("publisher");
+            this.publishTime = LocalDateTime.parse(data.getString("publishTime"), dataFormatter);
+            String images = data.getString("image");
+            if (!images.isEmpty()) {
+                String arr = images.substring(1, images.length() - 1);
+                if (!arr.isEmpty()) {
+                    this.image = arr.split("\\s*,\\s*");
+                }
+            }
+            this.video = data.getString("video");
+            this.json = data.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
 

@@ -99,6 +99,7 @@ public class IndexFragment extends BasicFragment {
             @Override
             public void run() {
                 // TODO This maybe a sample
+                NewsDatabase db = new NewsDatabase(getActivity(), Constants.DB_NAME, null, Constants.DB_VERSION);
                 String requestUrl = "https://api2.newsminer.net/svc/news/queryNewsList";
                 DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 Map params = new HashMap();
@@ -113,19 +114,9 @@ public class IndexFragment extends BasicFragment {
                     List<News> data = new ArrayList<>();
                     for (int i = 0; i < allNewsData.length(); ++i) {
                         JSONObject newsData = allNewsData.getJSONObject(i);
-                        News news = new News();
-                        news.title = newsData.getString("title");
-                        news.publisher = newsData.getString("publisher");
-                        news.publishTime = LocalDateTime.parse(newsData.getString("publishTime"), dataFormatter);
-                        String images = newsData.getString("image");
-                        if (!images.isEmpty()) {
-                            String arr = images.substring(1, images.length() - 1);
-                            if (!arr.isEmpty()) {
-                                news.image = arr.split("\\s*,\\s*");
-                            }
-                        }
-                        news.video = newsData.getString("video");
+                        News news = new News(newsData);
                         data.add(news);
+                        db.addNews(news);
                     }
                     adapter.add(data);
                 } catch (JSONException e) {
@@ -134,7 +125,7 @@ public class IndexFragment extends BasicFragment {
 
                 params = new HashMap();
                 params.put("size", "20");
-                params.put("words", "特朗普");
+                params.put("words", "香港");
                 params.put("endDate", LocalDateTime.now().format(dataFormatter));
                 string = NetConnection.httpRequest(requestUrl, params);
                 try {
@@ -146,19 +137,10 @@ public class IndexFragment extends BasicFragment {
                         l = allNewsData.length();
                     for (int i = 0; i < l; ++i) {
                         JSONObject newsData = allNewsData.getJSONObject(i);
-                        News news = new News();
-                        news.title = newsData.getString("title");
-                        news.publisher = newsData.getString("publisher");
-                        news.publishTime = LocalDateTime.parse(newsData.getString("publishTime"), dataFormatter);
-                        String images = newsData.getString("image");
-                        if (!images.isEmpty()) {
-                            String arr = images.substring(1, images.length() - 1);
-                            if (!arr.isEmpty()) {
-                                news.image = arr.split("\\s*,\\s*");
-                            }
-                        }
-                        news.video = newsData.getString("video");
+                        News news = new News(newsData);
+                        db.addNews(news);
                         data.add(news);
+                        db.addNews(news);
                     }
                     adapter.add(data);
                 } catch (JSONException e) {
