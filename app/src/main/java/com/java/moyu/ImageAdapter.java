@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
 
     private final Context context;
-    private List<String> data;
+    private String[] data;
 
-    ImageAdapter(Context context, List<String> data) {
+    ImageAdapter(Context context, String[] data) {
         this.data = data;
         this.context = context.getApplicationContext();
     }
@@ -31,7 +31,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        Glide.with(context).load(data.get(position))
+        Glide.with(context).load(data[position])
             .placeholder(R.drawable.loading_cover)
             .error(R.drawable.error).centerCrop()
             .into(holder.imageView);
@@ -39,7 +39,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return data.length;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

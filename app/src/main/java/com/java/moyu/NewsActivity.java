@@ -13,6 +13,7 @@ import com.billy.android.swipe.SmartSwipe;
 import com.billy.android.swipe.SwipeConsumer;
 import com.billy.android.swipe.consumer.ActivitySlidingBackConsumer;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,8 @@ public class NewsActivity extends VideoActivity {
     ConstraintLayout galleryLayout;
     @BindView(R.id.gallery_view)
     RecyclerView galleryView;
+    @BindView(R.id.gallery_hint)
+    TextView galleryHintView;
     @BindView(R.id.video_layout)
     ConstraintLayout videoLayout;
     @BindView(R.id.video_player)
@@ -40,12 +43,16 @@ public class NewsActivity extends VideoActivity {
     TextView titleView;
     @BindView(R.id.publisher)
     TextView publisherView;
+    @BindView(R.id.category)
+    TextView categoryView;
     @BindView(R.id.publish_time)
     TextView publishTimeView;
     @BindView(R.id.content)
     TextView contentView;
 
     private SwipeConsumer consumer;
+    private News news;
+    private boolean isStarred;
 
     @Override
     protected int getLayoutResource() {
@@ -85,29 +92,62 @@ public class NewsActivity extends VideoActivity {
         });
 
         test();
+
+        getSupportActionBar().setTitle(news.publisher);
+        if (news.image != null) {
+            GalleryLayoutManager layoutManager = new GalleryLayoutManager(GalleryLayoutManager.HORIZONTAL);
+            layoutManager.attach(galleryView, 0);
+            layoutManager.setItemTransformer(new GalleryLayoutManager.ItemTransformer() {
+                @Override
+                public void transformItem(GalleryLayoutManager layoutManager, View item, float fraction) {
+                    item.setPivotX(item.getWidth() / 2.f);
+                    item.setPivotY(item.getHeight() / 2.0f);
+                    float scale = 1 - 0.3f * Math.abs(fraction);
+                    item.setScaleX(scale);
+                    item.setScaleY(scale);
+                }
+            });
+            ImageAdapter adapter = new ImageAdapter(this, news.image);
+            galleryView.setAdapter(adapter);
+        } else {
+            galleryLayout.setVisibility(View.GONE);
+        }
+        if (news.image == null || news.image.length == 1) {
+            galleryHintView.setVisibility(View.GONE);
+        }
+        if (news.video != null && !news.video.isEmpty()) {
+            player.setup(this, news.video, news.title, 0);
+        } else {
+            videoLayout.setVisibility(View.GONE);
+        }
+        contentView.setText(news.content);
+        publisherView.setText(news.publisher);
+        publishTimeView.setText(Util.parseTime(news.publishTime));
+        categoryView.setText(news.category);
     }
 
     void test() {
-        getSupportActionBar().setTitle("新华社");
-        List<String> data = new ArrayList<>();
-        data.add("http://5b0988e595225.cdn.sohucs.com/images/20190830/f655aaf1c880485585b93cea32a69381.jpeg");
-        data.add("http://5b0988e595225.cdn.sohucs.com/images/20190830/711c0c66a12b48eca42baac81d5a7439.jpeg");
-        data.add("http://5b0988e595225.cdn.sohucs.com/images/20190830/92f731d619454418b1efda327d7590b9.jpeg");
-        GalleryLayoutManager layoutManager = new GalleryLayoutManager(GalleryLayoutManager.HORIZONTAL);
-        layoutManager.attach(galleryView, 0);
-        layoutManager.setItemTransformer(new GalleryLayoutManager.ItemTransformer() {
-            @Override
-            public void transformItem(GalleryLayoutManager layoutManager, View item, float fraction) {
-                item.setPivotX(item.getWidth() / 2.f);
-                item.setPivotY(item.getHeight() / 2.0f);
-                float scale = 1 - 0.3f * Math.abs(fraction);
-                item.setScaleX(scale);
-                item.setScaleY(scale);
-            }
-        });
-        ImageAdapter adapter = new ImageAdapter(this, data);
-        galleryView.setAdapter(adapter);
-        player.setup(this, "https://www.w3schools.com/html/movie.mp4", "这是标题", 0);
+        news = new News();
+        news.title = "这是标题呀，啥也没有";
+        news.publisher = "新华社";
+        news.category = "科技";
+        news.publishTime = LocalDateTime.now();
+        news.content = "这是新闻的内容，不知道写点啥就凑一下字数";
+        news.image = new String[] {
+            "http://5b0988e595225.cdn.sohucs.com/images/20190830/f655aaf1c880485585b93cea32a69381.jpeg",
+            "http://5b0988e595225.cdn.sohucs.com/images/20190830/711c0c66a12b48eca42baac81d5a7439.jpeg",
+            "http://5b0988e595225.cdn.sohucs.com/images/20190830/92f731d619454418b1efda327d7590b9.jpeg",
+        };
+        news.video = "https://www.w3schools.com/html/movie.mp4";
+    }
+
+    void clickStar(MenuItem item) {
+        Toast.makeText(this, "你点击了收藏", Toast.LENGTH_SHORT).show();
+        if (isStarred)
+            item.setIcon(R.drawable.ic_star_light);
+        else
+            item.setIcon(R.drawable.ic_starred);
+        isStarred = !isStarred;
     }
 
     @Override
@@ -132,11 +172,14 @@ public class NewsActivity extends VideoActivity {
             startActivity(new Intent(this, SearchActivity.class));
             return true;
         case R.id.star_button:
-            Toast.makeText(this, "你点击了收藏", Toast.LENGTH_SHORT).show();
-            item.setIcon(R.drawable.ic_starred);
+            clickStar(item);
             return true;
         case R.id.share_button:
-            Toast.makeText(this, "你点击了分享", Toast.LENGTH_SHORT).show();
+            new ShareUtil.Builder(this)
+                .setContentType(ShareUtil.ShareContentType.TEXT)
+                .setTitle(news.title)
+                .setTextContent(news.content, 50)
+                .build().shareBySystem();
             return true;
         default:
             return super.onOptionsItemSelected(item);
