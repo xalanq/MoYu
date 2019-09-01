@@ -5,12 +5,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.billy.android.swipe.SmartSwipe;
-import com.billy.android.swipe.consumer.ActivitySlidingBackConsumer;
 
 import java.util.ArrayList;
 import java.util.List;

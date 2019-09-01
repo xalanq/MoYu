@@ -23,13 +23,12 @@ import butterknife.BindView;
 public class MainActivity extends VideoActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public FragmentAllocator fragmentAllocator;
-    private BasicFragment currentFragment;
-    private boolean checkExit;
-
     @BindView(R.id.main_drawer_layout)
     DrawerLayout drawerLayout;
     @BindView(R.id.main_navigation_view)
     NavigationView navigationView;
+    private BasicFragment currentFragment;
+    private boolean checkExit;
 
     @Override
     protected int getLayoutResource() {

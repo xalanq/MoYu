@@ -26,9 +26,9 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     private static final int SINGLE = 1;
     private static final int MULTI = 2;
     private static final int VIDEO = 3;
+    private final Context context;
     private List<News> data;
     private OnClick onClick;
-    private final Context context;
 
     private NewsAdapter(Context context, OnClick onClick) {
         data = new ArrayList<>();

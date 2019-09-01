@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
 
-    private List<String> data;
     private final Context context;
+    private List<String> data;
 
     public ImageAdapter(Context context, List<String> data) {
         this.data = data;
