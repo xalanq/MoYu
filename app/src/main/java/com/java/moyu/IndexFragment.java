@@ -97,38 +97,43 @@ public class IndexFragment extends BasicFragment {
             tabLayout.addTab(tabLayout.newTab().setText(tab));
         }
         final Runnable loadMore = new Runnable() {
+            LocalDateTime end_time = LocalDateTime.now();
             @Override
             public void run() {
-                // TODO This maybe a sample
                 NewsDatabase db = new NewsDatabase(getActivity(), Constants.DB_NAME, null, Constants.DB_VERSION);
                 String requestUrl = "https://api2.newsminer.net/svc/news/queryNewsList";
+//                Map params = new HashMap();
+//                params.put("size", "1");
+//                params.put("words", "野熊");
+//                params.put("startDate", "2018-08-15");
+//                params.put("endDate", "2018-08-21");
+//                String string = NetConnection.httpRequest(requestUrl, params);
+//                try {
+//                    JSONObject jsonData = new JSONObject(string);
+//                    JSONArray allNewsData = jsonData.getJSONArray("data");
+//                    List<News> data = new ArrayList<>();
+//                    for (int i = 0; i < allNewsData.length(); ++i) {
+//                        JSONObject newsData = allNewsData.getJSONObject(i);
+//                        News news = new News(newsData);
+//                        data.add(news);
+//                        if (db.addNews(news) == false)
+//                            Log.d("IndexFragment","addNews Fail");
+//                    }
+//                    adapter.add(data);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                params = new HashMap();
+//                params.put("size", "20");
+//                params.put("words", "香港");
+//                params.put("endDate", LocalDateTime.now().format(Constants.dataFormatter));
+//                string = NetConnection.httpRequest(requestUrl, params);
                 Map params = new HashMap();
-                params.put("size", "1");
-                params.put("words", "野熊");
-                params.put("startDate", "2018-08-15");
-                params.put("endDate", "2018-08-21");
-                String string = NetConnection.httpRequest(requestUrl, params);
-                try {
-                    JSONObject jsonData = new JSONObject(string);
-                    JSONArray allNewsData = jsonData.getJSONArray("data");
-                    List<News> data = new ArrayList<>();
-                    for (int i = 0; i < allNewsData.length(); ++i) {
-                        JSONObject newsData = allNewsData.getJSONObject(i);
-                        News news = new News(newsData);
-                        data.add(news);
-                        if (db.addNews(news) == false)
-                            Log.d("IndexFragment","addNews Fail");
-                    }
-                    adapter.add(data);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                params = new HashMap();
-                params.put("size", "20");
+                params.put("size", "10");
                 params.put("words", "香港");
-                params.put("endDate", LocalDateTime.now().format(Constants.dataFormatter));
-                string = NetConnection.httpRequest(requestUrl, params);
+                params.put("endDate", end_time.format(Constants.dataFormatter));
+                String string = NetConnection.httpRequest(requestUrl, params);
                 try {
                     JSONObject jsonData = new JSONObject(string);
                     JSONArray allNewsData = jsonData.getJSONArray("data");
@@ -139,6 +144,7 @@ public class IndexFragment extends BasicFragment {
                     for (int i = 0; i < l; ++i) {
                         JSONObject newsData = allNewsData.getJSONObject(i);
                         News news = new News(newsData);
+                        if (i + 1 == l) end_time = news.getPublishTime().minusSeconds(1);
                         db.addNews(news);
                         data.add(news);
                         if (db.addNews(news) == false) {

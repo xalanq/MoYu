@@ -159,6 +159,10 @@ class News {
         return json;
     }
 
+    public LocalDateTime getPublishTime() {
+        return this.publishTime;
+    }
+
 }
 
 class ScoreData {

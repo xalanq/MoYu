@@ -60,9 +60,11 @@ public class FavoriteFragment extends BasicFragment {
     private void test() {
         final NewsDatabase db = new NewsDatabase(getActivity(), Constants.DB_NAME, null, Constants.DB_VERSION);
         final Runnable loadMore = new Runnable() {
+            int page = 0;
             @Override
             public void run() {
-                List<News> data = db.queryFavour(0, 10);
+                List<News> data = db.queryFavour(this.page * 5, 5);
+                this.page++;
 //                for (int i = 0; i < 10; ++i) {
 //                    News news = new News();
 //                    news.title = String.format("收藏 %d 啊", i);
