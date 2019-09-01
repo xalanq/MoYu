@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -101,7 +103,6 @@ public class IndexFragment extends BasicFragment {
                 // TODO This maybe a sample
                 NewsDatabase db = new NewsDatabase(getActivity(), Constants.DB_NAME, null, Constants.DB_VERSION);
                 String requestUrl = "https://api2.newsminer.net/svc/news/queryNewsList";
-                DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 Map params = new HashMap();
                 params.put("size", "1");
                 params.put("words", "野熊");
@@ -116,7 +117,8 @@ public class IndexFragment extends BasicFragment {
                         JSONObject newsData = allNewsData.getJSONObject(i);
                         News news = new News(newsData);
                         data.add(news);
-                        db.addNews(news);
+                        if (db.addNews(news) == false)
+                            Log.d("IndexFragment","addNews Fail");
                     }
                     adapter.add(data);
                 } catch (JSONException e) {
@@ -126,7 +128,7 @@ public class IndexFragment extends BasicFragment {
                 params = new HashMap();
                 params.put("size", "20");
                 params.put("words", "香港");
-                params.put("endDate", LocalDateTime.now().format(dataFormatter));
+                params.put("endDate", LocalDateTime.now().format(Constants.dataFormatter));
                 string = NetConnection.httpRequest(requestUrl, params);
                 try {
                     JSONObject jsonData = new JSONObject(string);
@@ -140,7 +142,15 @@ public class IndexFragment extends BasicFragment {
                         News news = new News(newsData);
                         db.addNews(news);
                         data.add(news);
-                        db.addNews(news);
+                        if (db.addNews(news) == false) {
+                            Log.d("IndexFragment", "addNews Fail");
+                        }
+                        if (db.addFavour(news.getID()) == false) {
+                            Log.d("IndexFragment", "addFavour Fail");
+                        }
+                        if (db.addHistory(news.getID(), LocalDateTime.now()) == false) {
+                            Log.d("IndexFragment", "addHistory Fail");
+                        }
                     }
                     adapter.add(data);
                 } catch (JSONException e) {

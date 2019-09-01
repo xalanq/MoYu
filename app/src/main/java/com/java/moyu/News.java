@@ -1,10 +1,14 @@
 package com.java.moyu;
 
+import android.util.Log;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
 
 class News {
 
@@ -23,17 +27,10 @@ class News {
     ScoreData[] who; // 新闻相关人和相关度
     MentionData[] organization; // 发布新闻组织
     MentionData[] person; // 新闻提及人物，提及次数和在 xlore 中的知识卡片 URL
-    LocationData location; // 新闻提及位置，位置经纬度，提及次数
-    String json;
-
-    private final DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    LocationData[] location; // 新闻提及位置，位置经纬度，提及次数
 
     public String getID() {
         return this.id;
-    }
-
-    public String getJSON() {
-        return this.json;
     }
 
     public News() {
@@ -44,8 +41,10 @@ class News {
         try {
             this.id = data.getString("newsID");
             this.title = data.getString("title");
-            this.publisher = data.getString("publisher");
-            this.publishTime = LocalDateTime.parse(data.getString("publishTime"), dataFormatter);
+            this.content = data.getString("content");
+            this.publishTime = LocalDateTime.parse(data.getString("publishTime"), Constants.dataFormatter);
+            this.language = data.getString("language");
+            this.category = data.getString("category");
             String images = data.getString("image");
             if (!images.isEmpty()) {
                 String arr = images.substring(1, images.length() - 1);
@@ -54,10 +53,107 @@ class News {
                 }
             }
             this.video = data.getString("video");
-            this.json = data.toString();
+            this.publisher = data.getString("publisher");
+
+            JSONArray keyword = data.getJSONArray("keywords");
+            this.keyword = new ScoreData[keyword.length()];
+            for (int i = 0; i < keyword.length(); ++i) {
+                this.keyword[i] = new ScoreData(keyword.getJSONObject(i));
+            }
+            JSONArray when = data.getJSONArray("when");
+            this.when = new ScoreData[when.length()];
+            for (int i = 0; i < when.length(); ++i) {
+                this.when[i] = new ScoreData(when.getJSONObject(i));
+            }
+            JSONArray where = data.getJSONArray("where");
+            this.where = new ScoreData[where.length()];
+            for (int i = 0; i < where.length(); ++i) {
+                this.where[i] = new ScoreData(where.getJSONObject(i));
+            }
+            JSONArray who = data.getJSONArray("who");
+            this.who = new ScoreData[who.length()];
+            for (int i = 0; i < who.length(); ++i) {
+                this.who[i] = new ScoreData(who.getJSONObject(i));
+            }
+            JSONArray organization = data.getJSONArray("organizations");
+            this.organization = new MentionData[organization.length()];
+            for (int i = 0; i < organization.length(); ++i) {
+                this.organization[i] = new MentionData(organization.getJSONObject(i));
+            }
+            JSONArray person = data.getJSONArray("persons");
+            this.person = new MentionData[person.length()];
+            for (int i = 0; i < person.length(); ++i) {
+                this.person[i] = new MentionData(person.getJSONObject(i));
+            }
+            JSONArray location = data.getJSONArray("locations");
+            this.location = new LocationData[location.length()];
+            for (int i = 0; i < location.length(); ++i) {
+                this.location[i] = new LocationData(location.getJSONObject(i));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("News", data.toString());
+        }
+    }
+
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        try {
+            Collection<JSONObject> items = new ArrayList<JSONObject>();
+            Collection<String> items_str = new ArrayList<String>();
+
+            json.put("newsID", this.id);
+            json.put("title", this.title);
+            json.put("content", this.content);
+            json.put("publishTime", this.publishTime.toString());
+            json.put("language", this.language);
+            json.put("category", this.category);
+            items_str.clear();
+            for (int i = 0; i < (this.image == null ? 0 : this.image.length); i++) {
+                items_str.add(this.image[i]);
+            }
+            json.put("image", new JSONArray(items_str));
+            json.put("video", this.video);
+            json.put("publisher", this.publisher);
+            items.clear();
+            for (int i = 0; i < (this.keyword == null ? 0 : this.keyword.length); i++) {
+                items.add(this.keyword[i].toJSONObject());
+            }
+            json.put("keywords", this.keyword);
+            items.clear();
+            for (int i = 0; i < (this.when == null ? 0 : this.when.length); i++) {
+                items.add(this.when[i].toJSONObject());
+            }
+            json.put("when", this.when);
+            items.clear();
+            for (int i = 0; i < (this.where == null ? 0 : this.where.length); i++) {
+                items.add(this.where[i].toJSONObject());
+            }
+            json.put("where", this.where);
+            items.clear();
+            for (int i = 0; i < (this.who == null ? 0 : this.who.length); i++) {
+                items.add(this.who[i].toJSONObject());
+            }
+            json.put("who", this.who);
+            items.clear();
+            for (int i = 0; i < (this.organization == null ? 0 : this.organization.length); i++) {
+                items.add(this.organization[i].toJSONObject());
+            }
+            json.put("organizations", this.organization);
+            items.clear();
+            for (int i = 0; i < (this.person == null ? 0 : this.person.length); i++) {
+                items.add(this.person[i].toJSONObject());
+            }
+            json.put("persons", this.person);
+            items.clear();
+            for (int i = 0; i < (this.location == null ? 0 : this.location.length); i++) {
+                items.add(this.location[i].toJSONObject());
+            }
+            json.put("locations", this.location);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return json;
     }
 
 }
@@ -67,6 +163,27 @@ class ScoreData {
     Double score; // 相关度，数值在 0 ~ 1 之间
     String word; // 关键字
 
+    public ScoreData(JSONObject data) {
+        try {
+            this.score = data.getDouble("score");
+            this.word = data.getString("word");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ScoreData", data.toString());
+        }
+    }
+
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("score", this.score);
+            json.put("word", this.word);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
 }
 
 class MentionData {
@@ -74,6 +191,29 @@ class MentionData {
     Integer count; // 出现次数
     String url; // 相关链接
     String word; // 关键字
+
+    public MentionData(JSONObject data) {
+        try {
+            this.count = data.getInt("count");
+            this.url = data.getString("linkedURL");
+            this.word = data.getString("mention");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("MentionData", data.toString());
+        }
+    }
+
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("count", this.count);
+            json.put("linkedURL", this.url);
+            json.put("mention", this.word);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
 
 }
 
@@ -84,5 +224,34 @@ class LocationData {
     Integer count; // 出现次数
     String url; // 相关链接
     String word; // 关键字
+
+    public LocationData(JSONObject data) {
+        try {
+            if (data.has("lng"))
+                this.longitude = data.getDouble("lng");
+            if (data.has("lat"))
+                this.latitude = data.getDouble("lat");
+            this.count = data.getInt("count");
+            this.url = data.getString("linkedURL");
+            this.word = data.getString("mention");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("LocationData", data.toString());
+        }
+    }
+
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("lng", this.longitude);
+            json.put("lat", this.latitude);
+            json.put("count", this.count);
+            json.put("linkedURL", this.url);
+            json.put("mention", this.word);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
 
 }
