@@ -144,6 +144,12 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         return data.get(position);
     }
 
+    void clear() {
+        int size = data.size();
+        data.clear();
+        notifyItemRangeRemoved(0, size);
+    }
+
     @Override
     public int getItemViewType(int position) {
         News news = data.get(position);

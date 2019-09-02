@@ -72,8 +72,10 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
             switchFragment(fragmentAllocator.getIndexFragment());
         } else if (id == R.id.main_navigation_menu_favorite) {
             switchFragment(fragmentAllocator.getFavoriteFragment());
+            fragmentAllocator.getFavoriteFragment().initData();
         } else if (id == R.id.main_navigation_menu_history) {
             switchFragment(fragmentAllocator.getHistoryFragment());
+            fragmentAllocator.getHistoryFragment().initData();
         } else if (id == R.id.main_navigation_menu_about) {
             switchFragment(fragmentAllocator.getAboutFragment());
         } else if (id == R.id.main_navigation_menu_night_mode) {

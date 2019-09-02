@@ -51,7 +51,12 @@ public class HistoryFragment extends BasicFragment {
         initData();
     }
 
-    private void initData() {
+    void initData() {
+        if (adapter == null)
+            return;
+
+        adapter.clear();
+
         final Runnable loadMore = new Runnable() {
             int offset;
 
@@ -69,7 +74,7 @@ public class HistoryFragment extends BasicFragment {
         };
         loadMore.run();
         refreshLayout.setEnableRefresh(false);
-        refreshLayout.setEnableFooterFollowWhenNoMoreData(false);
+        refreshLayout.setEnableLoadMoreWhenContentNotFull(false);
         refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull final RefreshLayout refreshLayout) {
