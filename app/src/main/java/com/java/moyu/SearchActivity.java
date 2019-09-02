@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -81,12 +83,12 @@ public class SearchActivity extends BasicActivity {
         final String text = searchBox.getText().toString();
         NewsDatabase.getInstance().addSearchHistory(text);
         startLoading();
-        new Handler().postDelayed(new Runnable() {
+        new Handler().post(new Runnable() {
             @Override
             public void run() {
-                switchFragment(new SearchResultFragment());
+                switchFragment(new SearchResultFragment(text));
             }
-        }, 2000);
+        });
     }
 
 }

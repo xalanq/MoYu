@@ -131,6 +131,7 @@ public class NewsActivity extends VideoActivity {
             publishTimeView.setText(Util.parseTime(news.publishTime));
             categoryView.setText(news.category);
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

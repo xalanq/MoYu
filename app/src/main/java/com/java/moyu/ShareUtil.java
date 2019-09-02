@@ -255,12 +255,12 @@ public class ShareUtil {
          * @param textContent textContent
          * @return Builder
          */
-        public Builder setTextContent(String textContent, int maxlen) {
-            if (maxlen > textContent.length()) {
-                maxlen = textContent.length();
-                this.textContent = textContent.substring(0, maxlen);
+        public Builder setTextContent(String textContent, int max_len) {
+            if (max_len > textContent.length()) {
+                max_len = textContent.length();
+                this.textContent = textContent.substring(0, max_len);
             } else {
-                this.textContent = textContent.substring(0, maxlen) + "……";
+                this.textContent = textContent.substring(0, max_len) + "……";
             }
             return this;
         }

@@ -16,10 +16,14 @@ import butterknife.BindView;
 
 public class SearchResultFragment extends BasicFragment {
 
+    private final String text;
+
     @BindView(R.id.refresh_layout)
     RefreshLayout refreshLayout;
 
     private NewsAdapter adapter;
+
+    public SearchResultFragment(String text) { this.text = text; }
 
     @Override
     protected int getLayoutResource() {
@@ -36,32 +40,71 @@ public class SearchResultFragment extends BasicFragment {
     }
 
     private void test() {
+
         final Runnable loadMore = new Runnable() {
             @Override
             public void run() {
-                List<News> data = new ArrayList<>();
-                for (int i = 0; i < 10; ++i) {
-                    News news = new News();
-                    news.title = String.format("搜索结果 %d 啊", i);
-                    news.publisher = String.format("第%d号", i);
-                    news.publishTime = LocalDateTime.now().minusMinutes(i * i * i * i * 30);
-                    data.add(news);
-                }
-                adapter.add(data);
-                refreshLayout.finishLoadMore();
+                new NewsNetwork.Builder()
+                    .add("size", "" + Constants.PAGE_SIZE)
+                    .add("words", text)
+                    .add("endDate", adapter.get(adapter.getItemCount() - 1).getPublishTime().minusSeconds(1).format(Constants.TIME_FORMATTER))
+                    .build()
+                    .run(new NewsNetwork.Callback() {
+                        @Override
+                        public void timeout() { refreshLayout.finishLoadMore(false); }
+
+                        @Override
+                        public void error() { refreshLayout.finishLoadMore(false); }
+
+                        @Override
+                        public void ok(List<News> data) {
+                            if (data.isEmpty()) {
+                                refreshLayout.finishLoadMoreWithNoMoreData();
+                            } else {
+                                adapter.add(data);
+                                refreshLayout.finishLoadMore();
+                            }
+                        }
+                    });
             }
         };
-        loadMore.run();
+
+        final Runnable refresh = new Runnable() {
+            @Override
+            public void run() {
+                new NewsNetwork.Builder()
+                    .add("size", "" + Constants.PAGE_SIZE)
+                    .add("words", text)
+                    .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
+                    .build()
+                    .run(new NewsNetwork.Callback() {
+                        @Override
+                        public void timeout() { refreshLayout.finishRefresh(false); }
+
+                        @Override
+                        public void error() { refreshLayout.finishRefresh(false); }
+
+                        @Override
+                        public void ok(List<News> data) {
+                            adapter.clear();
+                            adapter.add(data);
+                            refreshLayout.finishRefresh();
+                        }
+                    });
+            }
+        };
+
+        refresh.run();
         refreshLayout.setEnableLoadMoreWhenContentNotFull(false);
         refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull final RefreshLayout refreshLayout) {
-                refreshLayout.getLayout().postDelayed(loadMore, 500);
+                refreshLayout.getLayout().post(loadMore);
             }
 
             @Override
             public void onRefresh(@NonNull final RefreshLayout refreshLayout) {
-                refreshLayout.finishRefresh(500);
+                refreshLayout.getLayout().post(refresh);
             }
         });
     }
