@@ -20,6 +20,7 @@ public class IndexTabFragment extends BasicFragment {
     RefreshLayout refreshLayout;
     private NewsAdapter adapter;
     private String category;
+    private String word;
 
     IndexTabFragment(String category) {
         this.category = category;
@@ -41,17 +42,20 @@ public class IndexTabFragment extends BasicFragment {
     }
 
     void initData() {
-        if (category.equals(getResources().getString(R.string.recommend)))
-            this.category = "香港";
+        if (category.equals(getResources().getString(R.string.recommend))) {
+            this.word = "香港";
+            this.category = "";
+        } else {
+            this.word = "";
+        }
 
         final Runnable loadMore = new Runnable() {
-            LocalDateTime end_time = LocalDateTime.now();
-
             @Override
             public void run() {
                 new NewsNetwork.Builder()
                     .add("size", "" + Constants.PAGE_SIZE)
-                    .add("words", category)
+                    .add("words", word)
+                    .add("categories", category)
                     .add("endDate", adapter.get(adapter.getItemCount() - 1).getPublishTime().minusSeconds(1).format(Constants.TIME_FORMATTER))
                     .build()
                     .run(new NewsNetwork.Callback() {
@@ -83,7 +87,8 @@ public class IndexTabFragment extends BasicFragment {
             public void run() {
                 new NewsNetwork.Builder()
                     .add("size", "" + Constants.PAGE_SIZE)
-                    .add("words", category)
+                    .add("words", word)
+                    .add("categories", category)
                     .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
                     .build()
                     .run(new NewsNetwork.Callback() {
