@@ -256,9 +256,12 @@ public class ShareUtil {
          * @return Builder
          */
         public Builder setTextContent(String textContent, int maxlen) {
-            if (maxlen > textContent.length())
+            if (maxlen > textContent.length()) {
                 maxlen = textContent.length();
-            this.textContent = textContent.substring(0, maxlen);
+                this.textContent = textContent.substring(0, maxlen);
+            } else {
+                this.textContent = textContent.substring(0, maxlen) + "……";
+            }
             return this;
         }
 
