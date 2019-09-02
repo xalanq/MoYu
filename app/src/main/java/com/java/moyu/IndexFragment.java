@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -19,6 +20,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 
 /**
@@ -30,11 +35,12 @@ public class IndexFragment extends BasicFragment {
     EditText searchBox;
     @BindView(R.id.index_tab_layout)
     TabLayout tabLayout;
-    @BindView(R.id.refresh_layout)
-    RefreshLayout refreshLayout;
+    @BindView(R.id.index_pager)
+    ViewPager viewPager;
     @BindView(R.id.index_more_button)
     ImageButton btnMore;
-    private NewsAdapter adapter;
+
+    private PagerAdapter pagerAdapter;
 
     @Override
     protected int getLayoutResource() {
@@ -72,10 +78,9 @@ public class IndexFragment extends BasicFragment {
             }
         });
 
-        adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout),
-            NewsAdapter.defaultOnclick(getActivity()));
+        tabLayout.setupWithViewPager(viewPager);
 
-        initData();
+        updateTab();
     }
 
     @Override
@@ -94,60 +99,36 @@ public class IndexFragment extends BasicFragment {
 
     void updateTab() {
         List<String> tabs = NewsDatabase.getInstance().queryCategory(1);
-        tabLayout.removeAllTabs();
-        tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.recommend)));
-        for (String tab : tabs)
-            tabLayout.addTab(tabLayout.newTab().setText(tab));
+        pagerAdapter = new PagerAdapter(getChildFragmentManager(), tabs);
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.setOffscreenPageLimit(tabs.size() - 1);
     }
 
-    void initData() {
-        updateTab();
-        final Runnable loadMore = new Runnable() {
-            LocalDateTime end_time = LocalDateTime.now();
+    class PagerAdapter extends FragmentPagerAdapter {
+        List<String> tabs;
 
-            @Override
-            public void run() {
-                new NewsNetwork.Builder()
-                    .add("size", "" + Constants.PAGE_SIZE)
-                    .add("words", "香港")
-                    .add("endDate", end_time.format(Constants.TIME_FORMATTER))
-                    .build()
-                    .run(new NewsNetwork.Callback() {
-                        @Override
-                        public void timeout() {
-                            refreshLayout.finishLoadMore(false);
-                        }
+        PagerAdapter(FragmentManager fm, List<String> tabs) {
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+            this.tabs = tabs;
+        }
 
-                        @Override
-                        public void error() {
-                            refreshLayout.finishLoadMore(false);
-                        }
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return new IndexTabFragment(tabs.get(position));
+        }
 
-                        @Override
-                        public void ok(List<News> data) {
-                            if (data.isEmpty()) {
-                                refreshLayout.finishLoadMoreWithNoMoreData();
-                            } else {
-                                end_time = data.get(data.size() - 1).getPublishTime().minusSeconds(1);
-                                adapter.add(data);
-                                refreshLayout.finishLoadMore();
-                            }
-                        }
-                    });
-            }
-        };
-        loadMore.run();
-        refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
-            @Override
-            public void onLoadMore(@NonNull final RefreshLayout refreshLayout) {
-                refreshLayout.getLayout().post(loadMore);
-            }
+        @Override
+        public int getCount() {
+            return tabs.size();
+        }
 
-            @Override
-            public void onRefresh(@NonNull final RefreshLayout refreshLayout) {
-                refreshLayout.finishRefresh(500);
-            }
-        });
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return tabs.get(position);
+        }
+
     }
 
 }

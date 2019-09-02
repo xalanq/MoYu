@@ -71,6 +71,10 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/news_layout"/>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/index_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
