@@ -52,6 +52,8 @@ public class CategoryActivity extends BasicActivity {
             public void click(Chip chip, int position) {
                 currentAdapter.add(remainAdapter.get(position));
                 remainAdapter.remove(position);
+                hasEdited = true;
+                NewsDatabase.getInstance().updateCategory(currentAdapter.getData(), remainAdapter.getData());
             }
 
             @Override
