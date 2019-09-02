@@ -73,6 +73,7 @@ public class HistoryFragment extends BasicFragment {
             }
         };
         loadMore.run();
+        refreshLayout.resetNoMoreData();
         refreshLayout.setEnableRefresh(false);
         refreshLayout.setEnableLoadMoreWhenContentNotFull(false);
         refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
