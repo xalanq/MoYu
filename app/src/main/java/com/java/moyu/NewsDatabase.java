@@ -38,10 +38,18 @@ public class NewsDatabase extends SQLiteOpenHelper {
         ")";
     private final String DROP_NEWS = "drop table " + TABLE_NAME_NEWS;
     private String TAG = "NewsDatabase";
+    private static NewsDatabase instance;
 
-    public NewsDatabase(Context context) {
+    private NewsDatabase(Context context) {
         super(context, Constants.DB_NAME, null, Constants.DB_VERSION);
         Log.d(TAG, "-------> NewsDatabase");
+    }
+
+    public static NewsDatabase getInstance() {
+        if (instance == null) {
+            instance = new NewsDatabase(BasicApplication.getContext());
+        }
+        return instance;
     }
 
     @Override
@@ -80,6 +88,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
 
     /**
      * @param news_id
+     * @param time
      * @return conflicted or not
      */
     public boolean addFavour(String news_id, LocalDateTime time) {

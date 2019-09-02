@@ -2,6 +2,9 @@ package com.java.moyu;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +38,26 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         data = new ArrayList<>();
         this.onClick = onClick;
         this.context = context.getApplicationContext();
+    }
+
+    static OnClick defaultOnclick(final Activity activity) {
+        return new OnClick() {
+            @Override
+            public void click(final News news) {
+                Intent intent = new Intent(activity, NewsActivity.class);
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        NewsDatabase db = NewsDatabase.getInstance();
+                        db.addNews(news);
+                        db.addHistory(news.id, LocalDateTime.now());
+                    }
+                });
+                intent.putExtra("news", news.toJSONObject().toString());
+                activity.startActivity(intent);
+                activity.overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);
+            }
+        };
     }
 
     static NewsAdapter newAdapter(final Context context, View view, OnClick onClick) {
@@ -146,7 +170,7 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_card_video, parent, false);
         }
-        return new ViewHolder(view, onClick);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -156,6 +180,7 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         holder.title.setText(d.title);
         holder.publisher.setText(d.publisher);
         holder.publishTime.setText(Util.parseTime(d.publishTime));
+        holder.setOnClick(onClick, d);
         if (viewType == SINGLE) {
             Glide.with(context).load(d.image[0])
                 .placeholder(R.drawable.loading_cover)
@@ -187,7 +212,7 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     public interface OnClick {
 
-        void click(View view, int position);
+        void click(News news);
 
     }
 
@@ -200,13 +225,16 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         @BindView(R.id.publish_time)
         TextView publishTime;
 
-        ViewHolder(View itemView, final OnClick onClick) {
+        ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+
+        void setOnClick(final OnClick onClick, final News news) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onClick.click(view, getAdapterPosition());
+                    onClick.click(news);
                 }
             });
         }

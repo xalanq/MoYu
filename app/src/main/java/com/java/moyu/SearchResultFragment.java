@@ -30,12 +30,8 @@ public class SearchResultFragment extends BasicFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout), new NewsAdapter.OnClick() {
-            @Override
-            public void click(View view, int position) {
-                Toast.makeText(getContext(), "click result news", Toast.LENGTH_SHORT).show();
-            }
-        });
+        adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout),
+            NewsAdapter.defaultOnclick(getActivity()));
 
         test();
     }

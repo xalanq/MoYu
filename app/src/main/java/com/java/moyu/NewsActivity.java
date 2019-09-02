@@ -2,6 +2,7 @@ package com.java.moyu;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -14,6 +15,8 @@ import com.billy.android.swipe.SwipeConsumer;
 import com.billy.android.swipe.consumer.ActivitySlidingBackConsumer;
 
 import org.json.JSONObject;
+
+import java.time.LocalDateTime;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -133,7 +136,12 @@ public class NewsActivity extends VideoActivity {
     }
 
     void clickStar(MenuItem item) {
-        Toast.makeText(this, "你点击了收藏", Toast.LENGTH_SHORT).show();
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                NewsDatabase.getInstance().addFavour(news.id, LocalDateTime.now());
+            }
+        });
         if (isStarred)
             item.setIcon(R.drawable.ic_star_light);
         else

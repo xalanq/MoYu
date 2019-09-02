@@ -17,6 +17,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:fitsSystemWindows="true"
+            app:layout_scrollFlags="scroll|snap|enterAlways"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
             <TextView

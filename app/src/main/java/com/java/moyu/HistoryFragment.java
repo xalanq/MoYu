@@ -45,24 +45,19 @@ public class HistoryFragment extends BasicFragment {
 
         a.getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout), new NewsAdapter.OnClick() {
-            @Override
-            public void click(View view, int position) {
-                Toast.makeText(getContext(), "click history news", Toast.LENGTH_SHORT).show();
-            }
-        });
+        adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout),
+            NewsAdapter.defaultOnclick(getActivity()));
 
-        test();
+        initData();
     }
 
-    private void test() {
-        final NewsDatabase db = new NewsDatabase(getActivity());
+    private void initData() {
         final Runnable loadMore = new Runnable() {
             int offset;
 
             @Override
             public void run() {
-                List<News> data = db.queryHistory(this.offset, Constants.PAGE_SIZE);
+                List<News> data = NewsDatabase.getInstance().queryHistory(this.offset, Constants.PAGE_SIZE);
                 if (data.isEmpty()) {
                     refreshLayout.finishLoadMoreWithNoMoreData();
                 } else {

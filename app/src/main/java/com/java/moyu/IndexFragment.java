@@ -6,6 +6,7 @@ import android.os.StrictMode;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -71,15 +72,8 @@ public class IndexFragment extends BasicFragment {
             }
         });
 
-        adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout), new NewsAdapter.OnClick() {
-            @Override
-            public void click(View view, int position) {
-                Intent intent = new Intent(getActivity(), NewsActivity.class);
-                intent.putExtra("news", adapter.get(position).toJSONObject().toString());
-                startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);
-            }
-        });
+        adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout),
+            NewsAdapter.defaultOnclick(getActivity()));
 
         initData();
     }
@@ -94,7 +88,6 @@ public class IndexFragment extends BasicFragment {
 
             @Override
             public void run() {
-                final NewsDatabase db = new NewsDatabase(getActivity());
                 new NewsNetwork.Builder()
                     .add("size", "" + Constants.PAGE_SIZE)
                     .add("words", "香港")
@@ -103,11 +96,12 @@ public class IndexFragment extends BasicFragment {
                     .run(new NewsNetwork.Callback() {
                         @Override
                         public void timeout() {
-
+                            refreshLayout.finishLoadMore(false);
                         }
 
                         @Override
                         public void error() {
+                            refreshLayout.finishLoadMore(false);
                         }
 
                         @Override
@@ -116,8 +110,6 @@ public class IndexFragment extends BasicFragment {
                                 refreshLayout.finishLoadMoreWithNoMoreData();
                             } else {
                                 end_time = data.get(data.size() - 1).getPublishTime().minusSeconds(1);
-                                for (News news : data)
-                                    db.addNews(news);
                                 adapter.add(data);
                                 refreshLayout.finishLoadMore();
                             }
