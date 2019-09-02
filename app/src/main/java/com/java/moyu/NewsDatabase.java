@@ -22,6 +22,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
     private final String TABLE_NAME_HISTORY = "history";
     private final String TABLE_NAME_CATEGORY = "category";
     private final String TABLE_NAME_SEARCH = "search";
+    private final String TABLE_NAME_USER = "user";
 
     private final String VALUE_ID = "_id";
     private final String VALUE_NEWS_ID = "news_id";
@@ -34,6 +35,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
     private final String VALUE_NAME = "name";
     private final String VALUE_CHOSEN = "chosen";
     private final String VALUE_KEYWORD = "keyword";
+    private final String VALUE_TOKEN = "token";
 
     private final String CREATE_NEWS = "create table " + TABLE_NAME_NEWS + "(" +
         VALUE_ID + " integer primary key," +
@@ -52,6 +54,10 @@ public class NewsDatabase extends SQLiteOpenHelper {
     private final String CREATE_SEARCH = "create table " + TABLE_NAME_SEARCH + "(" +
         VALUE_ID + " integer primary key," +
         VALUE_KEYWORD + " text not null" +
+        ")";
+    private final String CREATE_USER = "create table " + TABLE_NAME_USER + "(" +
+        VALUE_ID + " integer primary key," +
+        VALUE_TOKEN + " text not null" +
         ")";
     private final String DROP_NEWS = "drop table " + TABLE_NAME_NEWS;
     private final String DROP_FAVOUR = "drop table " + TABLE_NAME_FAVOUR;
@@ -76,6 +82,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
         db.execSQL(CREATE_NEWS);
         db.execSQL(CREATE_CATEGORY);
         db.execSQL(CREATE_SEARCH);
+//        db.execSQL(CREATE_USER);
         for (String str: Constants.category) {
             ContentValues values = new ContentValues();
             values.put(VALUE_NAME, str);
@@ -106,6 +113,8 @@ public class NewsDatabase extends SQLiteOpenHelper {
                 }
             case 5:
                 db.execSQL(CREATE_SEARCH);
+//            case 6:
+//                db.execSQL(CREATE_USER);
             }
         }
     }
