@@ -62,7 +62,7 @@ public class HistoryFragment extends BasicFragment {
 
             @Override
             public void run() {
-                List<News> data = NewsDatabase.getInstance().queryHistory(this.offset, Constants.PAGE_SIZE);
+                List<News> data = NewsDatabase.getInstance().queryHistoryList(this.offset, Constants.PAGE_SIZE);
                 if (data.isEmpty()) {
                     refreshLayout.finishLoadMoreWithNoMoreData();
                 } else {
