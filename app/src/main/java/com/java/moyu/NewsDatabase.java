@@ -336,7 +336,11 @@ public class NewsDatabase extends SQLiteOpenHelper {
         return list;
     }
 
-    public void delSearchHistory() {
+    public void delSearchHistory(String keyword) {
+        getWritableDatabase().delete(TABLE_NAME_SEARCH, VALUE_KEYWORD, new String[]{keyword});
+    }
+
+    public void delAllSearchHistory() {
         getWritableDatabase().delete(TABLE_NAME_SEARCH, null, null);
     }
 

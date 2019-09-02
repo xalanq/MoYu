@@ -61,7 +61,9 @@ public class SearchIndexFragment extends BasicFragment {
             }
 
             @Override
-            public void close(Chip chip, int position) {
+            public void close(Chip chip, int position)
+            {
+                NewsDatabase.getInstance().delSearchHistory(historyAdapter.get(position));
                 historyAdapter.remove(position);
             }
         });
@@ -86,6 +88,7 @@ public class SearchIndexFragment extends BasicFragment {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             historyAdapter.clear();
+                            NewsDatabase.getInstance().delAllSearchHistory();
                         }
                     })
                     .setNegativeButton(getResources().getText(R.string.no), new DialogInterface.OnClickListener() {
