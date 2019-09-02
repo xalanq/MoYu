@@ -128,7 +128,6 @@ public class IndexFragment extends BasicFragment {
                             if (data.isEmpty()) {
                                 refreshLayout.finishLoadMoreWithNoMoreData();
                             } else {
-                                end_time = data.get(data.size() - 1).getPublishTime().minusSeconds(1);
                                 adapter.add(data);
                                 refreshLayout.finishLoadMore();
                             }
@@ -136,7 +135,38 @@ public class IndexFragment extends BasicFragment {
                     });
             }
         };
-        loadMore.run();
+
+        final Runnable refresh = new Runnable() {
+            @Override
+            public void run() {
+                new NewsNetwork.Builder()
+                    .add("size", "" + Constants.PAGE_SIZE)
+                    .add("words", adapter.getWord())
+                    .add("categories", adapter.getCategory())
+                    .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
+                    .build()
+                    .run(new NewsNetwork.Callback() {
+                        @Override
+                        public void timeout() {
+                            refreshLayout.finishRefresh(false);
+                        }
+
+                        @Override
+                        public void error() {
+                            refreshLayout.finishRefresh(false);
+                        }
+
+                        @Override
+                        public void ok(List<News> data) {
+                            adapter.clear();
+                            adapter.add(data);
+                            refreshLayout.finishRefresh();
+                        }
+                    });
+            }
+        };
+
+        refresh.run();
         refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull final RefreshLayout refreshLayout) {
@@ -145,7 +175,7 @@ public class IndexFragment extends BasicFragment {
 
             @Override
             public void onRefresh(@NonNull final RefreshLayout refreshLayout) {
-                refreshLayout.finishRefresh(500);
+                refreshLayout.getLayout().post(refresh);
             }
         });
     }
