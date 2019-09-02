@@ -3,7 +3,6 @@ package com.java.moyu;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,14 +43,14 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             @Override
             public void click(final News news) {
                 Intent intent = new Intent(activity, NewsActivity.class);
-                new Handler().post(new Runnable() {
+                new Thread(new Runnable() {
                     @Override
                     public void run() {
                         NewsDatabase db = NewsDatabase.getInstance();
                         db.addNews(news);
                         db.addHistory(news.id, LocalDateTime.now());
                     }
-                });
+                }).start();
                 intent.putExtra("news", news.toJSONObject().toString());
                 activity.startActivity(intent);
                 activity.overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);

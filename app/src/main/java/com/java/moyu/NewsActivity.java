@@ -2,7 +2,6 @@ package com.java.moyu;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -92,45 +91,45 @@ public class NewsActivity extends VideoActivity {
         });
 
         initData();
-
-        getSupportActionBar().setTitle(news.publisher);
-        if (news.image != null) {
-            GalleryLayoutManager layoutManager = new GalleryLayoutManager(GalleryLayoutManager.HORIZONTAL);
-            layoutManager.attach(galleryView, 0);
-            layoutManager.setItemTransformer(new GalleryLayoutManager.ItemTransformer() {
-                @Override
-                public void transformItem(GalleryLayoutManager layoutManager, View item, float fraction) {
-                    item.setPivotX(item.getWidth() / 2.f);
-                    item.setPivotY(item.getHeight() / 2.0f);
-                    float scale = 1 - 0.3f * Math.abs(fraction);
-                    item.setScaleX(scale);
-                    item.setScaleY(scale);
-                }
-            });
-            ImageAdapter adapter = new ImageAdapter(this, news.image);
-            galleryView.setAdapter(adapter);
-        } else {
-            galleryLayout.setVisibility(View.GONE);
-        }
-        if (news.image == null || news.image.length == 1) {
-            galleryHintView.setVisibility(View.GONE);
-        }
-        if (news.video != null && !news.video.isEmpty()) {
-            player.setup(this, news.video, news.title, 0);
-        } else {
-            videoLayout.setVisibility(View.GONE);
-        }
-        titleView.setText(news.title);
-        contentView.setText(news.content);
-        publisherView.setText(news.publisher);
-        publishTimeView.setText(Util.parseTime(news.publishTime));
-        categoryView.setText(news.category);
     }
 
     private void initData() {
         try {
             news = new News(new JSONObject(getIntent().getExtras().getString("news")));
             isStarred = NewsDatabase.getInstance().queryFavour(news.id);
+
+            getSupportActionBar().setTitle(news.publisher);
+            if (news.image != null) {
+                GalleryLayoutManager layoutManager = new GalleryLayoutManager(GalleryLayoutManager.HORIZONTAL);
+                layoutManager.attach(galleryView, 0);
+                layoutManager.setItemTransformer(new GalleryLayoutManager.ItemTransformer() {
+                    @Override
+                    public void transformItem(GalleryLayoutManager layoutManager, View item, float fraction) {
+                        item.setPivotX(item.getWidth() / 2.f);
+                        item.setPivotY(item.getHeight() / 2.0f);
+                        float scale = 1 - 0.3f * Math.abs(fraction);
+                        item.setScaleX(scale);
+                        item.setScaleY(scale);
+                    }
+                });
+                ImageAdapter adapter = new ImageAdapter(this, news.image);
+                galleryView.setAdapter(adapter);
+            } else {
+                galleryLayout.setVisibility(View.GONE);
+            }
+            if (news.image == null || news.image.length == 1) {
+                galleryHintView.setVisibility(View.GONE);
+            }
+            if (news.video != null && !news.video.isEmpty()) {
+                player.setup(this, news.video, news.title, 0);
+            } else {
+                videoLayout.setVisibility(View.GONE);
+            }
+            titleView.setText(news.title);
+            contentView.setText(news.content);
+            publisherView.setText(news.publisher);
+            publishTimeView.setText(Util.parseTime(news.publishTime));
+            categoryView.setText(news.category);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -140,20 +139,20 @@ public class NewsActivity extends VideoActivity {
 
         isStarred = !isStarred;
         if (isStarred) {
-            new Handler().post(new Runnable() {
+            new Thread(new Runnable() {
                 @Override
                 public void run() {
                     NewsDatabase.getInstance().addFavour(news.id, LocalDateTime.now());
                 }
-            });
+            }).start();
             item.setIcon(R.drawable.ic_starred);
         } else {
-            new Handler().post(new Runnable() {
+            new Thread(new Runnable() {
                 @Override
                 public void run() {
                     NewsDatabase.getInstance().delFavour(news.id);
                 }
-            });
+            }).start();
             item.setIcon(R.drawable.ic_star_light);
         }
     }

@@ -81,7 +81,6 @@ public class IndexFragment extends BasicFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             if (data.getBooleanExtra("hasEdited", false)) {
                 updateTab();
@@ -90,14 +89,16 @@ public class IndexFragment extends BasicFragment {
             if (position != -1) {
                 tabLayout.getTabAt(position + 1).select();
             }
+            return;
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     void updateTab() {
         List<String> tabs = NewsDatabase.getInstance().queryCategory(1);
         pagerAdapter = new PagerAdapter(getChildFragmentManager(), tabs);
         viewPager.setAdapter(pagerAdapter);
-        viewPager.setOffscreenPageLimit(tabs.size() - 1);
+        viewPager.setOffscreenPageLimit(2);
     }
 
     class PagerAdapter extends FragmentPagerAdapter {

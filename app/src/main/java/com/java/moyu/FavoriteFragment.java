@@ -2,9 +2,11 @@ package com.java.moyu;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
-import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
+import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 
 import java.util.List;
 
@@ -20,11 +22,14 @@ import butterknife.BindView;
 public class FavoriteFragment extends BasicFragment {
 
     @BindView(R.id.refresh_layout)
-    RefreshLayout refreshLayout;
+    SmartRefreshLayout refreshLayout;
+    @BindView(R.id.loading_layout)
+    LinearLayout loadingLayout;
     @BindView(R.id.favorite_toolbar)
     Toolbar toolbar;
 
     private NewsAdapter adapter;
+    private int offset;
 
     @Override
     protected int getLayoutResource() {
@@ -50,40 +55,35 @@ public class FavoriteFragment extends BasicFragment {
         initData();
     }
 
+    void loadMore(boolean first) {
+        if (first)
+            offset = 0;
+        List<News> data = NewsDatabase.getInstance().queryFavourList(offset, Constants.PAGE_SIZE);
+        if (data.isEmpty()) {
+            refreshLayout.finishLoadMoreWithNoMoreData();
+        } else {
+            offset += data.size();
+            adapter.add(data);
+            refreshLayout.finishLoadMore();
+        }
+        if (first) {
+            loadingLayout.setVisibility(View.GONE);
+            refreshLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
     void initData() {
         if (adapter == null)
             return;
-
         adapter.clear();
-
-        final Runnable loadMore = new Runnable() {
-            int offset;
-
-            @Override
-            public void run() {
-                List<News> data = NewsDatabase.getInstance().queryFavourList(this.offset, Constants.PAGE_SIZE);
-                if (data.isEmpty()) {
-                    refreshLayout.finishLoadMoreWithNoMoreData();
-                } else {
-                    this.offset += data.size();
-                    adapter.add(data);
-                    refreshLayout.finishLoadMore();
-                }
-            }
-        };
-        loadMore.run();
+        loadMore(true);
         refreshLayout.resetNoMoreData();
         refreshLayout.setEnableRefresh(false);
         refreshLayout.setEnableLoadMoreWhenContentNotFull(false);
-        refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
-            public void onLoadMore(@NonNull final RefreshLayout refreshLayout) {
-                refreshLayout.getLayout().postDelayed(loadMore, 500);
-            }
-
-            @Override
-            public void onRefresh(@NonNull final RefreshLayout refreshLayout) {
-                refreshLayout.finishRefresh(500);
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                loadMore(false);
             }
         });
     }
