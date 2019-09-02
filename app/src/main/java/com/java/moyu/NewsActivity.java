@@ -13,9 +13,7 @@ import com.billy.android.swipe.SmartSwipe;
 import com.billy.android.swipe.SwipeConsumer;
 import com.billy.android.swipe.consumer.ActivitySlidingBackConsumer;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import org.json.JSONObject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -91,7 +89,7 @@ public class NewsActivity extends VideoActivity {
             }
         });
 
-        test();
+        initData();
 
         getSupportActionBar().setTitle(news.publisher);
         if (news.image != null) {
@@ -120,25 +118,18 @@ public class NewsActivity extends VideoActivity {
         } else {
             videoLayout.setVisibility(View.GONE);
         }
+        titleView.setText(news.title);
         contentView.setText(news.content);
         publisherView.setText(news.publisher);
         publishTimeView.setText(Util.parseTime(news.publishTime));
         categoryView.setText(news.category);
     }
 
-    void test() {
-        news = new News();
-        news.title = "这是标题呀，啥也没有";
-        news.publisher = "新华社";
-        news.category = "科技";
-        news.publishTime = LocalDateTime.now();
-        news.content = "这是新闻的内容，不知道写点啥就凑一下字数";
-        news.image = new String[] {
-            "http://5b0988e595225.cdn.sohucs.com/images/20190830/f655aaf1c880485585b93cea32a69381.jpeg",
-            "http://5b0988e595225.cdn.sohucs.com/images/20190830/711c0c66a12b48eca42baac81d5a7439.jpeg",
-            "http://5b0988e595225.cdn.sohucs.com/images/20190830/92f731d619454418b1efda327d7590b9.jpeg",
-        };
-        news.video = "https://www.w3schools.com/html/movie.mp4";
+    private void initData() {
+        try {
+            news = new News(new JSONObject(getIntent().getExtras().getString("news")));
+        } catch (Exception e) {
+        }
     }
 
     void clickStar(MenuItem item) {

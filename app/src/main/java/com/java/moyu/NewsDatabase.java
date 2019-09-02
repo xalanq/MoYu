@@ -15,36 +15,32 @@ import java.util.List;
 
 public class NewsDatabase extends SQLiteOpenHelper {
 
-    private String TAG = "NewsDatabase";
-
     private final String TABLE_NAME_NEWS = "news";
     private final String TABLE_NAME_FAVOUR = "favour";
     private final String TABLE_NAME_HISTORY = "history";
-
     private final String VALUE_ID = "_id";
     private final String VALUE_NEWS_ID = "news_id";
     private final String VALUE_DATA = "data";
     private final String VALUE_TIME = "time";
-
     private final String CREATE_NEWS = "create table " + TABLE_NAME_NEWS + "(" +
         VALUE_NEWS_ID + " text primary key," +
-        VALUE_DATA    + " text not null" +
+        VALUE_DATA + " text not null" +
         ")";
     private final String CREATE_FAVOUR = "create table " + TABLE_NAME_FAVOUR + "(" +
-        VALUE_ID      + " integer primary key," +
+        VALUE_ID + " integer primary key," +
         VALUE_NEWS_ID + " text not null unique," +
-        VALUE_TIME    + " text not null" +
+        VALUE_TIME + " text not null" +
         ")";
     private final String CREATE_HISTORY = "create table " + TABLE_NAME_HISTORY + "(" +
-        VALUE_ID      + " integer primary key," +
+        VALUE_ID + " integer primary key," +
         VALUE_NEWS_ID + " text not null unique," +
-        VALUE_TIME    + " text not null" +
+        VALUE_TIME + " text not null" +
         ")";
+    private final String DROP_NEWS = "drop table " + TABLE_NAME_NEWS;
+    private String TAG = "NewsDatabase";
 
-    private final String DROP_NEWS  = "drop table " + TABLE_NAME_NEWS;
-
-    public NewsDatabase(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public NewsDatabase(Context context) {
+        super(context, Constants.DB_NAME, null, Constants.DB_VERSION);
         Log.d(TAG, "-------> NewsDatabase");
     }
 
@@ -61,20 +57,19 @@ public class NewsDatabase extends SQLiteOpenHelper {
         Log.d(TAG, "-------> onUpgrade" + "  oldVersion = " + oldVersion + "   newVersion = " + newVersion);
         if (oldVersion != newVersion) {
             switch (newVersion) {
-                case 2:
-                    db.execSQL(CREATE_FAVOUR);
-                    db.execSQL(CREATE_HISTORY);
-                    break;
+            case 2:
+                db.execSQL(CREATE_FAVOUR);
+                db.execSQL(CREATE_HISTORY);
+                break;
             }
         }
     }
 
     /**
-     * @param   news
-     * @return  successful or not
+     * @param news
+     * @return successful or not
      */
-    public boolean addNews(News news)
-    {
+    public boolean addNews(News news) {
         ContentValues values = new ContentValues();
         values.put(VALUE_NEWS_ID, news.getID());
         values.put(VALUE_DATA, news.toJSONObject().toString());
@@ -84,11 +79,10 @@ public class NewsDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * @param   news_id
-     * @return  conflicted or not
+     * @param news_id
+     * @return conflicted or not
      */
-    public boolean addFavour(String news_id, LocalDateTime time)
-    {
+    public boolean addFavour(String news_id, LocalDateTime time) {
         ContentValues values = new ContentValues();
         values.put(VALUE_NEWS_ID, news_id);
         values.put(VALUE_TIME, time.format(Constants.dataFormatter));
@@ -98,12 +92,11 @@ public class NewsDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * @param   news_id
-     * @param   time
-     * @return  conflicted or not
+     * @param news_id
+     * @param time
+     * @return conflicted or not
      */
-    public boolean addHistory(String news_id, LocalDateTime time)
-    {
+    public boolean addHistory(String news_id, LocalDateTime time) {
         ContentValues values = new ContentValues();
         values.put(VALUE_NEWS_ID, news_id);
         values.put(VALUE_TIME, time.format(Constants.dataFormatter));

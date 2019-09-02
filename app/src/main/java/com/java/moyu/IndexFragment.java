@@ -11,17 +11,8 @@ import com.google.android.material.tabs.TabLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -83,93 +74,62 @@ public class IndexFragment extends BasicFragment {
         adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout), new NewsAdapter.OnClick() {
             @Override
             public void click(View view, int position) {
-                startActivity(new Intent(getActivity(), NewsActivity.class));
+                Intent intent = new Intent(getActivity(), NewsActivity.class);
+                intent.putExtra("news", adapter.get(position).toJSONObject().toString());
+                startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);
             }
         });
 
-        test();
+        initData();
     }
 
-    private void test() {
+    private void initData() {
         String[] tabs = {"推荐", "国内", "国际", "军事", "体育", "娱乐", "游戏"};
         for (String tab : tabs) {
             tabLayout.addTab(tabLayout.newTab().setText(tab));
         }
         final Runnable loadMore = new Runnable() {
             LocalDateTime end_time = LocalDateTime.now();
+
             @Override
             public void run() {
-                NewsDatabase db = new NewsDatabase(getActivity(), Constants.DB_NAME, null, Constants.DB_VERSION);
-                String requestUrl = "https://api2.newsminer.net/svc/news/queryNewsList";
-//                Map params = new HashMap();
-//                params.put("size", "1");
-//                params.put("words", "野熊");
-//                params.put("startDate", "2018-08-15");
-//                params.put("endDate", "2018-08-21");
-//                String string = NetConnection.httpRequest(requestUrl, params);
-//                try {
-//                    JSONObject jsonData = new JSONObject(string);
-//                    JSONArray allNewsData = jsonData.getJSONArray("data");
-//                    List<News> data = new ArrayList<>();
-//                    for (int i = 0; i < allNewsData.length(); ++i) {
-//                        JSONObject newsData = allNewsData.getJSONObject(i);
-//                        News news = new News(newsData);
-//                        data.add(news);
-//                        if (db.addNews(news) == false)
-//                            Log.d("IndexFragment","addNews Fail");
-//                    }
-//                    adapter.add(data);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                params = new HashMap();
-//                params.put("size", "20");
-//                params.put("words", "香港");
-//                params.put("endDate", LocalDateTime.now().format(Constants.dataFormatter));
-//                string = NetConnection.httpRequest(requestUrl, params);
-                Map params = new HashMap();
-                params.put("size", "10");
-                params.put("words", "香港");
-                params.put("endDate", end_time.format(Constants.dataFormatter));
-                String string = NetConnection.httpRequest(requestUrl, params);
-                try {
-                    JSONObject jsonData = new JSONObject(string);
-                    JSONArray allNewsData = jsonData.getJSONArray("data");
-                    List<News> data = new ArrayList<>();
-                    int l = 10;
-                    if (allNewsData.length() < l)
-                        l = allNewsData.length();
-                    for (int i = 0; i < l; ++i) {
-                        JSONObject newsData = allNewsData.getJSONObject(i);
-                        News news = new News(newsData);
-                        if (i + 1 == l) end_time = news.getPublishTime().minusSeconds(1);
-                        db.addNews(news);
-                        data.add(news);
-                        if (db.addNews(news) == false) {
-                            Log.d("IndexFragment", "addNews Fail");
-                        }
-                        if (db.addFavour(news.getID(), LocalDateTime.now()) == false) {
-                            Log.d("IndexFragment", "addFavour Fail");
-                        }
-                        if (db.addHistory(news.getID(), LocalDateTime.now()) == false) {
-                            Log.d("IndexFragment", "addHistory Fail");
-                        }
-                    }
-                    adapter.add(data);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                final NewsDatabase db = new NewsDatabase(getActivity());
+                new NewsNetwork.Builder()
+                    .add("size", "" + Constants.PAGE_SIZE)
+                    .add("words", "香港")
+                    .add("endDate", end_time.format(Constants.dataFormatter))
+                    .build()
+                    .run(new NewsNetwork.Callback() {
+                        @Override
+                        public void timeout() {
 
-                refreshLayout.finishLoadMore();
+                        }
+
+                        @Override
+                        public void error() {
+                        }
+
+                        @Override
+                        public void ok(List<News> data) {
+                            if (data.isEmpty()) {
+                                refreshLayout.finishLoadMoreWithNoMoreData();
+                            } else {
+                                end_time = data.get(data.size() - 1).getPublishTime().minusSeconds(1);
+                                for (News news : data)
+                                    db.addNews(news);
+                                adapter.add(data);
+                                refreshLayout.finishLoadMore();
+                            }
+                        }
+                    });
             }
         };
         loadMore.run();
         refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull final RefreshLayout refreshLayout) {
-                refreshLayout.getLayout().postDelayed(loadMore, 500);
+                refreshLayout.getLayout().post(loadMore);
             }
 
             @Override

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -18,79 +17,40 @@ import androidx.annotation.StringDef;
 
 public class ShareUtil {
 
-    @StringDef({ShareContentType.TEXT, ShareContentType.IMAGE,
-        ShareContentType.AUDIO, ShareContentType.VIDEO, ShareContentType.FILE})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface ShareContentType {
-        /**
-         * Share Text
-         */
-        String TEXT = "text/plain";
-
-        /**
-         * Share Image
-         */
-        String IMAGE = "image/*";
-
-        /**
-         * Share Audio
-         */
-        String AUDIO = "audio/*";
-
-        /**
-         * Share Video
-         */
-        String VIDEO = "video/*";
-
-        /**
-         * Share File
-         */
-        String FILE = "*/*";
-    }
-
     private static final String TAG = "ShareUtil";
-
     /**
      * Current activity
      */
     private Activity activity;
-
     /**
      * Share content type
      */
     private @ShareContentType
     String contentType;
-
     /**
      * Share title
      */
     private String title;
-
     /**
      * Share file Uri
      */
     private Uri shareFileUri;
-
     /**
      * Share content text
      */
     private String contentText;
-
     /**
      * Share to special component PackageName
      */
     private String componentPackageName;
-
     /**
      * Share to special component ClassName
      */
     private String componentClassName;
-
     /**
      * Share complete onActivityResult requestCode
      */
     private int requestCode;
-
     /**
      * Forced Use System Chooser
      */
@@ -111,7 +71,7 @@ public class ShareUtil {
     /**
      * shareBySystem
      */
-    public void shareBySystem () {
+    public void shareBySystem() {
         if (checkShareParam()) {
             Intent shareIntent = createShareIntent();
 
@@ -148,19 +108,19 @@ public class ShareUtil {
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         shareIntent.addCategory("android.intent.category.DEFAULT");
 
-        if (!TextUtils.isEmpty(this.componentPackageName) && !TextUtils.isEmpty(componentClassName)){
+        if (!TextUtils.isEmpty(this.componentPackageName) && !TextUtils.isEmpty(componentClassName)) {
             ComponentName comp = new ComponentName(componentPackageName, componentClassName);
             shareIntent.setComponent(comp);
         }
 
         switch (contentType) {
-        case ShareContentType.TEXT :
+        case ShareContentType.TEXT:
             shareIntent.putExtra(Intent.EXTRA_TEXT, contentText);
             shareIntent.setType("text/plain");
             break;
-        case ShareContentType.IMAGE :
-        case ShareContentType.AUDIO :
-        case ShareContentType.VIDEO :
+        case ShareContentType.IMAGE:
+        case ShareContentType.AUDIO:
+        case ShareContentType.VIDEO:
         case ShareContentType.FILE:
             shareIntent.setAction(Intent.ACTION_SEND);
             shareIntent.addCategory("android.intent.category.DEFAULT");
@@ -179,7 +139,6 @@ public class ShareUtil {
 
         return shareIntent;
     }
-
 
     private boolean checkShareParam() {
         if (this.activity == null) {
@@ -207,7 +166,41 @@ public class ShareUtil {
         return true;
     }
 
+
+    @StringDef({ShareContentType.TEXT, ShareContentType.IMAGE,
+        ShareContentType.AUDIO, ShareContentType.VIDEO, ShareContentType.FILE})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ShareContentType {
+
+        /**
+         * Share Text
+         */
+        String TEXT = "text/plain";
+
+        /**
+         * Share Image
+         */
+        String IMAGE = "image/*";
+
+        /**
+         * Share Audio
+         */
+        String AUDIO = "audio/*";
+
+        /**
+         * Share Video
+         */
+        String VIDEO = "video/*";
+
+        /**
+         * Share File
+         */
+        String FILE = "*/*";
+
+    }
+
     public static class Builder {
+
         private Activity activity;
         private @ShareContentType
         String contentType = ShareContentType.FILE;
@@ -225,6 +218,7 @@ public class ShareUtil {
 
         /**
          * Set Content Type
+         *
          * @param contentType {@link ShareContentType}
          * @return Builder
          */
@@ -235,6 +229,7 @@ public class ShareUtil {
 
         /**
          * Set Title
+         *
          * @param title title
          * @return Builder
          */
@@ -245,6 +240,7 @@ public class ShareUtil {
 
         /**
          * Set share file path
+         *
          * @param shareFileUri shareFileUri
          * @return Builder
          */
@@ -255,7 +251,8 @@ public class ShareUtil {
 
         /**
          * Set text content
-         * @param textContent  textContent
+         *
+         * @param textContent textContent
          * @return Builder
          */
         public Builder setTextContent(String textContent, int maxlen) {
@@ -267,8 +264,9 @@ public class ShareUtil {
 
         /**
          * Set Share To Component
+         *
          * @param componentPackageName componentPackageName
-         * @param componentClassName componentPackageName
+         * @param componentClassName   componentPackageName
          * @return Builder
          */
         public Builder setShareToComponent(String componentPackageName, String componentClassName) {
@@ -279,26 +277,29 @@ public class ShareUtil {
 
         /**
          * Set onActivityResult requestCode, default value is -1
+         *
          * @param requestCode requestCode
          * @return Builder
          */
-        public Builder setOnActivityResult (int requestCode) {
+        public Builder setOnActivityResult(int requestCode) {
             this.requestCode = requestCode;
             return this;
         }
 
         /**
          * Forced Use System Chooser To Share
+         *
          * @param enable default is true
          * @return Builder
          */
-        public Builder forcedUseSystemChooser (boolean enable) {
+        public Builder forcedUseSystemChooser(boolean enable) {
             this.forcedUseSystemChooser = enable;
             return this;
         }
 
         /**
          * build
+         *
          * @return ShareUtil
          */
         public ShareUtil build() {
@@ -306,4 +307,5 @@ public class ShareUtil {
         }
 
     }
+
 }
