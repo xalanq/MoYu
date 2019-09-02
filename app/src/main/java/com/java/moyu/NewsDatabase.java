@@ -366,6 +366,10 @@ public class NewsDatabase extends SQLiteOpenHelper {
         getWritableDatabase().insertWithOnConflict(TABLE_NAME_USER, null, null, SQLiteDatabase.CONFLICT_IGNORE);
     }
 
+    public void delToken(String token) {
+        getWritableDatabase().delete(TABLE_NAME_USER, VALUE_TOKEN, new String[]{token});
+    }
+
     final public boolean queryToken(String token) {
         Cursor cursor = getReadableDatabase().query(TABLE_NAME_USER, null, VALUE_TOKEN + " = ? ", new String[]{token}, null, null, null);
         boolean isExist = cursor.getCount() > 0;
