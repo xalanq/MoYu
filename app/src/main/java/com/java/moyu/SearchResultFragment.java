@@ -53,6 +53,7 @@ public class SearchResultFragment extends BasicFragment {
             }
         };
         loadMore.run();
+        refreshLayout.setEnableFooterFollowWhenNoMoreData(false);
         refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull final RefreshLayout refreshLayout) {

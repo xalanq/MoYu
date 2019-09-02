@@ -11,7 +11,7 @@ public class SearchLoadingFragment extends BasicFragment {
 
     @Override
     protected int getLayoutResource() {
-        return R.layout.search_loading_fragment;
+        return R.layout.loading;
     }
 
 }
