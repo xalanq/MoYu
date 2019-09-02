@@ -13,9 +13,6 @@ import com.billy.android.swipe.SwipeConsumer;
 import com.billy.android.swipe.consumer.ActivitySlidingBackConsumer;
 import com.google.android.material.chip.Chip;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.ItemTouchHelper;
