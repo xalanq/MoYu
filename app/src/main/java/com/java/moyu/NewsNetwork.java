@@ -1,6 +1,7 @@
 package com.java.moyu;
 
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -26,45 +27,7 @@ public class NewsNetwork {
     }
 
     public void run(Callback callback) {
-        try {
-            URL url = new URL(this.url);
-            HttpURLConnection httpUrlConn = (HttpURLConnection) url.openConnection();
-            httpUrlConn.setRequestMethod("GET");
-            httpUrlConn.setReadTimeout(10000);
-            httpUrlConn.setConnectTimeout(3000);
-            httpUrlConn.setDoInput(true);
-            httpUrlConn.connect();
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(httpUrlConn.getInputStream(), StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-
-            String str;
-            while ((str = br.readLine()) != null) {
-                sb.append(str);
-                sb.append('\n');
-            }
-            br.close();
-            httpUrlConn.disconnect();
-
-            JSONObject jsonData = new JSONObject(sb.toString());
-            JSONArray allNewsData = jsonData.getJSONArray("data");
-            List<News> data = new ArrayList<>();
-            for (int i = 0; i < allNewsData.length(); ++i) {
-                JSONObject newsData = allNewsData.getJSONObject(i);
-                try {
-                    data.add(new News(newsData));
-                } catch (Exception e) {
-                    Log.e(TAG, e.toString());
-                }
-            }
-            callback.ok(data);
-        } catch (SocketTimeoutException e) {
-            Log.e(TAG, e.toString());
-            callback.timeout();
-        } catch (Exception e) {
-            Log.e(TAG, e.toString());
-            callback.error();
-        }
+        new Task(url, callback).execute();
     }
 
     public interface Callback {
@@ -92,6 +55,90 @@ public class NewsNetwork {
 
         NewsNetwork build() {
             return new NewsNetwork(builder.build().toString());
+        }
+
+    }
+
+    private static class Task extends AsyncTask<Void, Void, Task.Result> {
+
+        String url;
+        Callback callback;
+
+        Task(String url, Callback callback) {
+            this.url = url;
+            this.callback = callback;
+        }
+
+        @Override
+        protected Result doInBackground(Void... voids) {
+            try {
+                URL url = new URL(this.url);
+                HttpURLConnection httpUrlConn = (HttpURLConnection) url.openConnection();
+                httpUrlConn.setRequestMethod("GET");
+                httpUrlConn.setReadTimeout(10000);
+                httpUrlConn.setConnectTimeout(3000);
+                httpUrlConn.setDoInput(true);
+                httpUrlConn.connect();
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(httpUrlConn.getInputStream(), StandardCharsets.UTF_8));
+                StringBuilder sb = new StringBuilder();
+
+                String str;
+                while ((str = br.readLine()) != null) {
+                    sb.append(str);
+                    sb.append('\n');
+                }
+                br.close();
+                httpUrlConn.disconnect();
+
+                JSONObject jsonData = new JSONObject(sb.toString());
+                JSONArray allNewsData = jsonData.getJSONArray("data");
+                List<News> data = new ArrayList<>();
+                for (int i = 0; i < allNewsData.length(); ++i) {
+                    JSONObject newsData = allNewsData.getJSONObject(i);
+                    try {
+                        data.add(new News(newsData));
+                    } catch (Exception e) {
+                        Log.e(TAG, e.toString());
+                    }
+                }
+                return new Result(State.OK, data);
+            } catch (SocketTimeoutException e) {
+                Log.e(TAG, e.toString());
+                return new Result(State.TIMEOUT, null);
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+                return new Result(State.UNKNOWN, null);
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Result result) {
+            switch (result.state) {
+            case OK:
+                callback.ok(result.data);
+                break;
+            case TIMEOUT:
+                callback.timeout();
+                break;
+            case UNKNOWN:
+                callback.error();
+                break;
+            }
+        }
+
+        enum State {OK, TIMEOUT, UNKNOWN}
+
+        class Result {
+
+            State state;
+            List<News> data;
+
+            Result(State state, List<News> data) {
+                this.state = state;
+                this.data = data;
+            }
+
         }
 
     }

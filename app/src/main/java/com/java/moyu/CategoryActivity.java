@@ -2,7 +2,6 @@ package com.java.moyu;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -169,13 +168,8 @@ public class CategoryActivity extends BasicActivity {
     }
 
     void initData() {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                currentAdapter.add(NewsDatabase.getInstance().queryCategory(1));
-                remainAdapter.add(NewsDatabase.getInstance().queryCategory(0));
-            }
-        });
+        currentAdapter.add(NewsDatabase.getInstance().queryCategory(1));
+        remainAdapter.add(NewsDatabase.getInstance().queryCategory(0));
     }
 
 }

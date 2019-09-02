@@ -1,9 +1,10 @@
 package com.java.moyu;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
+import android.widget.LinearLayout;
 
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
@@ -17,7 +18,9 @@ import butterknife.BindView;
 public class IndexTabFragment extends BasicFragment {
 
     @BindView(R.id.refresh_layout)
-    RefreshLayout refreshLayout;
+    SmartRefreshLayout refreshLayout;
+    @BindView(R.id.loading_layout)
+    LinearLayout loadingLayout;
     private NewsAdapter adapter;
     private String category;
     private String word;
@@ -41,6 +44,76 @@ public class IndexTabFragment extends BasicFragment {
         initData();
     }
 
+    private void loadMore() {
+        new NewsNetwork.Builder()
+            .add("size", "" + Constants.PAGE_SIZE)
+            .add("words", word)
+            .add("categories", category)
+            .add("endDate", adapter.get(adapter.getItemCount() - 1).getPublishTime().minusSeconds(1).format(Constants.TIME_FORMATTER))
+            .build()
+            .run(new NewsNetwork.Callback() {
+                @Override
+                public void timeout() {
+                    refreshLayout.finishLoadMore(false);
+                }
+
+                @Override
+                public void error() {
+                    refreshLayout.finishLoadMore(false);
+                }
+
+                @Override
+                public void ok(List<News> data) {
+                    if (data.isEmpty()) {
+                        refreshLayout.finishLoadMoreWithNoMoreData();
+                    } else {
+                        adapter.add(data);
+                        refreshLayout.finishLoadMore();
+                    }
+                    loadingLayout.setVisibility(View.GONE);
+                }
+            });
+    }
+
+    void refresh(final boolean first) {
+        new NewsNetwork.Builder()
+            .add("size", "" + Constants.PAGE_SIZE)
+            .add("words", word)
+            .add("categories", category)
+            .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
+            .build()
+            .run(new NewsNetwork.Callback() {
+                @Override
+                public void timeout() {
+                    refreshLayout.finishRefresh(false);
+                    if (first) {
+                        loadingLayout.setVisibility(View.GONE);
+                        refreshLayout.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void error() {
+                    refreshLayout.finishRefresh(false);
+                    if (first) {
+                        loadingLayout.setVisibility(View.GONE);
+                        refreshLayout.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void ok(List<News> data) {
+                    adapter.clear();
+                    adapter.add(data);
+                    refreshLayout.finishRefresh();
+                    if (first) {
+                        loadingLayout.setVisibility(View.GONE);
+                        refreshLayout.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+    }
+
     void initData() {
         if (category.equals(getResources().getString(R.string.recommend))) {
             this.word = "香港";
@@ -49,79 +122,16 @@ public class IndexTabFragment extends BasicFragment {
             this.word = "";
         }
 
-        final Runnable loadMore = new Runnable() {
-            @Override
-            public void run() {
-                new NewsNetwork.Builder()
-                    .add("size", "" + Constants.PAGE_SIZE)
-                    .add("words", word)
-                    .add("categories", category)
-                    .add("endDate", adapter.get(adapter.getItemCount() - 1).getPublishTime().minusSeconds(1).format(Constants.TIME_FORMATTER))
-                    .build()
-                    .run(new NewsNetwork.Callback() {
-                        @Override
-                        public void timeout() {
-                            refreshLayout.finishLoadMore(false);
-                        }
-
-                        @Override
-                        public void error() {
-                            refreshLayout.finishLoadMore(false);
-                        }
-
-                        @Override
-                        public void ok(List<News> data) {
-                            if (data.isEmpty()) {
-                                refreshLayout.finishLoadMoreWithNoMoreData();
-                            } else {
-                                adapter.add(data);
-                                refreshLayout.finishLoadMore();
-                            }
-                        }
-                    });
-            }
-        };
-
-        final Runnable refresh = new Runnable() {
-            @Override
-            public void run() {
-                new NewsNetwork.Builder()
-                    .add("size", "" + Constants.PAGE_SIZE)
-                    .add("words", word)
-                    .add("categories", category)
-                    .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
-                    .build()
-                    .run(new NewsNetwork.Callback() {
-                        @Override
-                        public void timeout() {
-                            refreshLayout.finishRefresh(false);
-                        }
-
-                        @Override
-                        public void error() {
-                            refreshLayout.finishRefresh(false);
-                        }
-
-                        @Override
-                        public void ok(List<News> data) {
-                            adapter.clear();
-                            adapter.add(data);
-                            refreshLayout.finishRefresh();
-                        }
-                    });
-            }
-        };
-
-        new Handler().post(refresh);
+        refresh(true);
         refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull final RefreshLayout refreshLayout) {
-                refreshLayout.getLayout().post(loadMore);
+                loadMore();
             }
 
             @Override
             public void onRefresh(@NonNull final RefreshLayout refreshLayout) {
-                refreshLayout.getLayout().post(refresh);
+                refresh(false);
             }
         });
     }
