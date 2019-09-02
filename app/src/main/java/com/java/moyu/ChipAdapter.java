@@ -10,6 +10,7 @@ import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
 import com.google.android.material.chip.Chip;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -69,6 +70,11 @@ class ChipAdapter extends RecyclerView.Adapter<ChipAdapter.ViewHolder> {
         notifyItemRemoved(position);
     }
 
+    void move(int from, int to) {
+        Collections.swap(data, from, to);
+        notifyItemMoved(from, to);
+    }
+
     void clear() {
         int sz = data.size();
         data.clear();
@@ -78,6 +84,10 @@ class ChipAdapter extends RecyclerView.Adapter<ChipAdapter.ViewHolder> {
     boolean toggleEdit() {
         isEdit = !isEdit;
         notifyItemRangeChanged(0, data.size());
+        return isEdit;
+    }
+
+    boolean isEditable() {
         return isEdit;
     }
 
