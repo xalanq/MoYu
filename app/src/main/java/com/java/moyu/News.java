@@ -37,7 +37,7 @@ class News {
         this.id = data.getString("newsID");
         this.title = data.getString("title");
         this.content = data.getString("content");
-        this.publishTime = LocalDateTime.parse(data.getString("publishTime"), Constants.dataFormatter);
+        this.publishTime = LocalDateTime.parse(data.getString("publishTime"), Constants.TIME_FORMATTER);
         this.language = data.getString("language");
         this.category = data.getString("category");
         String images = data.getString("image");
@@ -103,7 +103,7 @@ class News {
             json.put("newsID", this.id);
             json.put("title", this.title);
             json.put("content", this.content);
-            json.put("publishTime", Constants.dataFormatter.format(this.publishTime));
+            json.put("publishTime", Constants.TIME_FORMATTER.format(this.publishTime));
             json.put("language", this.language);
             json.put("category", this.category);
             items_str.clear();

@@ -66,11 +66,7 @@ public class SearchActivity extends BasicActivity {
     }
 
     private void startLoading() {
-        BasicFragment fragment = new SearchLoadingFragment();
-        getSupportFragmentManager().beginTransaction()
-            .replace(R.id.search_layout, fragment)
-            .addToBackStack(null)
-            .commit();
+        switchFragment(new SearchLoadingFragment());
     }
 
     public void searchText(String text) {
@@ -83,6 +79,7 @@ public class SearchActivity extends BasicActivity {
         InputMethodManager imm = (InputMethodManager) searchBox.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
         final String text = searchBox.getText().toString();
+        NewsDatabase.getInstance().addSearchHistory(text);
         startLoading();
         new Handler().postDelayed(new Runnable() {
             @Override
