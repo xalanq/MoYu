@@ -132,6 +132,7 @@ public class NewsActivity extends VideoActivity {
             news = new News(new JSONObject(getIntent().getExtras().getString("news")));
             isStarred = NewsDatabase.getInstance().queryFavour(news.id);
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

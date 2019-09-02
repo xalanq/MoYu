@@ -1,5 +1,7 @@
 package com.java.moyu;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
@@ -20,6 +22,8 @@ public class AboutFragment extends BasicFragment {
     TextView author;
     @BindView(R.id.about_toolbar)
     Toolbar toolbar;
+    @BindView(R.id.about_version)
+    TextView version;
 
     @Override
     protected int getLayoutResource() {
@@ -33,6 +37,14 @@ public class AboutFragment extends BasicFragment {
 
         author.setText(R.string.app_author);
         author.setMovementMethod(LinkMovementMethod.getInstance());
+
+        PackageManager manager = getActivity().getPackageManager();
+        try {
+            PackageInfo info = manager.getPackageInfo(getActivity().getPackageName(), 0);
+            version.setText(info.versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
         a.setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
