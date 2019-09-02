@@ -1,5 +1,6 @@
 package com.java.moyu;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -31,6 +32,8 @@ public class CategoryActivity extends BasicActivity {
     private ChipAdapter currentAdapter;
     private ItemTouchHelper itemTouchHelper;
     private SwipeConsumer consumer;
+    boolean hasEdited = false;
+    int selectPosition = -1;
 
     @Override
     protected int getLayoutResource() {
@@ -60,7 +63,8 @@ public class CategoryActivity extends BasicActivity {
         currentAdapter = ChipAdapter.newAdapter(this, currentView, new ChipAdapter.OnClick() {
             @Override
             public void click(Chip chip, int position) {
-                Toast.makeText(CategoryActivity.this, "click chip", Toast.LENGTH_SHORT).show();
+                selectPosition = position;
+                finish();
             }
 
             @Override
@@ -137,6 +141,7 @@ public class CategoryActivity extends BasicActivity {
                     editCurrent.setText(getResources().getText(R.string.complete));
                 } else {
                     editCurrent.setText(getResources().getText(R.string.edit));
+                    hasEdited = true;
                     NewsDatabase.getInstance().updateCategory(currentAdapter.getData(), remainAdapter.getData());
                 }
             }
@@ -154,7 +159,10 @@ public class CategoryActivity extends BasicActivity {
 
     @Override
     public void finish() {
-        setResult(RESULT_OK);
+        Intent data = new Intent();
+        data.putExtra("hasEdited", hasEdited);
+        data.putExtra("selectPosition", selectPosition);
+        setResult(RESULT_OK, data);
         super.finish();
         overridePendingTransition(R.anim.slide_stay, R.anim.slide_left_exit);
     }

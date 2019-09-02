@@ -82,7 +82,13 @@ public class IndexFragment extends BasicFragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            updateTab();
+            if (data.getBooleanExtra("hasEdited", false)) {
+                updateTab();
+            }
+            int position = data.getIntExtra("selectPosition", -1);
+            if (position != -1) {
+                tabLayout.getTabAt(position + 1).select();
+            }
         }
     }
 
