@@ -79,7 +79,8 @@ public class IndexFragment extends BasicFragment {
     }
 
     private void initData() {
-        String[] tabs = {"推荐", "国内", "国际", "军事", "体育", "娱乐", "游戏"};
+        List<String> tabs = NewsDatabase.getInstance().queryCategory(1);
+        tabLayout.addTab(tabLayout.newTab().setText("推荐"));
         for (String tab : tabs) {
             tabLayout.addTab(tabLayout.newTab().setText(tab));
         }

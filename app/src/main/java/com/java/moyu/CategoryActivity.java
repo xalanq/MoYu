@@ -40,6 +40,7 @@ public class CategoryActivity extends BasicActivity {
             @Override
             public void click(Chip chip, int position) {
                 currentAdapter.add(allAdapter.get(position));
+                NewsDatabase.getInstance().chooseCategory(allAdapter.get(position));
                 allAdapter.remove(position);
             }
 
@@ -57,6 +58,7 @@ public class CategoryActivity extends BasicActivity {
             @Override
             public void close(Chip chip, int position) {
                 allAdapter.add(currentAdapter.get(position));
+                NewsDatabase.getInstance().unchooseCategory(currentAdapter.get(position));
                 currentAdapter.remove(position);
             }
         });
@@ -96,16 +98,8 @@ public class CategoryActivity extends BasicActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                List<String> a = new ArrayList<>();
-                for (int i = 0; i < 9; ++i) {
-                    a.add(String.format("当前%d", new Random().nextInt() % 999));
-                }
-                currentAdapter.add(a);
-                a = new ArrayList<>();
-                for (int i = 0; i < 20; ++i) {
-                    allAdapter.add(String.format("分类%d", new Random().nextInt() % 999));
-                }
-                allAdapter.add(a);
+                currentAdapter.add(NewsDatabase.getInstance().queryCategory(1));
+                allAdapter.add(NewsDatabase.getInstance().queryCategory(0));
             }
         }, 100);
     }

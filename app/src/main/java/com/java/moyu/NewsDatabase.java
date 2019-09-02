@@ -20,6 +20,8 @@ public class NewsDatabase extends SQLiteOpenHelper {
     private final String TABLE_NAME_NEWS = "news";
     private final String TABLE_NAME_FAVOUR = "favour";
     private final String TABLE_NAME_HISTORY = "history";
+    private final String TABLE_NAME_CATEGORY = "category";
+
     private final String VALUE_ID = "_id";
     private final String VALUE_NEWS_ID = "news_id";
     private final String VALUE_DATA = "data";
@@ -28,6 +30,8 @@ public class NewsDatabase extends SQLiteOpenHelper {
     private final String VALUE_VIEWED = "viewed";
     private final String VALUE_STAR_TIME = "star_time";
     private final String VALUE_STARED = "stared";
+    private final String VALUE_NAME = "name";
+    private final String VALUE_CHOSEN = "chosen";
 
     private final String CREATE_NEWS = "create table " + TABLE_NAME_NEWS + "(" +
         VALUE_ID + " integer primary key," +
@@ -37,6 +41,11 @@ public class NewsDatabase extends SQLiteOpenHelper {
         VALUE_VIEW_TIME + " text," +
         VALUE_STARED + " integer not null," +
         VALUE_STAR_TIME + " text" +
+        ")";
+    private final String CREATE_CATEGORY = "create table " + TABLE_NAME_CATEGORY + "(" +
+        VALUE_ID + " integer primary key," +
+        VALUE_NAME + " text not null," +
+        VALUE_CHOSEN + " integer not null" +
         ")";
     private final String DROP_NEWS = "drop table " + TABLE_NAME_NEWS;
     private final String DROP_FAVOUR = "drop table " + TABLE_NAME_FAVOUR;
@@ -59,6 +68,13 @@ public class NewsDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_NEWS);
+        db.execSQL(CREATE_CATEGORY);
+        for (String str: Constants.category) {
+            ContentValues values = new ContentValues();
+            values.put(VALUE_NAME, str);
+            values.put(VALUE_CHOSEN, 0);
+            db.insertWithOnConflict(TABLE_NAME_CATEGORY, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+        }
         Log.d(TAG, "-------> onCreate");
     }
 
@@ -66,13 +82,21 @@ public class NewsDatabase extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(TAG, "-------> onUpgrade" + "  oldVersion = " + oldVersion + "   newVersion = " + newVersion);
         if (oldVersion != newVersion) {
-            switch (newVersion) {
-            case 3:
+            switch (oldVersion) {
+            case 2:
                 db.execSQL(DROP_NEWS);
                 db.execSQL(DROP_FAVOUR);
                 db.execSQL(DROP_HISTORY);
                 db.execSQL(CREATE_NEWS);
-                break;
+            case 3:
+                db.execSQL(CREATE_CATEGORY);
+            case 4:
+                for (String str: Constants.category) {
+                    ContentValues values = new ContentValues();
+                    values.put(VALUE_NAME, str);
+                    values.put(VALUE_CHOSEN, 0);
+                    db.insertWithOnConflict(TABLE_NAME_CATEGORY, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+                }
             }
         }
     }
@@ -166,7 +190,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
     }
 
     final public News queryNews(String news_id) {
-        Cursor cursor = getWritableDatabase().query(TABLE_NAME_NEWS, null, VALUE_NEWS_ID + " = ?", new String[]{news_id}, null, null, null, null);
+        Cursor cursor = getReadableDatabase().query(TABLE_NAME_NEWS, null, VALUE_NEWS_ID + " = ?", new String[]{news_id}, null, null, null, null);
 
         News news = new News();
         try {
@@ -183,7 +207,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
 
     final public List<News> queryFavourList(Integer offset, Integer limit) {
         String str_limit = offset.toString() + "," + limit.toString();
-        Cursor cursor = getWritableDatabase().query(TABLE_NAME_NEWS, null, VALUE_STARED + " = ?", new String[]{"1"}, null, null, VALUE_STAR_TIME + " DESC", str_limit);
+        Cursor cursor = getReadableDatabase().query(TABLE_NAME_NEWS, null, VALUE_STARED + " = ?", new String[]{"1"}, null, null, VALUE_STAR_TIME + " DESC", str_limit);
 
         List<News> list = new ArrayList<>();
         if (cursor.getCount() > 0) {
@@ -195,22 +219,20 @@ public class NewsDatabase extends SQLiteOpenHelper {
         }
 
         cursor.close();
-        getWritableDatabase().close();
         return list;
     }
 
     final public boolean queryFavour(String news_id) {
-        Cursor cursor = getWritableDatabase().query(TABLE_NAME_NEWS, null, VALUE_NEWS_ID + " = ?", new String[]{news_id}, null, null, null, null);
+        Cursor cursor = getReadableDatabase().query(TABLE_NAME_NEWS, null, VALUE_NEWS_ID + " = ?", new String[]{news_id}, null, null, null, null);
         cursor.moveToFirst();
         boolean hasStared = cursor.getInt(cursor.getColumnIndex(VALUE_STARED)) > 0;
         cursor.close();
-        getWritableDatabase().close();
         return hasStared;
     }
 
     final public List<News> queryHistoryList(Integer offset, Integer limit) {
         String str_limit = offset.toString() + "," + limit.toString();
-        Cursor cursor = getWritableDatabase().query(TABLE_NAME_NEWS, null, VALUE_VIEWED + " = ?", new String[]{"1"}, null, null, VALUE_VIEW_TIME + " DESC", str_limit);
+        Cursor cursor = getReadableDatabase().query(TABLE_NAME_NEWS, null, VALUE_VIEWED + " = ?", new String[]{"1"}, null, null, VALUE_VIEW_TIME + " DESC", str_limit);
 
         List<News> list = new ArrayList<>();
         if (cursor.getCount() > 0) {
@@ -222,36 +244,75 @@ public class NewsDatabase extends SQLiteOpenHelper {
         }
 
         cursor.close();
-        getWritableDatabase().close();
         return list;
     }
 
-    final public void delFavour(String news_id) {
+    public void delFavour(String news_id) {
         ContentValues values = new ContentValues();
         values.put(VALUE_STARED, 0);
         values.putNull(VALUE_STAR_TIME);
         getWritableDatabase().update(TABLE_NAME_NEWS, values, VALUE_NEWS_ID + " = ? ", new String[]{news_id});
     }
 
-    final public void delHistory(String news_id) {
+    public void delHistory(String news_id) {
         ContentValues values = new ContentValues();
         values.put(VALUE_VIEWED, 0);
         values.putNull(VALUE_VIEW_TIME);
         getWritableDatabase().update(TABLE_NAME_NEWS, values, VALUE_NEWS_ID + " = ? ", new String[]{news_id});
     }
 
-    final public void delAllFavour() {
+    public void delAllFavour() {
         ContentValues values = new ContentValues();
         values.put(VALUE_STARED, 0);
         values.putNull(VALUE_STAR_TIME);
         getWritableDatabase().update(TABLE_NAME_NEWS, values, null, null);
     }
 
-    final public void delAllHistory() {
+    public void delAllHistory() {
         ContentValues values = new ContentValues();
         values.put(VALUE_VIEWED, 0);
         values.putNull(VALUE_VIEW_TIME);
         getWritableDatabase().update(TABLE_NAME_NEWS, values, null, null);
+    }
+
+    public List<String> queryAllCategory() {
+        return queryCategory(null);
+    }
+
+    /**
+     * @param chosen if it is null, query all category
+     */
+    public List<String> queryCategory(Integer chosen) {
+        Cursor cursor;
+        if (chosen == null) {
+            cursor = getReadableDatabase().query(TABLE_NAME_CATEGORY, null, null, null, null, null, null, null);
+        } else {
+            cursor = getReadableDatabase().query(TABLE_NAME_CATEGORY, null, VALUE_CHOSEN + " = ?", new String[]{chosen.toString()}, null, null, null, null);
+        }
+
+        List<String> list = new ArrayList<>();
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            for (int i = 0; i < cursor.getCount(); i++) {
+                list.add(cursor.getString(cursor.getColumnIndex(VALUE_NAME)));
+                cursor.moveToNext();
+            }
+        }
+
+        cursor.close();
+        return list;
+    }
+
+    public void chooseCategory(String category_name) {
+        ContentValues values = new ContentValues();
+        values.put(VALUE_CHOSEN, 1);
+        getWritableDatabase().update(TABLE_NAME_CATEGORY, values, VALUE_NAME + " = ?", new String[]{category_name});
+    }
+
+    public void unchooseCategory(String category_name) {
+        ContentValues values = new ContentValues();
+        values.put(VALUE_CHOSEN, 0);
+        getWritableDatabase().update(TABLE_NAME_CATEGORY, values, VALUE_NAME + " = ?", new String[]{category_name});
     }
 
 }
