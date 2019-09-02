@@ -82,7 +82,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
         db.execSQL(CREATE_NEWS);
         db.execSQL(CREATE_CATEGORY);
         db.execSQL(CREATE_SEARCH);
-//        db.execSQL(CREATE_USER);
+        db.execSQL(CREATE_USER);
         for (String str: Constants.category) {
             ContentValues values = new ContentValues();
             values.put(VALUE_NAME, str);
@@ -113,8 +113,8 @@ public class NewsDatabase extends SQLiteOpenHelper {
                 }
             case 5:
                 db.execSQL(CREATE_SEARCH);
-//            case 6:
-//                db.execSQL(CREATE_USER);
+            case 6:
+                db.execSQL(CREATE_USER);
             }
         }
     }
@@ -358,6 +358,19 @@ public class NewsDatabase extends SQLiteOpenHelper {
 
     public void delSearchHistory() {
         getWritableDatabase().delete(TABLE_NAME_SEARCH, null, null);
+    }
+
+    public void addToken(String token) {
+        ContentValues values = new ContentValues();
+        values.put(VALUE_TOKEN, token);
+        getWritableDatabase().insertWithOnConflict(TABLE_NAME_USER, null, null, SQLiteDatabase.CONFLICT_IGNORE);
+    }
+
+    final public boolean queryToken(String token) {
+        Cursor cursor = getReadableDatabase().query(TABLE_NAME_USER, null, VALUE_TOKEN + " = ? ", new String[]{token}, null, null, null);
+        boolean isExist = cursor.getCount() > 0;
+        cursor.close();
+        return isExist;
     }
 
 }
