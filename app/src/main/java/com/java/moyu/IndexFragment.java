@@ -103,14 +103,12 @@ public class IndexFragment extends BasicFragment {
     void initData() {
         updateTab();
         final Runnable loadMore = new Runnable() {
-            LocalDateTime end_time = LocalDateTime.now();
-
             @Override
             public void run() {
                 new NewsNetwork.Builder()
                     .add("size", "" + Constants.PAGE_SIZE)
                     .add("words", "香港")
-                    .add("endDate", end_time.format(Constants.TIME_FORMATTER))
+                    .add("endDate", adapter.get(adapter.getItemCount()-1).getPublishTime().minusSeconds(1).format(Constants.TIME_FORMATTER))
                     .build()
                     .run(new NewsNetwork.Callback() {
                         @Override
@@ -141,8 +139,7 @@ public class IndexFragment extends BasicFragment {
             public void run() {
                 new NewsNetwork.Builder()
                     .add("size", "" + Constants.PAGE_SIZE)
-                    .add("words", adapter.getWord())
-                    .add("categories", adapter.getCategory())
+                    .add("words", "香港")
                     .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
                     .build()
                     .run(new NewsNetwork.Callback() {
