@@ -1,12 +1,12 @@
 package com.java.moyu;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -67,7 +67,7 @@ public class IndexFragment extends BasicFragment {
         btnMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), CategoryActivity.class));
+                startActivityForResult(new Intent(getActivity(), CategoryActivity.class), 1);
                 getActivity().overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);
             }
         });
@@ -78,12 +78,24 @@ public class IndexFragment extends BasicFragment {
         initData();
     }
 
-    private void initData() {
-        List<String> tabs = NewsDatabase.getInstance().queryCategory(1);
-        tabLayout.addTab(tabLayout.newTab().setText("推荐"));
-        for (String tab : tabs) {
-            tabLayout.addTab(tabLayout.newTab().setText(tab));
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+            updateTab();
         }
+    }
+
+    void updateTab() {
+        List<String> tabs = NewsDatabase.getInstance().queryCategory(1);
+        tabLayout.removeAllTabs();
+        tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.recommend)));
+        for (String tab : tabs)
+            tabLayout.addTab(tabLayout.newTab().setText(tab));
+    }
+
+    void initData() {
+        updateTab();
         final Runnable loadMore = new Runnable() {
             LocalDateTime end_time = LocalDateTime.now();
 

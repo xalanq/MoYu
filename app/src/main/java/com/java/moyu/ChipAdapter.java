@@ -42,6 +42,10 @@ class ChipAdapter extends RecyclerView.Adapter<ChipAdapter.ViewHolder> {
         return data.get(position);
     }
 
+    List<String> getData() {
+        return data;
+    }
+
     void add(String s, int position) {
         data.add(position, s);
         notifyItemInserted(position);

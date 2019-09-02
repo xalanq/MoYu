@@ -15,8 +15,7 @@ import java.util.List;
 
 public class NewsDatabase extends SQLiteOpenHelper {
 
-    private String TAG = "NewsDatabase";
-
+    private static NewsDatabase instance;
     private final String TABLE_NAME_NEWS = "news";
     private final String TABLE_NAME_FAVOUR = "favour";
     private final String TABLE_NAME_HISTORY = "history";
@@ -31,7 +30,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
     private final String VALUE_STAR_TIME = "star_time";
     private final String VALUE_STARED = "stared";
     private final String VALUE_NAME = "name";
-    private final String VALUE_CHOSEN = "chosen";
+    private final String VALUE_POSISTION = "position";
 
     private final String CREATE_NEWS = "create table " + TABLE_NAME_NEWS + "(" +
         VALUE_ID + " integer primary key," +
@@ -45,13 +44,13 @@ public class NewsDatabase extends SQLiteOpenHelper {
     private final String CREATE_CATEGORY = "create table " + TABLE_NAME_CATEGORY + "(" +
         VALUE_ID + " integer primary key," +
         VALUE_NAME + " text not null," +
-        VALUE_CHOSEN + " integer not null" +
+        VALUE_POSISTION + " integer not null" +
         ")";
     private final String DROP_NEWS = "drop table " + TABLE_NAME_NEWS;
     private final String DROP_FAVOUR = "drop table " + TABLE_NAME_FAVOUR;
     private final String DROP_HISTORY = "drop table " + TABLE_NAME_HISTORY;
-
-    private static NewsDatabase instance;
+    private final String DROP_CATEGORY = "drop table " + TABLE_NAME_CATEGORY;
+    private String TAG = "NewsDatabase";
 
     private NewsDatabase(Context context) {
         super(context, Constants.DB_NAME, null, Constants.DB_VERSION);
@@ -69,11 +68,13 @@ public class NewsDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_NEWS);
         db.execSQL(CREATE_CATEGORY);
-        for (String str: Constants.category) {
+        int i = 1;
+        for (String str : Constants.category) {
             ContentValues values = new ContentValues();
             values.put(VALUE_NAME, str);
-            values.put(VALUE_CHOSEN, 0);
+            values.put(VALUE_POSISTION, i <= 5 ? i : 0);
             db.insertWithOnConflict(TABLE_NAME_CATEGORY, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+            i++;
         }
         Log.d(TAG, "-------> onCreate");
     }
@@ -90,12 +91,16 @@ public class NewsDatabase extends SQLiteOpenHelper {
                 db.execSQL(CREATE_NEWS);
             case 3:
                 db.execSQL(CREATE_CATEGORY);
-            case 4:
-                for (String str: Constants.category) {
+            case 4: case 5: case 6: case 7: case 8:
+                db.execSQL(DROP_CATEGORY);
+                db.execSQL(CREATE_CATEGORY);
+                int i = 1;
+                for (String str : Constants.category) {
                     ContentValues values = new ContentValues();
                     values.put(VALUE_NAME, str);
-                    values.put(VALUE_CHOSEN, 0);
+                    values.put(VALUE_POSISTION, i <= 5 ? i : 0);
                     db.insertWithOnConflict(TABLE_NAME_CATEGORY, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+                    i++;
                 }
             }
         }
@@ -280,14 +285,16 @@ public class NewsDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * @param chosen if it is null, query all category
+     * @param chosen if it is null, query all category. chosen = 1, current. Otherwise remain.
      */
     public List<String> queryCategory(Integer chosen) {
         Cursor cursor;
         if (chosen == null) {
             cursor = getReadableDatabase().query(TABLE_NAME_CATEGORY, null, null, null, null, null, null, null);
+        } else if (chosen == 1) {
+            cursor = getReadableDatabase().query(TABLE_NAME_CATEGORY, null, VALUE_POSISTION + " != ?", new String[]{"0"}, null, null, VALUE_POSISTION + " ASC", null);
         } else {
-            cursor = getReadableDatabase().query(TABLE_NAME_CATEGORY, null, VALUE_CHOSEN + " = ?", new String[]{chosen.toString()}, null, null, null, null);
+            cursor = getReadableDatabase().query(TABLE_NAME_CATEGORY, null, VALUE_POSISTION + " = ?", new String[]{"0"}, null, null, null, null);
         }
 
         List<String> list = new ArrayList<>();
@@ -303,16 +310,15 @@ public class NewsDatabase extends SQLiteOpenHelper {
         return list;
     }
 
-    public void chooseCategory(String category_name) {
+    public void updateCategory(List<String> chosen, List<String> remain) {
         ContentValues values = new ContentValues();
-        values.put(VALUE_CHOSEN, 1);
-        getWritableDatabase().update(TABLE_NAME_CATEGORY, values, VALUE_NAME + " = ?", new String[]{category_name});
-    }
-
-    public void unchooseCategory(String category_name) {
-        ContentValues values = new ContentValues();
-        values.put(VALUE_CHOSEN, 0);
-        getWritableDatabase().update(TABLE_NAME_CATEGORY, values, VALUE_NAME + " = ?", new String[]{category_name});
+        for (int i = 0; i < chosen.size(); ++i) {
+            values.put(VALUE_POSISTION, i + 1);
+            getWritableDatabase().update(TABLE_NAME_CATEGORY, values, VALUE_NAME + " = ?", new String[]{chosen.get(i)});
+        }
+        values.put(VALUE_POSISTION, 0);
+        for (String s : remain)
+            getWritableDatabase().update(TABLE_NAME_CATEGORY, values, VALUE_NAME + " = ?", new String[]{s});
     }
 
 }

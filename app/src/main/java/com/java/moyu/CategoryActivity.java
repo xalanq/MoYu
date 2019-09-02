@@ -11,10 +11,6 @@ import com.billy.android.swipe.SmartSwipe;
 import com.billy.android.swipe.consumer.ActivitySlidingBackConsumer;
 import com.google.android.material.chip.Chip;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import androidx.annotation.Nullable;
 import butterknife.BindView;
 
@@ -24,7 +20,7 @@ public class CategoryActivity extends BasicActivity {
     TextView editCurrent;
     @BindView(R.id.category_close)
     ImageButton btnClose;
-    private ChipAdapter allAdapter;
+    private ChipAdapter remainAdapter;
     private ChipAdapter currentAdapter;
 
     @Override
@@ -36,12 +32,11 @@ public class CategoryActivity extends BasicActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        allAdapter = ChipAdapter.newAdapter(this, findViewById(R.id.category_all_layout), new ChipAdapter.OnClick() {
+        remainAdapter = ChipAdapter.newAdapter(this, findViewById(R.id.category_remain_layout), new ChipAdapter.OnClick() {
             @Override
             public void click(Chip chip, int position) {
-                currentAdapter.add(allAdapter.get(position));
-                NewsDatabase.getInstance().chooseCategory(allAdapter.get(position));
-                allAdapter.remove(position);
+                currentAdapter.add(remainAdapter.get(position));
+                remainAdapter.remove(position);
             }
 
             @Override
@@ -57,8 +52,7 @@ public class CategoryActivity extends BasicActivity {
 
             @Override
             public void close(Chip chip, int position) {
-                allAdapter.add(currentAdapter.get(position));
-                NewsDatabase.getInstance().unchooseCategory(currentAdapter.get(position));
+                remainAdapter.add(currentAdapter.get(position));
                 currentAdapter.remove(position);
             }
         });
@@ -70,6 +64,7 @@ public class CategoryActivity extends BasicActivity {
                     editCurrent.setText(getResources().getText(R.string.complete));
                 } else {
                     editCurrent.setText(getResources().getText(R.string.edit));
+                    NewsDatabase.getInstance().updateCategory(currentAdapter.getData(), remainAdapter.getData());
                 }
             }
         });
@@ -85,23 +80,24 @@ public class CategoryActivity extends BasicActivity {
             .addConsumer(new ActivitySlidingBackConsumer(this))
             .enableLeft();
 
-        test();
+        initData();
     }
 
     @Override
     public void finish() {
+        setResult(RESULT_OK);
         super.finish();
         overridePendingTransition(R.anim.slide_stay, R.anim.slide_left_exit);
     }
 
-    private void test() {
-        new Handler().postDelayed(new Runnable() {
+    void initData() {
+        new Handler().post(new Runnable() {
             @Override
             public void run() {
                 currentAdapter.add(NewsDatabase.getInstance().queryCategory(1));
-                allAdapter.add(NewsDatabase.getInstance().queryCategory(0));
+                remainAdapter.add(NewsDatabase.getInstance().queryCategory(0));
             }
-        }, 100);
+        });
     }
 
 }

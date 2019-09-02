@@ -48,7 +48,9 @@
     <string name="search_clear_history_confirm">你确定要清空吗？</string>
 
     <string name="category_current">当前分类</string>
-    <string name="category_all">全部分类</string>
+    <string name="category_current_hint">点击进入分类</string>
+    <string name="category_remain">可选分类</string>
+    <string name="category_remain_hint">点击加入到当前分类</string>
     <string name="category">分类列表</string>
 
     <string name="news_cover">新闻封面</string>
@@ -65,6 +67,7 @@
     <string name="search">搜索</string>
     <string name="favorite">收藏</string>
     <string name="share">分享</string>
+    <string name="recommend">推荐</string>
 
     <string name="cache_title">清除缓存</string>
     <string name="cache_calculate">正在计算中</string>

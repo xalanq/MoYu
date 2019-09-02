@@ -2,7 +2,6 @@ package com.java.moyu;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
