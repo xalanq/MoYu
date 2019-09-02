@@ -92,7 +92,7 @@ public class IndexFragment extends BasicFragment {
                 new NewsNetwork.Builder()
                     .add("size", "" + Constants.PAGE_SIZE)
                     .add("words", "香港")
-                    .add("endDate", end_time.format(Constants.dataFormatter))
+                    .add("endDate", end_time.format(Constants.TIME_FORMATTER))
                     .build()
                     .run(new NewsNetwork.Callback() {
                         @Override

@@ -48,20 +48,23 @@ public class NewsDatabase extends SQLiteOpenHelper {
         ")";
     private final String CREATE_CATEGORY = "create table " + TABLE_NAME_CATEGORY + "(" +
         VALUE_ID + " integer primary key," +
-        VALUE_NAME + " text not null," +
+        VALUE_NAME + " text not null unique," +
         VALUE_CHOSEN + " integer not null" +
         ")";
     private final String CREATE_SEARCH = "create table " + TABLE_NAME_SEARCH + "(" +
         VALUE_ID + " integer primary key," +
-        VALUE_KEYWORD + " text not null" +
+        VALUE_KEYWORD + " text not null unique" +
         ")";
     private final String CREATE_USER = "create table " + TABLE_NAME_USER + "(" +
         VALUE_ID + " integer primary key," +
-        VALUE_TOKEN + " text not null" +
+        VALUE_TOKEN + " text not null unique" +
         ")";
     private final String DROP_NEWS = "drop table " + TABLE_NAME_NEWS;
     private final String DROP_FAVOUR = "drop table " + TABLE_NAME_FAVOUR;
     private final String DROP_HISTORY = "drop table " + TABLE_NAME_HISTORY;
+    private final String DROP_CATEGORY = "drop table " + TABLE_NAME_CATEGORY;
+    private final String DROP_SEARCH = "drop table " + TABLE_NAME_SEARCH;
+    private final String DROP_USER = "drop table " + TABLE_NAME_USER;
 
     private static NewsDatabase instance;
 
@@ -83,7 +86,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
         db.execSQL(CREATE_CATEGORY);
         db.execSQL(CREATE_SEARCH);
         db.execSQL(CREATE_USER);
-        for (String str: Constants.category) {
+        for (String str: Constants.CATEGORY) {
             ContentValues values = new ContentValues();
             values.put(VALUE_NAME, str);
             values.put(VALUE_CHOSEN, 0);
@@ -105,7 +108,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
             case 3:
                 db.execSQL(CREATE_CATEGORY);
             case 4:
-                for (String str: Constants.category) {
+                for (String str: Constants.CATEGORY) {
                     ContentValues values = new ContentValues();
                     values.put(VALUE_NAME, str);
                     values.put(VALUE_CHOSEN, 0);
@@ -114,6 +117,13 @@ public class NewsDatabase extends SQLiteOpenHelper {
             case 5:
                 db.execSQL(CREATE_SEARCH);
             case 6:
+                db.execSQL(CREATE_USER);
+            case 7:
+                db.execSQL(DROP_CATEGORY);
+                db.execSQL(DROP_SEARCH);
+                db.execSQL(DROP_USER);
+                db.execSQL(CREATE_CATEGORY);
+                db.execSQL(CREATE_SEARCH);
                 db.execSQL(CREATE_USER);
             }
         }
@@ -177,7 +187,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
         }
 
         values.put(VALUE_STARED, 1);
-        values.put(VALUE_STAR_TIME, time.format(Constants.dataFormatter));
+        values.put(VALUE_STAR_TIME, time.format(Constants.TIME_FORMATTER));
 
         int index = getWritableDatabase().update(TABLE_NAME_NEWS, values, VALUE_NEWS_ID + " = ? ", new String[]{news_id});
         return index > 0;
@@ -201,7 +211,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
         }
 
         values.put(VALUE_VIEWED, 1);
-        values.put(VALUE_VIEW_TIME, time.format(Constants.dataFormatter));
+        values.put(VALUE_VIEW_TIME, time.format(Constants.TIME_FORMATTER));
 
         int index = getWritableDatabase().update(TABLE_NAME_NEWS, values, VALUE_NEWS_ID + " = ? ", new String[]{news_id});
         return index > 0;
