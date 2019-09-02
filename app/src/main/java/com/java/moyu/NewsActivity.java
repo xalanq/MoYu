@@ -3,6 +3,7 @@ package com.java.moyu;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -131,27 +132,38 @@ public class NewsActivity extends VideoActivity {
     private void initData() {
         try {
             news = new News(new JSONObject(getIntent().getExtras().getString("news")));
+            isStarred = NewsDatabase.getInstance().queryFavour(news.id);
         } catch (Exception e) {
         }
     }
 
     void clickStar(MenuItem item) {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                NewsDatabase.getInstance().addFavour(news.id, LocalDateTime.now());
-            }
-        });
-        if (isStarred)
-            item.setIcon(R.drawable.ic_star_light);
-        else
-            item.setIcon(R.drawable.ic_starred);
+
         isStarred = !isStarred;
+        if (isStarred) {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    NewsDatabase.getInstance().addFavour(news.id, LocalDateTime.now());
+                }
+            });
+            item.setIcon(R.drawable.ic_starred);
+        } else {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    NewsDatabase.getInstance().delFavour(news.id);
+                }
+            });
+            item.setIcon(R.drawable.ic_star_light);
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.news_toolbar, menu);
+        if (isStarred)
+            menu.findItem(R.id.star_button).setIcon(R.drawable.ic_starred);
         return true;
     }
 

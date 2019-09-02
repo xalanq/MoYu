@@ -62,7 +62,7 @@ public class FavoriteFragment extends BasicFragment {
 
             @Override
             public void run() {
-                List<News> data = NewsDatabase.getInstance().queryFavour(this.offset, Constants.PAGE_SIZE);
+                List<News> data = NewsDatabase.getInstance().queryFavourList(this.offset, Constants.PAGE_SIZE);
                 if (data.isEmpty()) {
                     refreshLayout.finishLoadMoreWithNoMoreData();
                 } else {

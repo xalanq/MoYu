@@ -130,7 +130,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
         return news;
     }
 
-    final public List<News> queryFavour(Integer offset, Integer limit) {
+    final public List<News> queryFavourList(Integer offset, Integer limit) {
         String str_limit = offset.toString() + "," + limit.toString();
         Cursor cursor = getWritableDatabase().query(TABLE_NAME_FAVOUR, null, null, null, null, null, VALUE_TIME + " DESC", str_limit);
 
@@ -146,6 +146,14 @@ public class NewsDatabase extends SQLiteOpenHelper {
         cursor.close();
         getWritableDatabase().close();
         return list;
+    }
+
+    final public boolean queryFavour(String news_id) {
+        Cursor cursor = getWritableDatabase().query(TABLE_NAME_FAVOUR, null, VALUE_NEWS_ID + " = ?", new String[]{news_id}, null, null, null, null);
+        boolean hasExist = cursor.getCount() > 0;
+        cursor.close();
+        getWritableDatabase().close();
+        return hasExist;
     }
 
     final public List<News> queryHistory(Integer offset, Integer limit) {
@@ -164,6 +172,22 @@ public class NewsDatabase extends SQLiteOpenHelper {
         cursor.close();
         getWritableDatabase().close();
         return list;
+    }
+
+    final public void delFavour(String news_id) {
+        getWritableDatabase().delete(TABLE_NAME_FAVOUR, VALUE_NEWS_ID + " = ? ", new String[]{news_id});
+    }
+
+    final public void delHistory(String news_id) {
+        getWritableDatabase().delete(TABLE_NAME_HISTORY, VALUE_NEWS_ID + " = ? ", new String[]{news_id});
+    }
+
+    final public void delAllFavour() {
+        getWritableDatabase().delete(TABLE_NAME_FAVOUR, null, null);
+    }
+
+    final public void delAllHistory() {
+        getWritableDatabase().delete(TABLE_NAME_HISTORY, null, null);
     }
 
 }
