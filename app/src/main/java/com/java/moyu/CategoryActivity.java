@@ -7,7 +7,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.billy.android.swipe.SmartSwipe;
 import com.billy.android.swipe.SwipeConsumer;
@@ -28,12 +27,12 @@ public class CategoryActivity extends BasicActivity {
     ImageButton btnClose;
     @BindView(R.id.category_current_layout)
     RecyclerView currentView;
+    boolean hasEdited = false;
+    int selectPosition = -1;
     private ChipAdapter remainAdapter;
     private ChipAdapter currentAdapter;
     private ItemTouchHelper itemTouchHelper;
     private SwipeConsumer consumer;
-    boolean hasEdited = false;
-    int selectPosition = -1;
 
     @Override
     protected int getLayoutResource() {

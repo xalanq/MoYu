@@ -5,15 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
-import android.view.ViewParent;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.google.android.material.tabs.TabLayout;
-import com.scwang.smart.refresh.layout.api.RefreshLayout;
-import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -105,6 +101,7 @@ public class IndexFragment extends BasicFragment {
     }
 
     class PagerAdapter extends FragmentPagerAdapter {
+
         List<String> tabs;
 
         PagerAdapter(FragmentManager fm, List<String> tabs) {
