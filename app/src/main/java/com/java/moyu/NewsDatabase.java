@@ -21,6 +21,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
     private final String TABLE_NAME_FAVOUR = "favour";
     private final String TABLE_NAME_HISTORY = "history";
     private final String TABLE_NAME_CATEGORY = "category";
+    private final String TABLE_NAME_SEARCH = "search";
 
     private final String VALUE_ID = "_id";
     private final String VALUE_NEWS_ID = "news_id";
@@ -32,6 +33,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
     private final String VALUE_STARED = "stared";
     private final String VALUE_NAME = "name";
     private final String VALUE_CHOSEN = "chosen";
+    private final String VALUE_KEYWORD = "keyword";
 
     private final String CREATE_NEWS = "create table " + TABLE_NAME_NEWS + "(" +
         VALUE_ID + " integer primary key," +
@@ -46,6 +48,10 @@ public class NewsDatabase extends SQLiteOpenHelper {
         VALUE_ID + " integer primary key," +
         VALUE_NAME + " text not null," +
         VALUE_CHOSEN + " integer not null" +
+        ")";
+    private final String CREATE_SEARCH = "create table " + TABLE_NAME_SEARCH + "(" +
+        VALUE_ID + " integer primary key," +
+        VALUE_KEYWORD + " text not null" +
         ")";
     private final String DROP_NEWS = "drop table " + TABLE_NAME_NEWS;
     private final String DROP_FAVOUR = "drop table " + TABLE_NAME_FAVOUR;
@@ -69,6 +75,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_NEWS);
         db.execSQL(CREATE_CATEGORY);
+        db.execSQL(CREATE_SEARCH);
         for (String str: Constants.category) {
             ContentValues values = new ContentValues();
             values.put(VALUE_NAME, str);
@@ -97,6 +104,8 @@ public class NewsDatabase extends SQLiteOpenHelper {
                     values.put(VALUE_CHOSEN, 0);
                     db.insertWithOnConflict(TABLE_NAME_CATEGORY, null, values, SQLiteDatabase.CONFLICT_IGNORE);
                 }
+            case 5:
+                db.execSQL(CREATE_SEARCH);
             }
         }
     }
@@ -275,14 +284,14 @@ public class NewsDatabase extends SQLiteOpenHelper {
         getWritableDatabase().update(TABLE_NAME_NEWS, values, null, null);
     }
 
-    public List<String> queryAllCategory() {
+    final public List<String> queryAllCategory() {
         return queryCategory(null);
     }
 
     /**
      * @param chosen if it is null, query all category
      */
-    public List<String> queryCategory(Integer chosen) {
+    final public List<String> queryCategory(Integer chosen) {
         Cursor cursor;
         if (chosen == null) {
             cursor = getReadableDatabase().query(TABLE_NAME_CATEGORY, null, null, null, null, null, null, null);
@@ -313,6 +322,33 @@ public class NewsDatabase extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(VALUE_CHOSEN, 0);
         getWritableDatabase().update(TABLE_NAME_CATEGORY, values, VALUE_NAME + " = ?", new String[]{category_name});
+    }
+
+    public boolean addSearchHistory(String keyword) {
+        ContentValues values = new ContentValues();
+        values.put(VALUE_KEYWORD, keyword);
+        long index = getWritableDatabase().insertWithOnConflict(TABLE_NAME_SEARCH, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        return index > 0;
+    }
+
+    final public List<String> querySearchHistory(Integer limit) {
+        Cursor cursor = getReadableDatabase().query(TABLE_NAME_SEARCH, null, null, null,null, null, VALUE_ID + " DESC", limit.toString());
+
+        List<String> list = new ArrayList<>();
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            for (int i = 0; i < cursor.getCount(); i++) {
+                list.add(cursor.getString(cursor.getColumnIndex(VALUE_KEYWORD)));
+                cursor.moveToNext();
+            }
+        }
+
+        cursor.close();
+        return list;
+    }
+
+    public void delSearchHistory() {
+        getWritableDatabase().delete(TABLE_NAME_SEARCH, null, null);
     }
 
 }
