@@ -2,8 +2,6 @@ package com.java.moyu;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -54,25 +52,19 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         navigationView.setNavigationItemSelectedListener(this);
         final TextView username = navigationView.getHeaderView(0).findViewById(R.id.main_navigation_username);
         username.setText(R.string.main_navigation_login);
-        Switch mode = (Switch) navigationView.getMenu().findItem(R.id.main_navigation_menu_night_mode).getActionView();
-        int md = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        if (md == Configuration.UI_MODE_NIGHT_YES) {
-            mode.setChecked(true);
-        }
-        final Switch actionView = (Switch) navigationView.getMenu().findItem(R.id.main_navigation_menu_night_mode).getActionView();
-        actionView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                }
-                startActivity(new Intent(MainActivity.this, MainActivity.class));
-                finish();
-            }
-        });
+//        final Switch actionView = (Switch) navigationView.getMenu().findItem(R.id.main_navigation_menu_night_mode).getActionView();
+//        actionView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//                } else {
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//                }
+//                MainActivity.this.recreate();
+//            }
+//        });
     }
 
     void switchFragment(BasicFragment fragment) {
