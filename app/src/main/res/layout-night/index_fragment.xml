@@ -49,15 +49,15 @@
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/index_tab_layout"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 app:tabBackground="@color/colorPrimaryDark"
-                app:tabTextColor="#888888"
-                app:tabRippleColor="#CCCCCC"
-                app:tabSelectedTextColor="@color/colorPrimary"
                 app:tabIndicatorColor="@color/colorPrimary"
                 app:tabIndicatorHeight="2dp"
-                app:tabMode="scrollable"/>
+                app:tabMode="scrollable"
+                app:tabRippleColor="#CCCCCC"
+                app:tabSelectedTextColor="@color/colorPrimary"
+                app:tabTextColor="#888888" />
 
             <ImageButton
                 android:id="@+id/index_more_button"
@@ -75,6 +75,7 @@
         android:id="@+id/index_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:background="#121212"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

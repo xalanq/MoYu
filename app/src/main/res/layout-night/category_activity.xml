@@ -61,22 +61,22 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="0dp"
-                    android:text="@string/category_current_hint"
-                    android:textSize="12sp"
+                    android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:textColor="#7C7C7C"/>
+                    android:text="@string/category_current_hint"
+                    android:textColor="@color/colorSubtitle"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/category_edit_current"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/edit"
                     android:clickable="true"
                     android:gravity="center_vertical"
-                    android:textColor="@color/colorPrimary"/>
+                    android:text="@string/edit"
+                    android:textColor="#969696" />
 
             </LinearLayout>
 
@@ -106,10 +106,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="0dp"
-                    android:text="@string/category_remain_hint"
-                    android:textSize="12sp"
                     android:gravity="center_vertical"
-                    android:textColor="#7C7C7C"/>
+                    android:text="@string/category_remain_hint"
+                    android:textColor="@color/colorSubtitle"
+                    android:textSize="12sp" />
 
             </LinearLayout>
 

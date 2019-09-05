@@ -15,13 +15,13 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="start"
-        android:text="@string/default_news_title"
-        android:textSize="16sp"
-        android:textColor="#ffffff"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="0dp"/>
+        android:gravity="start"
+        android:text="@string/default_news_title"
+        android:textColor="@color/colorTitle"
+        android:textSize="16sp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/image_card"
@@ -86,17 +86,19 @@
             android:layout_height="wrap_content"
             android:gravity="start"
             android:text="@string/default_news_publisher"
-            android:textSize="12sp"/>
+            android:textColor="@color/colorSubtitle"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/publish_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="start"
             android:paddingStart="18dp"
             android:paddingEnd="0dp"
-            android:gravity="start"
             android:text="@string/default_news_time"
-            android:textSize="12sp"/>
+            android:textColor="@color/colorSubtitle"
+            android:textSize="12sp" />
 
     </LinearLayout>
 
