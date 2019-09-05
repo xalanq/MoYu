@@ -96,6 +96,7 @@ public class IndexFragment extends BasicFragment {
 
     void updateTab() {
         List<String> tabs = NewsDatabase.getInstance().queryCategory(1);
+        tabs.add(0, getResources().getString(R.string.recommend));
         pagerAdapter = new PagerAdapter(getChildFragmentManager(), tabs);
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(2);

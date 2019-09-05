@@ -11,5 +11,6 @@ public class Constants {
     public static final int PAGE_SIZE = 15;
     public static final String[] category = {"社会", "娱乐", "体育", "科技", "军事", "教育", "文化", "健康", "财经", "汽车"};
     public static final int SEARCH_HISTORY_LIMIT = 10;
+    public static final int RECOMMEND_TAGS_SIZE = 7;
 
 }

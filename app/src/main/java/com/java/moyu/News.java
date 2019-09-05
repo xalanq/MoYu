@@ -94,6 +94,8 @@ class News {
         return this.id;
     }
 
+    public LocalDateTime getTime() { return this.publishTime; }
+
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
         try {

@@ -1,6 +1,7 @@
 package com.java.moyu;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -9,7 +10,13 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,7 +30,9 @@ public class IndexTabFragment extends BasicFragment {
     LinearLayout loadingLayout;
     private NewsAdapter adapter;
     private String category;
-    private String word;
+    private Handler handler;
+    private List<News> recommendData;
+    private Integer recommendRemain;
 
     IndexTabFragment(String category) {
         this.category = category;
@@ -40,88 +49,196 @@ public class IndexTabFragment extends BasicFragment {
 
         adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout),
             NewsAdapter.defaultOnclick(getActivity()));
+        handler = new Handler();
 
         initData();
     }
 
     private void loadMore() {
-        new NewsNetwork.Builder()
-            .add("size", "" + Constants.PAGE_SIZE)
-            .add("words", word)
-            .add("categories", category)
-            .add("endDate", adapter.get(adapter.getItemCount() - 1).getPublishTime().minusSeconds(1).format(Constants.TIME_FORMATTER))
-            .build()
-            .run(new NewsNetwork.Callback() {
-                @Override
-                public void timeout() {
-                    refreshLayout.finishLoadMore(false);
-                }
+        if (category.equals(getResources().getString(R.string.recommend))) {
+            // TODO Test
+//            List<String> tags = NewsDatabase.getInstance().getTags(Constants.RECOMMEND_TAGS_SIZE);
+            List<String> tags = Arrays.asList("香港");
+            recommendData = new ArrayList<>();
+            recommendRemain = tags.size();
+            for (String tag: tags) {
+                new NewsNetwork.Builder()
+                    .add("size", "" + Constants.PAGE_SIZE)
+                    .add("words", tag)
+                    .add("endDate", adapter.get(adapter.getItemCount() - 1).getPublishTime().minusSeconds(1).format(Constants.TIME_FORMATTER))
+                    .build()
+                    .run(new NewsNetwork.Callback() {
+                        @Override
+                        public void timeout() { recommendRemain ++; }
 
-                @Override
-                public void error() {
-                    refreshLayout.finishLoadMore(false);
-                }
+                        @Override
+                        public void error() { recommendRemain --; }
 
+                        @Override
+                        public void ok(List<News> data) {
+                            recommendData.addAll(data);
+                            recommendRemain --;
+                        }
+                    });
+            }
+
+            new Thread(new Runnable() {
                 @Override
-                public void ok(List<News> data) {
-                    if (data.isEmpty()) {
-                        refreshLayout.finishLoadMoreWithNoMoreData();
-                    } else {
-                        adapter.add(data);
-                        refreshLayout.finishLoadMore();
+                public void run() {
+                    while (recommendRemain > 0);
+
+                    Set<News> set = new HashSet<>(recommendData);
+                    List<News> tmp = (new ArrayList<>(set)).subList(0, Constants.PAGE_SIZE);
+                    recommendData = new ArrayList<>(tmp);
+
+                    Collections.sort(recommendData, new Comparator<News>(){
+                        public int compare(News arg0, News arg1) {
+                            return arg1.getTime().compareTo(arg0.getTime());
+                        }
+                    });
+
+                    handler.post(new Runnable(){
+                        @Override
+                        public void run() {
+                            if (recommendData.isEmpty()) {
+                                refreshLayout.finishLoadMoreWithNoMoreData();
+                            } else {
+                                adapter.add(recommendData);
+                                refreshLayout.finishLoadMore();
+                            }
+                            loadingLayout.setVisibility(View.GONE);
+                        }
+                    });
+                }
+            }).start();
+        } else {
+            new NewsNetwork.Builder()
+                .add("size", "" + Constants.PAGE_SIZE)
+                .add("categories", category)
+                .add("endDate", adapter.get(adapter.getItemCount() - 1).getPublishTime().minusSeconds(1).format(Constants.TIME_FORMATTER))
+                .build()
+                .run(new NewsNetwork.Callback() {
+                    @Override
+                    public void timeout() {
+                        refreshLayout.finishLoadMore(false);
                     }
-                    loadingLayout.setVisibility(View.GONE);
-                }
-            });
+
+                    @Override
+                    public void error() {
+                        refreshLayout.finishLoadMore(false);
+                    }
+
+                    @Override
+                    public void ok(List<News> data) {
+                        if (data.isEmpty()) {
+                            refreshLayout.finishLoadMoreWithNoMoreData();
+                        } else {
+                            adapter.add(data);
+                            refreshLayout.finishLoadMore();
+                        }
+                        loadingLayout.setVisibility(View.GONE);
+                    }
+                });
+        }
     }
 
     void refresh(final boolean first) {
-        new NewsNetwork.Builder()
-            .add("size", "" + Constants.PAGE_SIZE)
-            .add("words", word)
-            .add("categories", category)
-            .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
-            .build()
-            .run(new NewsNetwork.Callback() {
-                @Override
-                public void timeout() {
-                    refreshLayout.finishRefresh(false);
-                    if (first) {
-                        loadingLayout.setVisibility(View.GONE);
-                        refreshLayout.setVisibility(View.VISIBLE);
-                    }
-                }
+        if (category.equals(getResources().getString(R.string.recommend))) {
+            // TODO Test
+//            List<String> tags = NewsDatabase.getInstance().getTags(Constants.RECOMMEND_TAGS_SIZE);
+            List<String> tags = Arrays.asList("香港");
+            recommendData = new ArrayList<>();
+            recommendRemain = tags.size();
+            for (String tag: tags) {
+                new NewsNetwork.Builder()
+                    .add("size", "" + Constants.PAGE_SIZE)
+                    .add("words", tag)
+                    .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
+                    .build()
+                    .run(new NewsNetwork.Callback() {
+                        @Override
+                        public void timeout() { recommendRemain ++; }
 
-                @Override
-                public void error() {
-                    refreshLayout.finishRefresh(false);
-                    if (first) {
-                        loadingLayout.setVisibility(View.GONE);
-                        refreshLayout.setVisibility(View.VISIBLE);
-                    }
-                }
+                        @Override
+                        public void error() { recommendRemain --; }
 
+                        @Override
+                        public void ok(List<News> data) {
+                            recommendData.addAll(data);
+                            recommendRemain --;
+                        }
+                    });
+            }
+
+            new Thread(new Runnable() {
                 @Override
-                public void ok(List<News> data) {
-                    adapter.clear();
-                    adapter.add(data);
-                    refreshLayout.finishRefresh();
-                    if (first) {
-                        loadingLayout.setVisibility(View.GONE);
-                        refreshLayout.setVisibility(View.VISIBLE);
-                    }
+                public void run() {
+                    while (recommendRemain > 0);
+
+                    Set<News> set = new HashSet<>(recommendData);
+                    List<News> tmp = (new ArrayList<>(set)).subList(0, Constants.PAGE_SIZE);
+                    recommendData = new ArrayList<>(tmp);
+
+                    Collections.sort(recommendData, new Comparator<News>(){
+                        public int compare(News arg0, News arg1) {
+                            return arg1.getTime().compareTo(arg0.getTime());
+                        }
+                    });
+
+                    handler.post(new Runnable(){
+                        @Override
+                        public void run() {
+                            adapter.clear();
+                            adapter.add(recommendData);
+                            refreshLayout.finishRefresh();
+                            if (first) {
+                                loadingLayout.setVisibility(View.GONE);
+                                refreshLayout.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    });
                 }
-            });
+            }).start();
+        } else {
+            new NewsNetwork.Builder()
+                .add("size", "" + Constants.PAGE_SIZE)
+                .add("categories", category)
+                .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
+                .build()
+                .run(new NewsNetwork.Callback() {
+                    @Override
+                    public void timeout() {
+                        refreshLayout.finishRefresh(false);
+                        if (first) {
+                            loadingLayout.setVisibility(View.GONE);
+                            refreshLayout.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void error() {
+                        refreshLayout.finishRefresh(false);
+                        if (first) {
+                            loadingLayout.setVisibility(View.GONE);
+                            refreshLayout.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void ok(List<News> data) {
+                        adapter.clear();
+                        adapter.add(data);
+                        refreshLayout.finishRefresh();
+                        if (first) {
+                            loadingLayout.setVisibility(View.GONE);
+                            refreshLayout.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+        }
     }
 
     void initData() {
-        if (category.equals(getResources().getString(R.string.recommend))) {
-            this.word = "香港";
-            this.category = "";
-        } else {
-            this.word = "";
-        }
-
         refresh(true);
         refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
