@@ -96,7 +96,7 @@ public class NewsActivity extends VideoActivity {
     private void initData() {
         try {
             news = new News(new JSONObject(getIntent().getExtras().getString("news")));
-            isStarred = NewsDatabase.getInstance().queryFavour(news.id);
+            isStarred = NewsDatabase.getInstance().queryFavor(news.id);
 
             getSupportActionBar().setTitle(news.publisher);
             if (news.image != null) {
@@ -142,7 +142,7 @@ public class NewsActivity extends VideoActivity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    NewsDatabase.getInstance().addFavour(news.id, LocalDateTime.now());
+                    NewsDatabase.getInstance().addFavor(news.id, LocalDateTime.now());
                 }
             }).start();
             item.setIcon(R.drawable.ic_starred);
@@ -150,7 +150,7 @@ public class NewsActivity extends VideoActivity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    NewsDatabase.getInstance().delFavour(news.id);
+                    NewsDatabase.getInstance().delFavor(news.id);
                 }
             }).start();
             item.setIcon(R.drawable.ic_star_light);

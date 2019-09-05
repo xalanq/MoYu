@@ -110,7 +110,7 @@ public class SearchIndexFragment extends BasicFragment {
                     a.add(String.format("热搜%d", new Random().nextInt() % 999));
                 }
                 hotAdapter.add(a);
-                historyAdapter.add(NewsDatabase.getInstance().querySearchHistory(Constants.SEARCH_HISTORY_LIMIT));
+                historyAdapter.add(NewsDatabase.getInstance().querySearchHistory(0, Constants.SEARCH_HISTORY_LIMIT));
             }
         }, 10);
     }

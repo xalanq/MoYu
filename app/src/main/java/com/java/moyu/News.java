@@ -110,7 +110,7 @@ class News {
             for (int i = 0; i < (this.image == null ? 0 : this.image.length); i++) {
                 items_str.add(this.image[i]);
             }
-            json.put("image", new JSONArray(items_str));
+            json.put("image", new JSONArray(items_str).toString());
             json.put("video", this.video);
             json.put("publisher", this.publisher);
             items.clear();

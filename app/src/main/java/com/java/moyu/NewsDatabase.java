@@ -81,6 +81,9 @@ public class NewsDatabase extends SQLiteOpenHelper {
             db.insertWithOnConflict(TABLE_NAME_CATEGORY, null, values, SQLiteDatabase.CONFLICT_IGNORE);
             i++;
         }
+        ContentValues values = new ContentValues();
+        values.put(VALUE_TOKEN, "");
+        db.insertWithOnConflict(TABLE_NAME_USER, null, values, SQLiteDatabase.CONFLICT_IGNORE);
         Log.d(TAG, "-------> onCreate");
     }
 
@@ -134,7 +137,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
      * @param time
      * @return conflicted or not
      */
-    public boolean addFavour(String news_id, LocalDateTime time) {
+    public boolean addFavor(String news_id, LocalDateTime time) {
         Cursor cursor = getWritableDatabase().query(TABLE_NAME_NEWS, null, VALUE_NEWS_ID + " = ?", new String[]{news_id}, null, null, null, null);
 
         ContentValues values = new ContentValues();
@@ -193,7 +196,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
         return news;
     }
 
-    final public List<News> queryFavourList(Integer offset, Integer limit) {
+    final public List<News> queryFavorList(Integer offset, Integer limit) {
         String str_limit = offset.toString() + "," + limit.toString();
         Cursor cursor = getReadableDatabase().query(TABLE_NAME_NEWS, null, VALUE_STARED + " = ?", new String[]{"1"}, null, null, VALUE_STAR_TIME + " DESC", str_limit);
 
@@ -210,7 +213,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
         return list;
     }
 
-    final public boolean queryFavour(String news_id) {
+    final public boolean queryFavor(String news_id) {
         Cursor cursor = getReadableDatabase().query(TABLE_NAME_NEWS, null, VALUE_NEWS_ID + " = ?", new String[]{news_id}, null, null, null, null);
         cursor.moveToFirst();
         boolean hasStared = cursor.getInt(cursor.getColumnIndex(VALUE_STARED)) > 0;
@@ -235,7 +238,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
         return list;
     }
 
-    public void delFavour(String news_id) {
+    public void delFavor(String news_id) {
         ContentValues values = new ContentValues();
         values.put(VALUE_STARED, 0);
         values.putNull(VALUE_STAR_TIME);
@@ -249,7 +252,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
         getWritableDatabase().update(TABLE_NAME_NEWS, values, VALUE_NEWS_ID + " = ? ", new String[]{news_id});
     }
 
-    public void delAllFavour() {
+    public void delAllFavor() {
         ContentValues values = new ContentValues();
         values.put(VALUE_STARED, 0);
         values.putNull(VALUE_STAR_TIME);
@@ -311,8 +314,9 @@ public class NewsDatabase extends SQLiteOpenHelper {
         return index > 0;
     }
 
-    final public List<String> querySearchHistory(Integer limit) {
-        Cursor cursor = getReadableDatabase().query(TABLE_NAME_SEARCH, null, null, null, null, null, VALUE_ID + " DESC", limit.toString());
+    final public List<String> querySearchHistory(Integer offset, Integer limit) {
+        String str_limit = offset.toString() + "," + limit.toString();
+        Cursor cursor = getReadableDatabase().query(TABLE_NAME_SEARCH, null, null, null, null, null, VALUE_ID + " DESC", str_limit);
 
         List<String> list = new ArrayList<>();
         if (cursor.getCount() > 0) {
@@ -335,21 +339,15 @@ public class NewsDatabase extends SQLiteOpenHelper {
         getWritableDatabase().delete(TABLE_NAME_SEARCH, null, null);
     }
 
-    public void addToken(String token) {
+    final public String getToken() {
+        Cursor cursor = getReadableDatabase().query(TABLE_NAME_USER, null, VALUE_TOKEN, null, null, null, null);
+        return cursor.getString(0);
+    }
+
+    public void setToken(String token) {
         ContentValues values = new ContentValues();
         values.put(VALUE_TOKEN, token);
-        getWritableDatabase().insertWithOnConflict(TABLE_NAME_USER, null, null, SQLiteDatabase.CONFLICT_IGNORE);
-    }
-
-    public void delToken(String token) {
-        getWritableDatabase().delete(TABLE_NAME_USER, VALUE_TOKEN, new String[]{token});
-    }
-
-    final public boolean queryToken(String token) {
-        Cursor cursor = getReadableDatabase().query(TABLE_NAME_USER, null, VALUE_TOKEN + " = ? ", new String[]{token}, null, null, null);
-        boolean isExist = cursor.getCount() > 0;
-        cursor.close();
-        return isExist;
+        getWritableDatabase().replace(TABLE_NAME_USER, null, values);
     }
 
 }
