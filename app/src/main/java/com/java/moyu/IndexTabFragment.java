@@ -2,6 +2,7 @@ package com.java.moyu;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -21,6 +22,8 @@ import java.util.Set;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import butterknife.BindView;
+
+import java.lang.Math;
 
 public class IndexTabFragment extends BasicFragment {
 
@@ -61,7 +64,7 @@ public class IndexTabFragment extends BasicFragment {
                 while (recommendRemain > 0);
 
                 Set<News> set = new HashSet<>(recommendData);
-                List<News> tmp = (new ArrayList<>(set)).subList(0, Constants.PAGE_SIZE);
+                List<News> tmp = (new ArrayList<>(set)).subList(0, Math.min(Constants.PAGE_SIZE, recommendData.size()));
                 recommendData = new ArrayList<>(tmp);
 
                 Collections.sort(recommendData, new Comparator<News>(){
@@ -69,7 +72,6 @@ public class IndexTabFragment extends BasicFragment {
                         return arg1.getTime().compareTo(arg0.getTime());
                     }
                 });
-
                 handler.post(runnable);
             }
         }).start();
@@ -79,7 +81,7 @@ public class IndexTabFragment extends BasicFragment {
         if (category.equals(getResources().getString(R.string.recommend))) {
             // TODO Test
 //            List<String> tags = NewsDatabase.getInstance().getTags(Constants.RECOMMEND_TAGS_SIZE);
-            List<String> tags = Arrays.asList("香港");
+            List<String> tags = Arrays.asList("特朗普", "周琦");
             recommendData = new ArrayList<>();
             recommendRemain = tags.size();
             for (String tag: tags) {
@@ -150,7 +152,7 @@ public class IndexTabFragment extends BasicFragment {
         if (category.equals(getResources().getString(R.string.recommend))) {
             // TODO Test
 //            List<String> tags = NewsDatabase.getInstance().getTags(Constants.RECOMMEND_TAGS_SIZE);
-            List<String> tags = Arrays.asList("香港");
+            List<String> tags = Arrays.asList("特朗普", "周琦");
             recommendData = new ArrayList<>();
             recommendRemain = tags.size();
             for (String tag: tags) {
