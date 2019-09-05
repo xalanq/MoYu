@@ -54,6 +54,27 @@ public class IndexTabFragment extends BasicFragment {
         initData();
     }
 
+    private void dealRecommendData(final Runnable runnable) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (recommendRemain > 0);
+
+                Set<News> set = new HashSet<>(recommendData);
+                List<News> tmp = (new ArrayList<>(set)).subList(0, Constants.PAGE_SIZE);
+                recommendData = new ArrayList<>(tmp);
+
+                Collections.sort(recommendData, new Comparator<News>(){
+                    public int compare(News arg0, News arg1) {
+                        return arg1.getTime().compareTo(arg0.getTime());
+                    }
+                });
+
+                handler.post(runnable);
+            }
+        }).start();
+    }
+
     private void loadMore() {
         if (category.equals(getResources().getString(R.string.recommend))) {
             // TODO Test
@@ -81,36 +102,19 @@ public class IndexTabFragment extends BasicFragment {
                         }
                     });
             }
-
-            new Thread(new Runnable() {
+            dealRecommendData(new Runnable(){
                 @Override
                 public void run() {
-                    while (recommendRemain > 0);
-
-                    Set<News> set = new HashSet<>(recommendData);
-                    List<News> tmp = (new ArrayList<>(set)).subList(0, Constants.PAGE_SIZE);
-                    recommendData = new ArrayList<>(tmp);
-
-                    Collections.sort(recommendData, new Comparator<News>(){
-                        public int compare(News arg0, News arg1) {
-                            return arg1.getTime().compareTo(arg0.getTime());
-                        }
-                    });
-
-                    handler.post(new Runnable(){
-                        @Override
-                        public void run() {
-                            if (recommendData.isEmpty()) {
-                                refreshLayout.finishLoadMoreWithNoMoreData();
-                            } else {
-                                adapter.add(recommendData);
-                                refreshLayout.finishLoadMore();
-                            }
-                            loadingLayout.setVisibility(View.GONE);
-                        }
-                    });
+                    if (recommendData.isEmpty()) {
+                        refreshLayout.finishLoadMoreWithNoMoreData();
+                    } else {
+                        adapter.add(recommendData);
+                        refreshLayout.finishLoadMore();
+                    }
+                    loadingLayout.setVisibility(View.GONE);
                 }
-            }).start();
+            });
+
         } else {
             new NewsNetwork.Builder()
                 .add("size", "" + Constants.PAGE_SIZE)
@@ -170,35 +174,18 @@ public class IndexTabFragment extends BasicFragment {
                     });
             }
 
-            new Thread(new Runnable() {
+            dealRecommendData(new Runnable(){
                 @Override
                 public void run() {
-                    while (recommendRemain > 0);
-
-                    Set<News> set = new HashSet<>(recommendData);
-                    List<News> tmp = (new ArrayList<>(set)).subList(0, Constants.PAGE_SIZE);
-                    recommendData = new ArrayList<>(tmp);
-
-                    Collections.sort(recommendData, new Comparator<News>(){
-                        public int compare(News arg0, News arg1) {
-                            return arg1.getTime().compareTo(arg0.getTime());
-                        }
-                    });
-
-                    handler.post(new Runnable(){
-                        @Override
-                        public void run() {
-                            adapter.clear();
-                            adapter.add(recommendData);
-                            refreshLayout.finishRefresh();
-                            if (first) {
-                                loadingLayout.setVisibility(View.GONE);
-                                refreshLayout.setVisibility(View.VISIBLE);
-                            }
-                        }
-                    });
+                    adapter.clear();
+                    adapter.add(recommendData);
+                    refreshLayout.finishRefresh();
+                    if (first) {
+                        loadingLayout.setVisibility(View.GONE);
+                        refreshLayout.setVisibility(View.VISIBLE);
+                    }
                 }
-            }).start();
+            });
         } else {
             new NewsNetwork.Builder()
                 .add("size", "" + Constants.PAGE_SIZE)
