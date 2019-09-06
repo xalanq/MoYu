@@ -180,7 +180,11 @@ public class ShareUtil {
             intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, getImagesUri(context, images));
         }
         intent.putExtra(Intent.EXTRA_SUBJECT, msgTitle);
-        intent.putExtra(Intent.EXTRA_TEXT, msgText);
+        if (msgText.length() > 50) {
+            intent.putExtra(Intent.EXTRA_TEXT, msgText.substring(0, 50) + "...");
+        } else {
+            intent.putExtra(Intent.EXTRA_TEXT, msgText);
+        }
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(Intent.createChooser(intent, SHARE_PANEL_TITLE));
 
