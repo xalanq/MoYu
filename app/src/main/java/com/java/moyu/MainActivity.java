@@ -1,24 +1,32 @@
 package com.java.moyu;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.transition.CircularPropagation;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.cache.DiskCache;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
 
+import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends VideoActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -27,6 +35,8 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
     DrawerLayout drawerLayout;
     @BindView(R.id.main_navigation_view)
     NavigationView navigationView;
+    CircleImageView avatarView;
+    TextView username;
     private BasicFragment currentFragment;
     private boolean checkExit;
 
@@ -42,25 +52,83 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         fragmentAllocator = new FragmentAllocator();
 
         setNavigation();
+
+        backDefault();
+        reloadUser(false);
         User.getInstance().updateUserInfo(new User.DefaultCallback() {
             @Override
             public void error(String msg) {
                 BasicApplication.showToast(msg);
+                reloadUser(true);
             }
 
             @Override
             public void ok() {
-
+                reloadUser(true);
             }
         });
-
-        backDefault();
     }
 
     private void setNavigation() {
         navigationView.setNavigationItemSelectedListener(this);
-        final TextView username = navigationView.getHeaderView(0).findViewById(R.id.main_navigation_username);
-        username.setText(R.string.main_navigation_login);
+        username = navigationView.getHeaderView(0).findViewById(R.id.main_navigation_username);
+        avatarView = navigationView.getHeaderView(0).findViewById(R.id.main_navigation_avatar);
+        username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickUser();
+            }
+        });
+        avatarView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickUser();
+            }
+        });
+    }
+
+    void reloadUser(boolean refreshFragment) {
+        String name = User.getInstance().getUsername();
+        if (name.isEmpty())
+            name = getResources().getString(R.string.main_navigation_login);
+        username.setText(name);
+        String avatar = User.getInstance().getAvatar();
+        if (avatar.isEmpty()) {
+            avatarView.setImageResource(R.drawable.default_avatar);
+        } else {
+            Glide.with(this).load(User.getInstance().getAvatar())
+                .placeholder(R.drawable.loading_cover)
+                .error(R.drawable.default_avatar).centerCrop()
+                .into(avatarView);
+        }
+        if (refreshFragment) {
+            if (currentFragment == fragmentAllocator.getIndexFragment())
+                fragmentAllocator.getIndexFragment().updateTab();
+            else if (currentFragment == fragmentAllocator.getFavoriteFragment())
+                fragmentAllocator.getFavoriteFragment().initData();
+            else if (currentFragment == fragmentAllocator.getHistoryFragment())
+                fragmentAllocator.getHistoryFragment().initData();
+        }
+    }
+
+    void clickUser() {
+        if (User.getInstance().isLogged()) {
+            startActivityForResult(new Intent(MainActivity.this, UserActivity.class), 2);
+        } else {
+            startActivityForResult(new Intent(MainActivity.this, LoginActivity.class), 1);
+        }
+        overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 1)
+                reloadUser(true);
+            else if (requestCode == 2)
+                reloadUser(false);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     void switchFragment(BasicFragment fragment) {

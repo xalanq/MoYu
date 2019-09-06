@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 
 public class UserNetwork {
 
-    private final static String TAG = "NewsNetwork";
+    private final static String TAG = "UserNetwork";
 
     private String url;
     private byte[] data;
@@ -43,7 +43,7 @@ public class UserNetwork {
         String url;
 
         Builder(String apiUrl) {
-            builder = Uri.parse(Constants.UserAPIUrl).buildUpon();
+            builder = new Uri.Builder();
             url = Constants.UserAPIUrl + apiUrl;
         }
 
@@ -55,7 +55,7 @@ public class UserNetwork {
         UserNetwork build() {
             byte[] data;
             try {
-                data = builder.build().toString().getBytes(StandardCharsets.UTF_8);
+                data = builder.build().toString().substring(1).getBytes(StandardCharsets.UTF_8);
             } catch (Exception e) {
                 data = new byte[1];
             }
@@ -124,7 +124,7 @@ public class UserNetwork {
                 try {
                     callback.error(result.data.getString("msg"));
                 } catch (Exception e) {
-                    Log.d(TAG, e.toString());
+                    e.printStackTrace();
                 }
                 break;
             case TIMEOUT:

@@ -68,9 +68,26 @@
     <string name="share">分享</string>
     <string name="recommend">推荐</string>
     <string name="timeout">请求超时</string>
-    <string name="unknown_error">未知错误</string>
+    <string name="unknown_error">未知错误，是不是没联网？</string>
     <string name="empty">~ 啥也没有呢 ~</string>
     <string name="retry">重试刷新</string>
+
+    <string name="username">用户名</string>
+    <string name="password">密码</string>
+    <string name="password_confirm">密码确认</string>
+    <string name="email">邮箱</string>
+    <string name="avatar">头像链接</string>
+    <string name="login">登录</string>
+    <string name="login_loading">登录中</string>
+    <string name="login_success">登录成功</string>
+    <string name="register_hint">还没账户？注册一个</string>
+    <string name="register">注册</string>
+    <string name="register_loading">注册中</string>
+    <string name="register_success">注册成功</string>
+    <string name="error_confirm">两次输入的密码不一致</string>
+    <string name="user_setting">用户设置</string>
+    <string name="update">更新</string>
+    <string name="logout">注销</string>
 
     <string name="cache_title">清除缓存</string>
     <string name="cache_calculate">正在计算中</string>

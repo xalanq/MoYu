@@ -6,7 +6,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.billy.android.swipe.SmartSwipe;
 import com.billy.android.swipe.SwipeConsumer;
@@ -21,7 +20,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
-public class CategoryActivity extends BasicActivity {
+public class CategoryActivity extends SwipeActivity {
 
     @BindView(R.id.category_edit_current)
     TextView editCurrent;
@@ -34,7 +33,6 @@ public class CategoryActivity extends BasicActivity {
     private ChipAdapter remainAdapter;
     private ChipAdapter currentAdapter;
     private ItemTouchHelper itemTouchHelper;
-    private SwipeConsumer consumer;
 
     @Override
     protected int getLayoutResource() {
@@ -44,10 +42,6 @@ public class CategoryActivity extends BasicActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        consumer = SmartSwipe.wrap(this)
-            .addConsumer(new ActivitySlidingBackConsumer(this))
-            .enableLeft();
 
         remainAdapter = ChipAdapter.newAdapter(this, findViewById(R.id.category_remain_layout), new ChipAdapter.OnClick() {
             @Override
@@ -155,7 +149,17 @@ public class CategoryActivity extends BasicActivity {
                 } else {
                     editCurrent.setText(getResources().getText(R.string.edit));
                     hasEdited = true;
-                    NewsDatabase.getInstance().updateCategory(currentAdapter.getData(), remainAdapter.getData());
+                    User.getInstance().updateCategory(currentAdapter.getData(), remainAdapter.getData(), new User.DefaultCallback() {
+                        @Override
+                        public void error(String msg) {
+                            BasicApplication.showToast(msg);
+                        }
+
+                        @Override
+                        public void ok() {
+
+                        }
+                    });
                 }
             }
         });
@@ -177,7 +181,6 @@ public class CategoryActivity extends BasicActivity {
         data.putExtra("selectPosition", selectPosition);
         setResult(RESULT_OK, data);
         super.finish();
-        overridePendingTransition(R.anim.slide_stay, R.anim.slide_left_exit);
     }
 
     void initData() {

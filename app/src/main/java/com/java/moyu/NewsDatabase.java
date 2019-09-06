@@ -340,16 +340,19 @@ public class NewsDatabase extends SQLiteOpenHelper {
     }
 
     final public String getToken() {
-        Cursor cursor = getReadableDatabase().query(TABLE_NAME_USER, null, VALUE_TOKEN, null, null, null, null);
-        if (cursor.getCount() > 0)
-            return cursor.getString(0);
+        Cursor cursor = getReadableDatabase().query(TABLE_NAME_USER, null, null, null, null, null, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            return cursor.getString(cursor.getColumnIndex(VALUE_TOKEN));
+        }
         return "";
     }
 
     public void setToken(String token) {
         ContentValues values = new ContentValues();
+        values.put(VALUE_ID, 1);
         values.put(VALUE_TOKEN, token);
-        getWritableDatabase().replace(TABLE_NAME_USER, null, values);
+        getWritableDatabase().update(TABLE_NAME_USER, values, null, null);
     }
 
 }

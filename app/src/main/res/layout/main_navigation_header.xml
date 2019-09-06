@@ -9,10 +9,11 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/main_navigation_avatar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_centerInParent="true"
         android:layout_marginTop="25dp"
+        android:clickable="true"
         android:src="@drawable/default_avatar"/>
 
     <TextView
@@ -22,6 +23,7 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@id/main_navigation_avatar"
         android:text="@string/main_navigation_login"
+        android:clickable="true"
         android:textSize="15sp"
         android:paddingTop="10dp"
         android:textColor="#ffffff"

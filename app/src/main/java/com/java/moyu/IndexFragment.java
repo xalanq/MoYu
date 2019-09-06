@@ -7,7 +7,6 @@ import android.os.StrictMode;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -76,8 +75,6 @@ public class IndexFragment extends BasicFragment {
         });
 
         tabLayout.setupWithViewPager(viewPager);
-
-        updateTab();
     }
 
     @Override

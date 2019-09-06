@@ -2,7 +2,6 @@ package com.java.moyu;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
@@ -34,6 +33,7 @@ public class SearchActivity extends BasicActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         searchBox.requestFocus();
         searchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
