@@ -18,8 +18,8 @@ public class BasicApplication extends Application {
         return isNight;
     }
 
-    public static void setNight(boolean isNight) {
-        BasicApplication.isNight = isNight;
+    public static void setNight(boolean value) {
+        isNight = value;
     }
 
     public static void showToast(String text) {

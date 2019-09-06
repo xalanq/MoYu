@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -87,11 +86,11 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
             }
         });
         final Switch actionView = (Switch) navigationView.getMenu().findItem(R.id.main_navigation_menu_night_mode).getActionView();
-        actionView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        actionView.setChecked(BasicApplication.isNight());
+        actionView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                BasicApplication.setNight(isChecked);
-                updateTheme();
+            public void onClick(View view) {
+                switchDayNight();
             }
         });
     }
@@ -167,7 +166,7 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         } else if (id == R.id.main_navigation_menu_about) {
             switchFragment(fragmentAllocator.getAboutFragment());
         } else if (id == R.id.main_navigation_menu_night_mode) {
-            switchNightMode();
+            switchDayNight();
             return false;
         } else if (id == R.id.main_navigation_menu_clear_cache) {
             clearCache();
@@ -204,9 +203,12 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         switchFragment(fragmentAllocator.getIndexFragment());
     }
 
-    private void switchNightMode() {
+    private void switchDayNight() {
+        boolean isNight = !BasicApplication.isNight();
+        BasicApplication.setNight(isNight);
         Switch mode = (Switch) navigationView.getMenu().findItem(R.id.main_navigation_menu_night_mode).getActionView();
-        mode.setChecked(!mode.isChecked());
+        mode.setChecked(isNight);
+        updateTheme();
     }
 
     private void clearCache() {
