@@ -2,6 +2,7 @@ package com.java.moyu;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -202,11 +203,7 @@ public class NewsActivity extends VideoActivity {
             clickStar(item);
             return true;
         case R.id.share_button:
-            new ShareUtil.Builder(this)
-                .setContentType(ShareUtil.ShareContentType.TEXT)
-                .setTitle(news.title)
-                .setTextContent(news.content, 50)
-                .build().shareBySystem();
+            ShareUtil.getInstance().shareImageText(this, news.title, news.content, news.image);
             return true;
         default:
             return super.onOptionsItemSelected(item);

@@ -1,314 +1,192 @@
 package com.java.moyu;
 
-import android.app.Activity;
-import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.text.TextUtils;
-import android.util.Log;
+import android.os.AsyncTask;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StringDef;
-
-// https://github.com/NamePretty/ShareUtils
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class ShareUtil {
 
-    private static final String TAG = "ShareUtil";
-    /**
-     * Current activity
-     */
-    private Activity activity;
-    /**
-     * Share content type
-     */
-    private @ShareContentType
-    String contentType;
-    /**
-     * Share title
-     */
-    private String title;
-    /**
-     * Share file Uri
-     */
-    private Uri shareFileUri;
-    /**
-     * Share content text
-     */
-    private String contentText;
-    /**
-     * Share to special component PackageName
-     */
-    private String componentPackageName;
-    /**
-     * Share to special component ClassName
-     */
-    private String componentClassName;
-    /**
-     * Share complete onActivityResult requestCode
-     */
-    private int requestCode;
-    /**
-     * Forced Use System Chooser
-     */
-    private boolean forcedUseSystemChooser;
+    private static ShareUtil instance;
+    private final String SHARE_PANEL_TITLE = "Share to:";
 
-    private ShareUtil(@NonNull Builder builder) {
-        this.activity = builder.activity;
-        this.contentType = builder.contentType;
-        this.title = builder.title;
-        this.shareFileUri = builder.shareFileUri;
-        this.contentText = builder.textContent;
-        this.componentPackageName = builder.componentPackageName;
-        this.componentClassName = builder.componentClassName;
-        this.requestCode = builder.requestCode;
-        this.forcedUseSystemChooser = builder.forcedUseSystemChooser;
-    }
+    private ShareUtil() { }
 
-    /**
-     * shareBySystem
-     */
-    public void shareBySystem() {
-        if (checkShareParam()) {
-            Intent shareIntent = createShareIntent();
+    public static ShareUtil getInstance() {
 
-            if (shareIntent == null) {
-                Log.e(TAG, "shareBySystem cancel.");
-                return;
-            }
-
-            if (title == null) {
-                title = "";
-            }
-
-            if (forcedUseSystemChooser) {
-                shareIntent = Intent.createChooser(shareIntent, title);
-            }
-
-            if (shareIntent.resolveActivity(activity.getPackageManager()) != null) {
-                try {
-                    if (requestCode != -1) {
-                        activity.startActivityForResult(shareIntent, requestCode);
-                    } else {
-                        activity.startActivity(shareIntent);
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, Log.getStackTraceString(e));
+        if (instance == null) {
+            synchronized (ShareUtil.class) {
+                if (instance == null) {
+                    instance = new ShareUtil();
                 }
             }
         }
+        return instance;
+
     }
 
-    private Intent createShareIntent() {
+    private final boolean copyFile(String oldPath$Name, String newPath$Name) {
+
+        try {
+
+            File oldFile = new File(oldPath$Name);
+            if (!oldFile.exists() || !oldFile.isFile() || !oldFile.canRead()) {
+                return false;
+            }
+
+            FileInputStream fileInputStream = new FileInputStream(oldPath$Name);
+            FileOutputStream fileOutputStream = new FileOutputStream(newPath$Name);
+            byte[] buffer = new byte[1024];
+            int byteRead;
+            while (-1 != (byteRead = fileInputStream.read(buffer))) {
+                fileOutputStream.write(buffer, 0, byteRead);
+            }
+            fileInputStream.close();
+            fileOutputStream.flush();
+            fileOutputStream.close();
+            return true;
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return false;
+
+        }
+    }
+
+    private final String fileName(String file) {
+        return file.substring(file.lastIndexOf('/')+1);
+    }
+
+    private final String fileExtension(String file) {
+        return file.substring(file.lastIndexOf('.'));
+    }
+
+    private final String moveToExternal(Context context, String imgUrl, String imgPath) {
+        String externalPath = context.getExternalCacheDir().getAbsolutePath() + '/'
+            + fileName(imgPath)
+            + fileExtension(imgUrl);
+        copyFile(imgPath, externalPath);
+        return externalPath;
+    }
+
+    private static Uri shareImageUri;
+    private class getImageCacheAsyncTask extends AsyncTask<String, Void, Void> {
+
+        private final Context context;
+
+        public getImageCacheAsyncTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            String imgUrl = params[0];
+            try {
+                String imgPath = Glide.with(context)
+                    .load(imgUrl)
+                    .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .get().getPath();
+                shareImageUri = Uri.parse(moveToExternal(context, imgUrl, imgPath));
+                return null;
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+
+    }
+
+    private Uri getImageUri(Context context, String image) {
+
+        try {
+            new getImageCacheAsyncTask(context).execute(image).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return shareImageUri;
+    }
+
+    private ArrayList<Uri> getImagesUri(Context context, String[] images) {
+
+        ArrayList<Uri> uriList = new ArrayList<>();
+        for (int i = 0; i < images.length; i++) {
+            uriList.add(getImageUri(context, images[i]));
+        }
+        return uriList;
+
+    }
+
+    public void shareText(Context context, String shareText) {
+
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        shareIntent.addCategory("android.intent.category.DEFAULT");
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+        context.startActivity(Intent.createChooser(shareIntent, SHARE_PANEL_TITLE));
 
-        if (!TextUtils.isEmpty(this.componentPackageName) && !TextUtils.isEmpty(componentClassName)) {
-            ComponentName comp = new ComponentName(componentPackageName, componentClassName);
-            shareIntent.setComponent(comp);
-        }
-
-        switch (contentType) {
-        case ShareContentType.TEXT:
-            shareIntent.putExtra(Intent.EXTRA_TEXT, contentText);
-            shareIntent.setType("text/plain");
-            break;
-        case ShareContentType.IMAGE:
-        case ShareContentType.AUDIO:
-        case ShareContentType.VIDEO:
-        case ShareContentType.FILE:
-            shareIntent.setAction(Intent.ACTION_SEND);
-            shareIntent.addCategory("android.intent.category.DEFAULT");
-            shareIntent.setType(contentType);
-            shareIntent.putExtra(Intent.EXTRA_STREAM, shareFileUri);
-            shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            Log.d(TAG, "Share uri: " + shareFileUri.toString());
-            break;
-        default:
-            Log.e(TAG, contentType + " is not support share type.");
-            shareIntent = null;
-            break;
-        }
-
-        return shareIntent;
     }
 
-    private boolean checkShareParam() {
-        if (this.activity == null) {
-            Log.e(TAG, "activity is null.");
-            return false;
-        }
+    public void shareSingleImage(Context context, String imagePath) {
 
-        if (TextUtils.isEmpty(this.contentType)) {
-            Log.e(TAG, "Share content type is empty.");
-            return false;
-        }
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, getImageUri(context, imagePath));
+        shareIntent.setType("image/*");
+        context.startActivity(Intent.createChooser(shareIntent, SHARE_PANEL_TITLE));
 
-        if (ShareContentType.TEXT.equals(contentType)) {
-            if (TextUtils.isEmpty(contentText)) {
-                Log.e(TAG, "Share text context is empty.");
-                return false;
-            }
+    }
+
+    public void shareMultipleImage(Context context, String[] images) {
+
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+        shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, getImagesUri(context, images));
+        shareIntent.setType("image/*");
+        context.startActivity(Intent.createChooser(shareIntent, SHARE_PANEL_TITLE));
+
+    }
+
+    /**
+     * 分享图文
+     * @param context       上下文
+     * @param msgTitle      消息标题
+     * @param msgText       消息内容
+     * @param images        图片路径，不分享图片则传null
+     */
+    public void shareImageText(Context context, String msgTitle, String msgText, String[] images) {
+
+        Intent intent;
+        if (images == null || images.length == 0) {
+            intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain"); // 纯文本
+        } else if (images.length == 1) {
+            intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_STREAM, getImageUri(context, images[0]));
         } else {
-            if (this.shareFileUri == null) {
-                Log.e(TAG, "Share file path is null.");
-                return false;
-            }
+            intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+            intent.setType("image/*");
+            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, getImagesUri(context, images));
         }
-
-        return true;
-    }
-
-
-    @StringDef({ShareContentType.TEXT, ShareContentType.IMAGE,
-        ShareContentType.AUDIO, ShareContentType.VIDEO, ShareContentType.FILE})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface ShareContentType {
-
-        /**
-         * Share Text
-         */
-        String TEXT = "text/plain";
-
-        /**
-         * Share Image
-         */
-        String IMAGE = "image/*";
-
-        /**
-         * Share Audio
-         */
-        String AUDIO = "audio/*";
-
-        /**
-         * Share Video
-         */
-        String VIDEO = "video/*";
-
-        /**
-         * Share File
-         */
-        String FILE = "*/*";
+        intent.putExtra(Intent.EXTRA_SUBJECT, msgTitle);
+        if (msgText.length() > 50) {
+            intent.putExtra(Intent.EXTRA_TEXT, msgText.substring(0, 50) + "...");
+        } else {
+            intent.putExtra(Intent.EXTRA_TEXT, msgText);
+        }
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(Intent.createChooser(intent, SHARE_PANEL_TITLE));
 
     }
-
-    public static class Builder {
-
-        private Activity activity;
-        private @ShareContentType
-        String contentType = ShareContentType.FILE;
-        private String title;
-        private String componentPackageName;
-        private String componentClassName;
-        private Uri shareFileUri;
-        private String textContent;
-        private int requestCode = -1;
-        private boolean forcedUseSystemChooser = true;
-
-        public Builder(Activity activity) {
-            this.activity = activity;
-        }
-
-        /**
-         * Set Content Type
-         *
-         * @param contentType {@link ShareContentType}
-         * @return Builder
-         */
-        public Builder setContentType(@ShareContentType String contentType) {
-            this.contentType = contentType;
-            return this;
-        }
-
-        /**
-         * Set Title
-         *
-         * @param title title
-         * @return Builder
-         */
-        public Builder setTitle(@NonNull String title) {
-            this.title = title;
-            return this;
-        }
-
-        /**
-         * Set share file path
-         *
-         * @param shareFileUri shareFileUri
-         * @return Builder
-         */
-        public Builder setShareFileUri(Uri shareFileUri) {
-            this.shareFileUri = shareFileUri;
-            return this;
-        }
-
-        /**
-         * Set text content
-         *
-         * @param textContent textContent
-         * @return Builder
-         */
-        public Builder setTextContent(String textContent, int max_len) {
-            if (max_len > textContent.length()) {
-                max_len = textContent.length();
-                this.textContent = textContent.substring(0, max_len);
-            } else {
-                this.textContent = textContent.substring(0, max_len) + "……";
-            }
-            return this;
-        }
-
-        /**
-         * Set Share To Component
-         *
-         * @param componentPackageName componentPackageName
-         * @param componentClassName   componentPackageName
-         * @return Builder
-         */
-        public Builder setShareToComponent(String componentPackageName, String componentClassName) {
-            this.componentPackageName = componentPackageName;
-            this.componentClassName = componentClassName;
-            return this;
-        }
-
-        /**
-         * Set onActivityResult requestCode, default value is -1
-         *
-         * @param requestCode requestCode
-         * @return Builder
-         */
-        public Builder setOnActivityResult(int requestCode) {
-            this.requestCode = requestCode;
-            return this;
-        }
-
-        /**
-         * Forced Use System Chooser To Share
-         *
-         * @param enable default is true
-         * @return Builder
-         */
-        public Builder forcedUseSystemChooser(boolean enable) {
-            this.forcedUseSystemChooser = enable;
-            return this;
-        }
-
-        /**
-         * build
-         *
-         * @return ShareUtil
-         */
-        public ShareUtil build() {
-            return new ShareUtil(this);
-        }
-
-    }
-
 }
