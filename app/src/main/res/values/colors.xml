@@ -3,4 +3,11 @@
     <color name="colorPrimary">#714CB9</color>
     <color name="colorPrimaryDark">#6337B3</color>
     <color name="colorAccent">#E91E63</color>
+    <color name="colorTitle">#000000</color>
+    <color name="colorSubtitle">#7C7C7C</color>
+    <color name="colorText">#000000</color>
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorTabRipple">#CCCCCC</color>
+    <color name="colorTopBackground">#FFFFFF</color>
+    <color name="colorTabSelectedText">#714CB9</color>
 </resources>

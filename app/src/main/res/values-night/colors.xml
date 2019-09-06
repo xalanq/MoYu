@@ -7,4 +7,7 @@
     <color name="colorSubtitle">#888888</color>
     <color name="colorText">#B7B7B7</color>
     <color name="colorBackground">#121212</color>
+    <color name="colorTabRipple">#444444</color>
+    <color name="colorTopBackground">#303030</color>
+    <color name="colorTabSelectedText">#C0C0C0</color>
 </resources>
