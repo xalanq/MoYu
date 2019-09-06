@@ -342,23 +342,6 @@ public class NewsDatabase extends SQLiteOpenHelper {
         getWritableDatabase().delete(TABLE_NAME_SEARCH, null, null);
     }
 
-    public void addToken(String token) {
-        ContentValues values = new ContentValues();
-        values.put(VALUE_TOKEN, token);
-        getWritableDatabase().insertWithOnConflict(TABLE_NAME_USER, null, values, SQLiteDatabase.CONFLICT_IGNORE);
-    }
-
-    public void delToken(String token) {
-        getWritableDatabase().delete(TABLE_NAME_USER, VALUE_TOKEN, new String[]{token});
-    }
-
-    final public boolean queryToken(String token) {
-        Cursor cursor = getReadableDatabase().query(TABLE_NAME_USER, null, VALUE_TOKEN + " = ? ", new String[]{token}, null, null, null);
-        boolean isExist = cursor.getCount() > 0;
-        cursor.close();
-        return isExist;
-    }
-
     public void addTags(News.ScoreData[] tags) {
         for (News.ScoreData tag:tags) {
             Cursor cursor = getWritableDatabase().query(TABLE_NAME_TAG, null, VALUE_TAG + " = ?", new String[]{tag.getWord()}, null, null, null, null);
@@ -390,8 +373,30 @@ public class NewsDatabase extends SQLiteOpenHelper {
                 cursor.moveToNext();
             }
         }
-        Log.e(TAG, list.toString());
         return list;
+    }
+
+    public String getToken() {
+        Cursor cursor = getReadableDatabase().query(TABLE_NAME_USER, null, null, null, null, null, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            return cursor.getString(cursor.getColumnIndex(VALUE_TOKEN));
+        }
+        return "";
+    }
+
+    public void setToken(String token) {
+        Cursor cursor = getReadableDatabase().query(TABLE_NAME_USER, null, null, null, null, null, null);
+        if (cursor.getCount() == 0) {
+            ContentValues values = new ContentValues();
+            values.put(VALUE_ID, 1);
+            values.put(VALUE_TOKEN, "");
+            getWritableDatabase().insert(TABLE_NAME_USER, null, values);
+        } else {
+            ContentValues values = new ContentValues();
+            values.put(VALUE_TOKEN, token);
+            getWritableDatabase().update(TABLE_NAME_USER, values, VALUE_ID + " = 1", null);
+        }
     }
 
 }
