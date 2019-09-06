@@ -360,11 +360,8 @@ public class NewsDatabase extends SQLiteOpenHelper {
     }
 
     public void addTags(News.ScoreData[] tags) {
-
         for (News.ScoreData tag:tags) {
-
             Cursor cursor = getWritableDatabase().query(TABLE_NAME_TAG, null, VALUE_TAG + " = ?", new String[]{tag.getWord()}, null, null, null, null);
-
             if (cursor.getCount() == 0) {
                 ContentValues values = new ContentValues();
                 values.put(VALUE_TAG, tag.getWord());
