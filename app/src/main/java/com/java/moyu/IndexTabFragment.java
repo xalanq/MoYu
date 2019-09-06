@@ -79,9 +79,7 @@ public class IndexTabFragment extends BasicFragment {
 
     private void loadMore() {
         if (category.equals(getResources().getString(R.string.recommend))) {
-            // TODO Test
-//            List<String> tags = NewsDatabase.getInstance().getTags(Constants.RECOMMEND_TAGS_SIZE);
-            List<String> tags = Arrays.asList("特朗普", "周琦");
+            List<String> tags = NewsDatabase.getInstance().getTopTags(Constants.RECOMMEND_TAGS_SIZE);
             recommendData = new ArrayList<>();
             recommendRemain = tags.size();
             for (String tag: tags) {
@@ -150,9 +148,7 @@ public class IndexTabFragment extends BasicFragment {
 
     void refresh(final boolean first) {
         if (category.equals(getResources().getString(R.string.recommend))) {
-            // TODO Test
-//            List<String> tags = NewsDatabase.getInstance().getTags(Constants.RECOMMEND_TAGS_SIZE);
-            List<String> tags = Arrays.asList("特朗普", "周琦");
+            List<String> tags = NewsDatabase.getInstance().getTopTags(Constants.RECOMMEND_TAGS_SIZE);
             recommendData = new ArrayList<>();
             recommendRemain = tags.size();
             for (String tag: tags) {

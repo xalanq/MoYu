@@ -49,6 +49,9 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
                         NewsDatabase db = NewsDatabase.getInstance();
                         db.addNews(news);
                         db.addHistory(news.id, LocalDateTime.now());
+                        db.addTags(news.keyword);
+                        db.addTags(news.who);
+                        db.addTags(news.where);
                     }
                 }).start();
                 intent.putExtra("news", news.toJSONObject().toString());

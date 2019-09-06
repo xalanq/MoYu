@@ -186,6 +186,9 @@ class News {
             return json;
         }
 
+        public final Double getScore() { return score; }
+        public final String getWord() { return word; }
+
     }
 
     class MentionData {
@@ -201,7 +204,6 @@ class News {
                 this.word = data.getString("mention");
             } catch (JSONException e) {
                 e.printStackTrace();
-                Log.e("MentionData", data.toString());
             }
         }
 
