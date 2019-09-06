@@ -58,7 +58,7 @@ public class CoverVideoPlayer extends StandardGSYVideoPlayer {
         mCoverImage = findViewById(R.id.thumbImage);
 
         if (mThumbImageViewLayout != null &&
-                (mCurrentState == -1 || mCurrentState == CURRENT_STATE_NORMAL || mCurrentState == CURRENT_STATE_ERROR)) {
+            (mCurrentState == -1 || mCurrentState == CURRENT_STATE_NORMAL || mCurrentState == CURRENT_STATE_ERROR)) {
             mThumbImageViewLayout.setVisibility(VISIBLE);
         }
     }
@@ -98,13 +98,13 @@ public class CoverVideoPlayer extends StandardGSYVideoPlayer {
         mCoverOriginUrl = url;
         mDefaultRes = res;
         Glide.with(getContext().getApplicationContext())
-                .setDefaultRequestOptions(
-                        new RequestOptions()
-                                .frame(1000000)
-                                .centerCrop()
-                                .error(res))
-                .load(url)
-                .into(mCoverImage);
+            .setDefaultRequestOptions(
+                new RequestOptions()
+                    .frame(1000000)
+                    .centerCrop()
+                    .error(res))
+            .load(url)
+            .into(mCoverImage);
     }
 
     @Override

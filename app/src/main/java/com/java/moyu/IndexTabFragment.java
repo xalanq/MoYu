@@ -51,7 +51,7 @@ public class IndexTabFragment extends BasicFragment {
         super.onViewCreated(view, savedInstanceState);
 
         adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout),
-                NewsAdapter.defaultOnclick(getActivity()));
+            NewsAdapter.defaultOnclick(getActivity()));
 
         initData();
     }
@@ -71,31 +71,31 @@ public class IndexTabFragment extends BasicFragment {
             });
         } else {
             new NewsNetwork.Builder()
-                    .add("size", "" + Constants.PAGE_SIZE)
-                    .add("categories", category)
-                    .add("endDate", adapter.get(adapter.getItemCount() - 1).getPublishTime().minusSeconds(1).format(Constants.TIME_FORMATTER))
-                    .build()
-                    .run(new NewsNetwork.Callback() {
-                        @Override
-                        public void timeout() {
-                            refreshLayout.finishLoadMore(false);
-                        }
+                .add("size", "" + Constants.PAGE_SIZE)
+                .add("categories", category)
+                .add("endDate", adapter.get(adapter.getItemCount() - 1).getPublishTime().minusSeconds(1).format(Constants.TIME_FORMATTER))
+                .build()
+                .run(new NewsNetwork.Callback() {
+                    @Override
+                    public void timeout() {
+                        refreshLayout.finishLoadMore(false);
+                    }
 
-                        @Override
-                        public void error() {
-                            refreshLayout.finishLoadMore(false);
-                        }
+                    @Override
+                    public void error() {
+                        refreshLayout.finishLoadMore(false);
+                    }
 
-                        @Override
-                        public void ok(List<News> data) {
-                            if (data.isEmpty()) {
-                                refreshLayout.finishLoadMoreWithNoMoreData();
-                            } else {
-                                adapter.add(data);
-                                refreshLayout.finishLoadMore();
-                            }
+                    @Override
+                    public void ok(List<News> data) {
+                        if (data.isEmpty()) {
+                            refreshLayout.finishLoadMoreWithNoMoreData();
+                        } else {
+                            adapter.add(data);
+                            refreshLayout.finishLoadMore();
                         }
-                    });
+                    }
+                });
         }
     }
 
@@ -121,48 +121,48 @@ public class IndexTabFragment extends BasicFragment {
             });
         } else {
             new NewsNetwork.Builder()
-                    .add("size", "" + Constants.PAGE_SIZE)
-                    .add("categories", category)
-                    .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
-                    .build()
-                    .run(new NewsNetwork.Callback() {
-                        @Override
-                        public void timeout() {
-                            refreshLayout.finishRefresh(false);
-                            if (first) {
-                                loadingLayout.setVisibility(View.GONE);
+                .add("size", "" + Constants.PAGE_SIZE)
+                .add("categories", category)
+                .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
+                .build()
+                .run(new NewsNetwork.Callback() {
+                    @Override
+                    public void timeout() {
+                        refreshLayout.finishRefresh(false);
+                        if (first) {
+                            loadingLayout.setVisibility(View.GONE);
+                            emptyLayout.setVisibility(View.VISIBLE);
+                            refreshLayout.setVisibility(View.INVISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void error() {
+                        refreshLayout.finishRefresh(false);
+                        if (first) {
+                            loadingLayout.setVisibility(View.GONE);
+                            emptyLayout.setVisibility(View.VISIBLE);
+                            refreshLayout.setVisibility(View.INVISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void ok(List<News> data) {
+                        adapter.clear();
+                        adapter.add(data);
+                        refreshLayout.finishRefresh();
+                        if (first) {
+                            loadingLayout.setVisibility(View.GONE);
+                            if (data.isEmpty()) {
                                 emptyLayout.setVisibility(View.VISIBLE);
                                 refreshLayout.setVisibility(View.INVISIBLE);
+                            } else {
+                                emptyLayout.setVisibility(View.INVISIBLE);
+                                refreshLayout.setVisibility(View.VISIBLE);
                             }
                         }
-
-                        @Override
-                        public void error() {
-                            refreshLayout.finishRefresh(false);
-                            if (first) {
-                                loadingLayout.setVisibility(View.GONE);
-                                emptyLayout.setVisibility(View.VISIBLE);
-                                refreshLayout.setVisibility(View.INVISIBLE);
-                            }
-                        }
-
-                        @Override
-                        public void ok(List<News> data) {
-                            adapter.clear();
-                            adapter.add(data);
-                            refreshLayout.finishRefresh();
-                            if (first) {
-                                loadingLayout.setVisibility(View.GONE);
-                                if (data.isEmpty()) {
-                                    emptyLayout.setVisibility(View.VISIBLE);
-                                    refreshLayout.setVisibility(View.INVISIBLE);
-                                } else {
-                                    emptyLayout.setVisibility(View.INVISIBLE);
-                                    refreshLayout.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        }
-                    });
+                    }
+                });
         }
     }
 
@@ -217,27 +217,27 @@ public class IndexTabFragment extends BasicFragment {
                     recommendRemain = tags.size();
                     for (String tag : tags) {
                         new NewsNetwork.Builder()
-                                .add("size", "" + Constants.PAGE_SIZE)
-                                .add("words", tag)
-                                .add("endDate", GetRecommendTask.this.endDate)
-                                .build()
-                                .run(new NewsNetwork.Callback() {
-                                    @Override
-                                    public void timeout() {
-                                        recommendRemain--;
-                                    }
+                            .add("size", "" + Constants.PAGE_SIZE)
+                            .add("words", tag)
+                            .add("endDate", GetRecommendTask.this.endDate)
+                            .build()
+                            .run(new NewsNetwork.Callback() {
+                                @Override
+                                public void timeout() {
+                                    recommendRemain--;
+                                }
 
-                                    @Override
-                                    public void error() {
-                                        recommendRemain--;
-                                    }
+                                @Override
+                                public void error() {
+                                    recommendRemain--;
+                                }
 
-                                    @Override
-                                    public void ok(List<News> data) {
-                                        recommendData.addAll(data);
-                                        recommendRemain--;
-                                    }
-                                });
+                                @Override
+                                public void ok(List<News> data) {
+                                    recommendData.addAll(data);
+                                    recommendRemain--;
+                                }
+                            });
                     }
                     execute();
                 }

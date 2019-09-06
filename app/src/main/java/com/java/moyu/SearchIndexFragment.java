@@ -92,30 +92,30 @@ public class SearchIndexFragment extends BasicFragment {
             @Override
             public void onClick(View view) {
                 new AlertDialog.Builder(getContext()).setTitle(R.string.search_clear_history)
-                        .setMessage(getResources().getString(R.string.search_clear_history_confirm))
-                        .setPositiveButton(getResources().getText(R.string.yes), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                User.getInstance().delAllSearchHistory(new User.DefaultCallback() {
-                                    @Override
-                                    public void error(String msg) {
-                                        BasicApplication.showToast(msg);
-                                    }
+                    .setMessage(getResources().getString(R.string.search_clear_history_confirm))
+                    .setPositiveButton(getResources().getText(R.string.yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            User.getInstance().delAllSearchHistory(new User.DefaultCallback() {
+                                @Override
+                                public void error(String msg) {
+                                    BasicApplication.showToast(msg);
+                                }
 
-                                    @Override
-                                    public void ok() {
+                                @Override
+                                public void ok() {
 
-                                    }
-                                });
-                                historyAdapter.clear();
-                            }
-                        })
-                        .setNegativeButton(getResources().getText(R.string.no), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        }).show();
+                                }
+                            });
+                            historyAdapter.clear();
+                        }
+                    })
+                    .setNegativeButton(getResources().getText(R.string.no), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    }).show();
             }
         });
         test();

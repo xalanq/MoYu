@@ -36,32 +36,32 @@ public class NewsDatabase extends SQLiteOpenHelper {
     private final String VALUE_TAG = "tag";
     private final String VALUE_TIMES = "times";
     private final String CREATE_NEWS = "create table " + TABLE_NAME_NEWS + "(" +
-            VALUE_ID + " integer primary key," +
-            VALUE_NEWS_ID + " text not null unique," +
-            VALUE_DATA + " text not null," +
-            VALUE_VIEWED + " integer not null," +
-            VALUE_VIEW_TIME + " text," +
-            VALUE_STARED + " integer not null," +
-            VALUE_STAR_TIME + " text" +
-            ")";
+        VALUE_ID + " integer primary key," +
+        VALUE_NEWS_ID + " text not null unique," +
+        VALUE_DATA + " text not null," +
+        VALUE_VIEWED + " integer not null," +
+        VALUE_VIEW_TIME + " text," +
+        VALUE_STARED + " integer not null," +
+        VALUE_STAR_TIME + " text" +
+        ")";
     private final String CREATE_CATEGORY = "create table " + TABLE_NAME_CATEGORY + "(" +
-            VALUE_ID + " integer primary key," +
-            VALUE_NAME + " text not null," +
-            VALUE_POSITION + " integer not null" +
-            ")";
+        VALUE_ID + " integer primary key," +
+        VALUE_NAME + " text not null," +
+        VALUE_POSITION + " integer not null" +
+        ")";
     private final String CREATE_SEARCH = "create table " + TABLE_NAME_SEARCH + "(" +
-            VALUE_ID + " integer primary key," +
-            VALUE_KEYWORD + " text not null unique" +
-            ")";
+        VALUE_ID + " integer primary key," +
+        VALUE_KEYWORD + " text not null unique" +
+        ")";
     private final String CREATE_USER = "create table " + TABLE_NAME_USER + "(" +
-            VALUE_ID + " integer primary key," +
-            VALUE_TOKEN + " text not null unique" +
-            ")";
+        VALUE_ID + " integer primary key," +
+        VALUE_TOKEN + " text not null unique" +
+        ")";
     private final String CREATE_TAG = "create table " + TABLE_NAME_TAG + "(" +
-            VALUE_ID + " integer primary key," +
-            VALUE_TAG + " text not null unique," +
-            VALUE_TIMES + " real not null" +
-            ")";
+        VALUE_ID + " integer primary key," +
+        VALUE_TAG + " text not null unique," +
+        VALUE_TIMES + " real not null" +
+        ")";
 
     private NewsDatabase(Context context) {
         super(context, Constants.DB_NAME, null, Constants.DB_VERSION);

@@ -105,9 +105,9 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
             avatarView.setImageResource(R.drawable.default_avatar);
         } else {
             Glide.with(this).load(User.getInstance().getAvatar())
-                    .placeholder(R.drawable.loading_cover)
-                    .error(R.drawable.default_avatar).centerCrop()
-                    .into(avatarView);
+                .placeholder(R.drawable.loading_cover)
+                .error(R.drawable.default_avatar).centerCrop()
+                .into(avatarView);
         }
         if (refreshFragment) {
             if (currentFragment == fragmentAllocator.getIndexFragment())
@@ -214,23 +214,23 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         resultView.setTextSize(16);
         resultView.setTextColor(Color.parseColor("#000000"));
         new AlertDialog.Builder(this)
-                .setTitle(R.string.cache_title).setView(resultView)
-                .setPositiveButton(getResources().getText(R.string.yes), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        new Cache.ClearCacheTask(getApplicationContext()).execute();
-                        dialogInterface.dismiss();
-                    }
-                })
-                .setNegativeButton(getResources().getText(R.string.no), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                }).show();
+            .setTitle(R.string.cache_title).setView(resultView)
+            .setPositiveButton(getResources().getText(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    new Cache.ClearCacheTask(getApplicationContext()).execute();
+                    dialogInterface.dismiss();
+                }
+            })
+            .setNegativeButton(getResources().getText(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                }
+            }).show();
         new Cache.GetSizeTask(resultView).execute(
-                new File(getApplicationContext().getCacheDir(),
-                        DiskCache.Factory.DEFAULT_DISK_CACHE_DIR));
+            new File(getApplicationContext().getCacheDir(),
+                DiskCache.Factory.DEFAULT_DISK_CACHE_DIR));
     }
 
     class FragmentAllocator {

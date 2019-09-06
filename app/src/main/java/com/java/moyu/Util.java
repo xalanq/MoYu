@@ -36,8 +36,8 @@ public class Util {
 
     static String parseCommentCount(int count) {
         return String.format(
-                BasicApplication.getContext().getResources().getString(R.string.default_news_comment_count),
-                count
+            BasicApplication.getContext().getResources().getString(R.string.default_news_comment_count),
+            count
         );
     }
 

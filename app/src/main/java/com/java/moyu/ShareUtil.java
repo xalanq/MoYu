@@ -75,8 +75,8 @@ public class ShareUtil {
 
     private final String moveToExternal(Context context, String imgUrl, String imgPath) {
         String externalPath = context.getExternalCacheDir().getAbsolutePath() + '/'
-                + fileName(imgPath)
-                + fileExtension(imgUrl);
+            + fileName(imgPath)
+            + fileExtension(imgUrl);
         copyFile(imgPath, externalPath);
         return externalPath;
     }
@@ -180,9 +180,9 @@ public class ShareUtil {
             String imgUrl = params[0];
             try {
                 String imgPath = Glide.with(context)
-                        .load(imgUrl)
-                        .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                        .get().getPath();
+                    .load(imgUrl)
+                    .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .get().getPath();
                 shareImageUri = Uri.parse(moveToExternal(context, imgUrl, imgPath));
                 return null;
             } catch (Exception ex) {

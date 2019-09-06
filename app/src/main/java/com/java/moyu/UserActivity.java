@@ -52,9 +52,9 @@ public class UserActivity extends SwipeActivity {
         emailEdit.setText(User.getInstance().getEmail());
         avatarEdit.setText(User.getInstance().getAvatar());
         Glide.with(this).load(User.getInstance().getAvatar())
-                .placeholder(R.drawable.loading_cover)
-                .error(R.drawable.default_avatar).centerCrop()
-                .into(avatarView);
+            .placeholder(R.drawable.loading_cover)
+            .error(R.drawable.default_avatar).centerCrop()
+            .into(avatarView);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

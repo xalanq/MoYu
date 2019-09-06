@@ -80,7 +80,7 @@ public class RegisterActivity extends SwipeActivity {
         message.setVisibility(View.GONE);
         String email = emailEdit.getText().toString();
         final LoadingDialog dialog = new LoadingDialog(RegisterActivity.this,
-                getResources().getString(R.string.register_loading));
+            getResources().getString(R.string.register_loading));
         User.getInstance().register(username, password, email, new User.DefaultCallback() {
             @Override
             public void error(String msg) {

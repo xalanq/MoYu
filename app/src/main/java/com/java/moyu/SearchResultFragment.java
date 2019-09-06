@@ -44,84 +44,84 @@ public class SearchResultFragment extends BasicFragment {
         super.onViewCreated(view, savedInstanceState);
 
         adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout),
-                NewsAdapter.defaultOnclick(getActivity()));
+            NewsAdapter.defaultOnclick(getActivity()));
 
         init();
     }
 
     void refresh(final boolean first) {
         new NewsNetwork.Builder()
-                .add("size", "" + Constants.PAGE_SIZE)
-                .add("words", text)
-                .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
-                .build()
-                .run(new NewsNetwork.Callback() {
-                    @Override
-                    public void timeout() {
-                        refreshLayout.finishRefresh(false);
-                        if (first) {
-                            loadingLayout.setVisibility(View.GONE);
+            .add("size", "" + Constants.PAGE_SIZE)
+            .add("words", text)
+            .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
+            .build()
+            .run(new NewsNetwork.Callback() {
+                @Override
+                public void timeout() {
+                    refreshLayout.finishRefresh(false);
+                    if (first) {
+                        loadingLayout.setVisibility(View.GONE);
+                        emptyLayout.setVisibility(View.VISIBLE);
+                        refreshLayout.setVisibility(View.INVISIBLE);
+                    }
+                }
+
+                @Override
+                public void error() {
+                    refreshLayout.finishRefresh(false);
+                    if (first) {
+                        loadingLayout.setVisibility(View.GONE);
+                        emptyLayout.setVisibility(View.VISIBLE);
+                        refreshLayout.setVisibility(View.INVISIBLE);
+                    }
+                }
+
+                @Override
+                public void ok(List<News> data) {
+                    adapter.clear();
+                    adapter.add(data);
+                    refreshLayout.finishRefresh();
+                    if (first) {
+                        loadingLayout.setVisibility(View.GONE);
+                        if (data.isEmpty()) {
                             emptyLayout.setVisibility(View.VISIBLE);
                             refreshLayout.setVisibility(View.INVISIBLE);
+                        } else {
+                            emptyLayout.setVisibility(View.INVISIBLE);
+                            refreshLayout.setVisibility(View.VISIBLE);
                         }
                     }
-
-                    @Override
-                    public void error() {
-                        refreshLayout.finishRefresh(false);
-                        if (first) {
-                            loadingLayout.setVisibility(View.GONE);
-                            emptyLayout.setVisibility(View.VISIBLE);
-                            refreshLayout.setVisibility(View.INVISIBLE);
-                        }
-                    }
-
-                    @Override
-                    public void ok(List<News> data) {
-                        adapter.clear();
-                        adapter.add(data);
-                        refreshLayout.finishRefresh();
-                        if (first) {
-                            loadingLayout.setVisibility(View.GONE);
-                            if (data.isEmpty()) {
-                                emptyLayout.setVisibility(View.VISIBLE);
-                                refreshLayout.setVisibility(View.INVISIBLE);
-                            } else {
-                                emptyLayout.setVisibility(View.INVISIBLE);
-                                refreshLayout.setVisibility(View.VISIBLE);
-                            }
-                        }
-                    }
-                });
+                }
+            });
     }
 
     void loadMore() {
         new NewsNetwork.Builder()
-                .add("size", "" + Constants.PAGE_SIZE)
-                .add("words", text)
-                .add("endDate", adapter.get(adapter.getItemCount() - 1).getPublishTime().minusSeconds(1).format(Constants.TIME_FORMATTER))
-                .build()
-                .run(new NewsNetwork.Callback() {
-                    @Override
-                    public void timeout() {
-                        refreshLayout.finishLoadMore(false);
-                    }
+            .add("size", "" + Constants.PAGE_SIZE)
+            .add("words", text)
+            .add("endDate", adapter.get(adapter.getItemCount() - 1).getPublishTime().minusSeconds(1).format(Constants.TIME_FORMATTER))
+            .build()
+            .run(new NewsNetwork.Callback() {
+                @Override
+                public void timeout() {
+                    refreshLayout.finishLoadMore(false);
+                }
 
-                    @Override
-                    public void error() {
-                        refreshLayout.finishLoadMore(false);
-                    }
+                @Override
+                public void error() {
+                    refreshLayout.finishLoadMore(false);
+                }
 
-                    @Override
-                    public void ok(List<News> data) {
-                        if (data.isEmpty()) {
-                            refreshLayout.finishLoadMoreWithNoMoreData();
-                        } else {
-                            adapter.add(data);
-                            refreshLayout.finishLoadMore();
-                        }
+                @Override
+                public void ok(List<News> data) {
+                    if (data.isEmpty()) {
+                        refreshLayout.finishLoadMoreWithNoMoreData();
+                    } else {
+                        adapter.add(data);
+                        refreshLayout.finishLoadMore();
                     }
-                });
+                }
+            });
     }
 
     private void init() {

@@ -63,8 +63,8 @@ public class User {
     public void updateUserInfo(final DefaultCallback callback) {
         if (!token.isEmpty()) {
             new UserNetwork.Builder("/userInfo")
-                    .add("token", token)
-                    .build().run(new UserNetwork.Callback() {
+                .add("token", token)
+                .build().run(new UserNetwork.Callback() {
                 @Override
                 public void error(String msg) {
                     isOffline = true;
@@ -94,9 +94,9 @@ public class User {
 
     public void editUserInfo(final String avatar, final DefaultCallback callback) {
         new UserNetwork.Builder("/userEdit")
-                .add("token", token)
-                .add("avatar", avatar)
-                .build().run(new UserNetwork.Callback() {
+            .add("token", token)
+            .add("avatar", avatar)
+            .build().run(new UserNetwork.Callback() {
             @Override
             public void error(String msg) {
                 callback.error(msg);
@@ -112,9 +112,9 @@ public class User {
 
     public void login(String username, String password, final DefaultCallback callback) {
         new UserNetwork.Builder("/login")
-                .add("username", username)
-                .add("password", password)
-                .build().run(new UserNetwork.Callback() {
+            .add("username", username)
+            .add("password", password)
+            .build().run(new UserNetwork.Callback() {
             @Override
             public void error(String msg) {
                 callback.error(msg);
@@ -145,10 +145,10 @@ public class User {
 
     public void register(String username, String password, String email, final DefaultCallback callback) {
         new UserNetwork.Builder("/register")
-                .add("username", username)
-                .add("password", password)
-                .add("email", email)
-                .build().run(new UserNetwork.Callback() {
+            .add("username", username)
+            .add("password", password)
+            .add("email", email)
+            .build().run(new UserNetwork.Callback() {
             @Override
             public void error(String msg) {
                 callback.error(msg);
@@ -275,8 +275,8 @@ public class User {
             NewsDatabase.getInstance().addNews(news);
         } else {
             new UserNetwork.Builder("/addNews")
-                    .add("data", news.toJSONObject().toString())
-                    .build().run(new UserNetwork.Callback() {
+                .add("data", news.toJSONObject().toString())
+                .build().run(new UserNetwork.Callback() {
                 @Override
                 public void error(String msg) {
                     callback.error(msg);
@@ -402,10 +402,10 @@ public class User {
             callback.ok(NewsDatabase.getInstance().queryFavor(news_id));
         } else {
             new UserNetwork.Builder("/hasList")
-                    .add("token", token)
-                    .add("type", "favorite")
-                    .add("data", news_id)
-                    .build().run(new UserNetwork.Callback() {
+                .add("token", token)
+                .add("type", "favorite")
+                .add("data", news_id)
+                .build().run(new UserNetwork.Callback() {
                 @Override
                 public void error(String msg) {
                     callback.error(msg);
@@ -425,10 +425,10 @@ public class User {
 
     private void addList(String type, String data, final DefaultCallback callback) {
         new UserNetwork.Builder("/addList")
-                .add("token", token)
-                .add("type", type)
-                .add("data", data)
-                .build().run(new UserNetwork.Callback() {
+            .add("token", token)
+            .add("type", type)
+            .add("data", data)
+            .build().run(new UserNetwork.Callback() {
             @Override
             public void error(String msg) {
                 callback.error(msg);
@@ -450,10 +450,10 @@ public class User {
 
         }
         new UserNetwork.Builder("/addList")
-                .add("token", token)
-                .add("type", type)
-                .add("data", json.toString())
-                .build().run(new UserNetwork.Callback() {
+            .add("token", token)
+            .add("type", type)
+            .add("data", json.toString())
+            .build().run(new UserNetwork.Callback() {
             @Override
             public void error(String msg) {
                 callback.error(msg);
@@ -468,10 +468,10 @@ public class User {
 
     private void delList(String type, String data, final DefaultCallback callback) {
         new UserNetwork.Builder("/delList")
-                .add("token", token)
-                .add("type", type)
-                .add("data", data)
-                .build().run(new UserNetwork.Callback() {
+            .add("token", token)
+            .add("type", type)
+            .add("data", data)
+            .build().run(new UserNetwork.Callback() {
             @Override
             public void error(String msg) {
                 callback.error(msg);
@@ -486,10 +486,10 @@ public class User {
 
     private void setList(String type, JSONArray data, final DefaultCallback callback) {
         new UserNetwork.Builder("/setList")
-                .add("token", token)
-                .add("type", type)
-                .add("data", data.toString())
-                .build().run(new UserNetwork.Callback() {
+            .add("token", token)
+            .add("type", type)
+            .add("data", data.toString())
+            .build().run(new UserNetwork.Callback() {
             @Override
             public void error(String msg) {
                 callback.error(msg);
@@ -504,11 +504,11 @@ public class User {
 
     private void getList(String type, int skip, int limit, final UserNetwork.Callback callback) {
         new UserNetwork.Builder("/getList")
-                .add("token", token)
-                .add("type", type)
-                .add("skip", "" + skip)
-                .add("limit", "" + limit)
-                .build().run(callback);
+            .add("token", token)
+            .add("type", type)
+            .add("skip", "" + skip)
+            .add("limit", "" + limit)
+            .build().run(callback);
     }
 
     private void getNews(String type, int skip, int limit, final NewsCallback callback) {
@@ -526,8 +526,8 @@ public class User {
                     for (int i = 0; i < a.length(); ++i)
                         newsID.add(a.getJSONObject(i).getString("news_id"));
                     new UserNetwork.Builder("/getNews")
-                            .add("data", new JSONArray(newsID).toString())
-                            .build().run(new UserNetwork.Callback() {
+                        .add("data", new JSONArray(newsID).toString())
+                        .build().run(new UserNetwork.Callback() {
                         @Override
                         public void error(String msg) {
                             callback.error(msg);

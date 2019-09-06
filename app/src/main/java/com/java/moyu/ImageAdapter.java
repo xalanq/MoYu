@@ -30,9 +30,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         Glide.with(context).load(data[position])
-                .placeholder(R.drawable.loading_cover)
-                .error(R.drawable.error).centerCrop()
-                .into(holder.imageView);
+            .placeholder(R.drawable.loading_cover)
+            .error(R.drawable.error).centerCrop()
+            .into(holder.imageView);
     }
 
     @Override

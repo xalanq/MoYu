@@ -49,14 +49,14 @@ public class HistoryFragment extends BasicFragment {
 
         a.setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                a, a.drawerLayout, toolbar, R.string.main_navigation_drawer_open, R.string.main_navigation_drawer_close);
+            a, a.drawerLayout, toolbar, R.string.main_navigation_drawer_open, R.string.main_navigation_drawer_close);
         a.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
         a.getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout),
-                NewsAdapter.defaultOnclick(getActivity()));
+            NewsAdapter.defaultOnclick(getActivity()));
 
         initData();
     }

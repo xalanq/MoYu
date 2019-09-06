@@ -62,8 +62,8 @@ public class SearchActivity extends BasicActivity {
 
     private void switchFragment(BasicFragment fragment) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.search_layout, fragment)
-                .commit();
+            .replace(R.id.search_layout, fragment)
+            .commit();
     }
 
     public void searchText(String text) {

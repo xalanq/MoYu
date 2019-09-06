@@ -109,7 +109,7 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
                     int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
                     int position = GSYVideoManager.instance().getPlayPosition();
                     if ((position < firstVisibleItem || position > lastVisibleItem) &&
-                            !GSYVideoManager.isFullState((Activity) context)) {
+                        !GSYVideoManager.isFullState((Activity) context)) {
                         GSYVideoManager.releaseAllVideos();
                         adapter.notifyItemChanged(position);
                     }
@@ -218,22 +218,22 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         holder.setOnClick(onClick, d);
         if (viewType == SINGLE) {
             Glide.with(context).load(d.image[0])
-                    .placeholder(R.drawable.loading_cover)
-                    .error(R.drawable.error).centerCrop()
-                    .into((ImageView) holder.itemView.findViewById(R.id.image_view));
+                .placeholder(R.drawable.loading_cover)
+                .error(R.drawable.error).centerCrop()
+                .into((ImageView) holder.itemView.findViewById(R.id.image_view));
         } else if (viewType == MULTI) {
             Glide.with(context).load(d.image[0])
-                    .placeholder(R.drawable.loading_cover)
-                    .error(R.drawable.error).centerCrop()
-                    .into((ImageView) holder.itemView.findViewById(R.id.image_view_1));
+                .placeholder(R.drawable.loading_cover)
+                .error(R.drawable.error).centerCrop()
+                .into((ImageView) holder.itemView.findViewById(R.id.image_view_1));
             Glide.with(context).load(d.image[1])
-                    .placeholder(R.drawable.loading_cover)
-                    .error(R.drawable.error).centerCrop()
-                    .into((ImageView) holder.itemView.findViewById(R.id.image_view_2));
+                .placeholder(R.drawable.loading_cover)
+                .error(R.drawable.error).centerCrop()
+                .into((ImageView) holder.itemView.findViewById(R.id.image_view_2));
             Glide.with(context).load(d.image[2])
-                    .placeholder(R.drawable.loading_cover)
-                    .error(R.drawable.error).centerCrop()
-                    .into((ImageView) holder.itemView.findViewById(R.id.image_view_3));
+                .placeholder(R.drawable.loading_cover)
+                .error(R.drawable.error).centerCrop()
+                .into((ImageView) holder.itemView.findViewById(R.id.image_view_3));
         } else if (viewType == VIDEO) {
             CoverVideoPlayer player = holder.itemView.findViewById(R.id.video_player);
             player.setup(context, d.video, d.title, position);

@@ -66,8 +66,8 @@ public class NewsActivity extends VideoActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         consumer = SmartSwipe.wrap(this)
-                .addConsumer(new ActivitySlidingBackConsumer(this))
-                .enableLeft();
+            .addConsumer(new ActivitySlidingBackConsumer(this))
+            .enableLeft();
         galleryView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
             public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {

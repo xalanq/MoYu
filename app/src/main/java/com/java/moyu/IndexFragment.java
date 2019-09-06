@@ -56,7 +56,7 @@ public class IndexFragment extends BasicFragment {
         a.setSupportActionBar(toolbar);
         a.getSupportActionBar().setDisplayShowTitleEnabled(false);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                a, a.drawerLayout, toolbar, R.string.main_navigation_drawer_open, R.string.main_navigation_drawer_close);
+            a, a.drawerLayout, toolbar, R.string.main_navigation_drawer_open, R.string.main_navigation_drawer_close);
         a.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 

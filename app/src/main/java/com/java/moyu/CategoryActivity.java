@@ -119,7 +119,7 @@ public class CategoryActivity extends SwipeActivity {
             public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
                 if (currentAdapter.isEditable()) {
                     return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
-                            ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+                        ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
                 }
                 return 0;
             }
