@@ -15,6 +15,7 @@
         <item name="colorTabRipple">@color/colorTabRipple</item>
         <item name="colorTopBackground">@color/colorTopBackground</item>
         <item name="colorTabSelectedText">@color/colorTabSelectedText</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
     </style>
 
     <style name="NightTheme" parent="AppTheme">
@@ -30,6 +31,7 @@
         <item name="colorTabRipple">@color/colorTabRippleNight</item>
         <item name="colorTopBackground">@color/colorTopBackgroundNight</item>
         <item name="colorTabSelectedText">@color/colorTabSelectedTextNight</item>
+        <item name="android:statusBarColor">@color/colorPrimaryNight</item>
     </style>
 
     <style name="noAnimDayTheme" parent="DayTheme">
