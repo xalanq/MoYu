@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/DayTheme"
         android:fullBackupContent="false"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
@@ -27,7 +27,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SearchActivity" android:theme="@style/noAnimTheme"
+        <activity android:name=".SearchActivity" android:theme="@style/noAnimDayTheme"
             android:windowSoftInputMode="stateVisible">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH"/>

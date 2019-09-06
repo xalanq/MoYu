@@ -8,9 +8,18 @@ public class BasicApplication extends Application {
 
     private static Context context;
     private static Toast toast;
+    private static boolean isNight = true;
 
     public static Context getContext() {
         return context;
+    }
+
+    public static boolean isNight() {
+        return isNight;
+    }
+
+    public static void setNight(boolean isNight) {
+        BasicApplication.isNight = isNight;
     }
 
     public static void showToast(String text) {

@@ -9,7 +9,8 @@
     android:foreground="?android:attr/selectableItemBackground"
     android:focusable="true"
     android:clickable="true"
-    android:paddingHorizontal="16dp">
+    android:paddingHorizontal="16dp"
+    android:background="?attr/colorBackground">
 
     <TextView
         android:id="@+id/title"
@@ -18,7 +19,7 @@
         android:gravity="start"
         android:text="@string/default_news_title"
         android:textSize="16sp"
-        android:textColor="@color/colorTitle"
+        android:textColor="?attr/colorTitle"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="0dp"/>
@@ -52,7 +53,7 @@
             android:layout_height="wrap_content"
             android:gravity="start"
             android:text="@string/default_news_publisher"
-            android:textColor="@color/colorSubtitle"
+            android:textColor="?attr/colorSubtitle"
             android:textSize="12sp"/>
 
         <TextView
@@ -63,14 +64,14 @@
             android:paddingEnd="0dp"
             android:gravity="start"
             android:text="@string/default_news_time"
-            android:textColor="@color/colorSubtitle"
+            android:textColor="?attr/colorSubtitle"
             android:textSize="12sp"/>
 
     </LinearLayout>
 
     <View
         android:id="@+id/divider"
-        android:background="?android:attr/listDivider"
+        android:background="?attr/colorSubtitle"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         app:layout_constraintBottom_toBottomOf="parent"

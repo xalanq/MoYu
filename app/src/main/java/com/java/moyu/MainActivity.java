@@ -9,9 +9,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.cache.DiskCache;
@@ -19,10 +25,6 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
 
-import androidx.annotation.Nullable;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -83,19 +85,14 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
                 clickUser();
             }
         });
-//        final Switch actionView = (Switch) navigationView.getMenu().findItem(R.id.main_navigation_menu_night_mode).getActionView();
-//        actionView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked) {
-//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-//                } else {
-//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-//                }
-//                MainActivity.this.recreate();
-//            }
-//        });
+        final Switch actionView = (Switch) navigationView.getMenu().findItem(R.id.main_navigation_menu_night_mode).getActionView();
+        actionView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                BasicApplication.setNight(isChecked);
+                updateTheme();
+            }
+        });
     }
 
     void reloadUser(boolean refreshFragment) {
@@ -108,9 +105,9 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
             avatarView.setImageResource(R.drawable.default_avatar);
         } else {
             Glide.with(this).load(User.getInstance().getAvatar())
-                .placeholder(R.drawable.loading_cover)
-                .error(R.drawable.default_avatar).centerCrop()
-                .into(avatarView);
+                    .placeholder(R.drawable.loading_cover)
+                    .error(R.drawable.default_avatar).centerCrop()
+                    .into(avatarView);
         }
         if (refreshFragment) {
             if (currentFragment == fragmentAllocator.getIndexFragment())
@@ -217,23 +214,23 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         resultView.setTextSize(16);
         resultView.setTextColor(Color.parseColor("#000000"));
         new AlertDialog.Builder(this)
-            .setTitle(R.string.cache_title).setView(resultView)
-            .setPositiveButton(getResources().getText(R.string.yes), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    new Cache.ClearCacheTask(getApplicationContext()).execute();
-                    dialogInterface.dismiss();
-                }
-            })
-            .setNegativeButton(getResources().getText(R.string.no), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.cancel();
-                }
-            }).show();
+                .setTitle(R.string.cache_title).setView(resultView)
+                .setPositiveButton(getResources().getText(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        new Cache.ClearCacheTask(getApplicationContext()).execute();
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setNegativeButton(getResources().getText(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                }).show();
         new Cache.GetSizeTask(resultView).execute(
-            new File(getApplicationContext().getCacheDir(),
-                DiskCache.Factory.DEFAULT_DISK_CACHE_DIR));
+                new File(getApplicationContext().getCacheDir(),
+                        DiskCache.Factory.DEFAULT_DISK_CACHE_DIR));
     }
 
     class FragmentAllocator {

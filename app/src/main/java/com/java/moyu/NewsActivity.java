@@ -8,6 +8,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.billy.android.swipe.SmartSwipe;
 import com.billy.android.swipe.SwipeConsumer;
 import com.billy.android.swipe.consumer.ActivitySlidingBackConsumer;
@@ -16,11 +22,6 @@ import org.json.JSONObject;
 
 import java.time.LocalDateTime;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import github.hellocsl.layoutmanager.gallery.GalleryLayoutManager;
 
@@ -65,18 +66,18 @@ public class NewsActivity extends VideoActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         consumer = SmartSwipe.wrap(this)
-            .addConsumer(new ActivitySlidingBackConsumer(this))
-            .enableLeft();
+                .addConsumer(new ActivitySlidingBackConsumer(this))
+                .enableLeft();
         galleryView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
             public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
                 switch (e.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    consumer.lockLeft();
-                    break;
-                case MotionEvent.ACTION_UP:
-                    consumer.unlockLeft();
-                    break;
+                    case MotionEvent.ACTION_DOWN:
+                        consumer.lockLeft();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        consumer.unlockLeft();
+                        break;
                 }
                 return false;
             }
@@ -192,20 +193,20 @@ public class NewsActivity extends VideoActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-        case android.R.id.home:
-            finish();
-            return true;
-        case R.id.search_button:
-            startActivity(new Intent(this, SearchActivity.class));
-            return true;
-        case R.id.star_button:
-            clickStar(item);
-            return true;
-        case R.id.share_button:
-            ShareUtil.getInstance().shareImageText(this, news.title, news.content, news.image);
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.search_button:
+                startActivity(new Intent(this, SearchActivity.class));
+                return true;
+            case R.id.star_button:
+                clickStar(item);
+                return true;
+            case R.id.share_button:
+                ShareUtil.getInstance().shareImageText(this, news.title, news.content, news.image);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

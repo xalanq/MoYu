@@ -119,22 +119,22 @@ public class UserNetwork {
         @Override
         protected void onPostExecute(Result result) {
             switch (result.state) {
-            case OK:
-                callback.ok(result.data);
-                break;
-            case ERROR:
-                try {
-                    callback.error(result.data.getString("msg"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
-            case TIMEOUT:
-                callback.error(BasicApplication.getContext().getResources().getString(R.string.timeout));
-                break;
-            case UNKNOWN:
-                callback.error(BasicApplication.getContext().getResources().getString(R.string.unknown_error));
-                break;
+                case OK:
+                    callback.ok(result.data);
+                    break;
+                case ERROR:
+                    try {
+                        callback.error(result.data.getString("msg"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case TIMEOUT:
+                    callback.error(BasicApplication.getContext().getResources().getString(R.string.timeout));
+                    break;
+                case UNKNOWN:
+                    callback.error(BasicApplication.getContext().getResources().getString(R.string.unknown_error));
+                    break;
             }
         }
 

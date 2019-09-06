@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="colorPrimary" format="reference|color" />
+    <attr name="colorPrimaryDark" format="reference|color" />
+    <attr name="colorAccent" format="reference|color" />
+    <attr name="colorTitle" format="reference|color" />
+    <attr name="colorSubtitle" format="reference|color" />
+    <attr name="colorText" format="reference|color" />
+    <attr name="colorTextButton" format="reference|color" />
+    <attr name="colorButton" format="reference|color" />
+    <attr name="colorBackground" format="reference|color" />
+    <attr name="colorTabRipple" format="reference|color" />
+    <attr name="colorTopBackground" format="reference|color" />
+    <attr name="colorTabSelectedText" format="reference|color" />
+</resources>

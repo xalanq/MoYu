@@ -14,6 +14,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:src="@drawable/loading_cover"
+        android:background="?attr/colorBackground"
         android:contentDescription="@string/news_cover"/>
 
 </androidx.cardview.widget.CardView>

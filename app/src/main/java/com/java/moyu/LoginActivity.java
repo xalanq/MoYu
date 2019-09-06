@@ -10,9 +10,10 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.google.android.material.textfield.TextInputEditText;
 
-import androidx.annotation.Nullable;
 import butterknife.BindView;
 
 public class LoginActivity extends SwipeActivity {
@@ -76,7 +77,7 @@ public class LoginActivity extends SwipeActivity {
         String password = passwordEdit.getText().toString();
         message.setVisibility(View.GONE);
         final LoadingDialog dialog = new LoadingDialog(LoginActivity.this,
-            getResources().getString(R.string.login_loading));
+                getResources().getString(R.string.login_loading));
         User.getInstance().login(username, password, new User.DefaultCallback() {
             @Override
             public void error(String msg) {

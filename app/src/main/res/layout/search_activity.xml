@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -37,8 +36,8 @@
                 android:textSize="14sp"
                 android:drawableStart="@drawable/ic_search"
                 android:drawablePadding="5dp"
-                android:textColorHint="#888888"
-                android:textColor="@color/colorTitle"/>
+                android:textColorHint="?attr/colorSubtitle"
+                android:textColor="?attr/colorTitle"/>
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -49,6 +48,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
-        android:background="@color/colorBackground" />
+        android:background="?attr/colorBackground" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

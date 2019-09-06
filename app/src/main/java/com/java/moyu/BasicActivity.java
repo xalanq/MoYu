@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import butterknife.ButterKnife;
 
 public abstract class BasicActivity extends AppCompatActivity {
@@ -13,10 +14,16 @@ public abstract class BasicActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResource());
         ButterKnife.bind(this);
-//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        updateTheme();
     }
 
     protected abstract int getLayoutResource();
 
+    protected void updateTheme() {
+        if (BasicApplication.isNight())
+            setTheme(R.style.NightTheme);
+        else
+            setTheme(R.style.DayTheme);
+    }
 
 }

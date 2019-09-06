@@ -4,18 +4,15 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground">
+    android:background="?attr/colorBackground">
 
     <ImageButton
         android:id="@+id/back"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="center_vertical"
         android:src="@drawable/ic_back"
-        android:background="@color/colorBackground"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="0dp"/>
+        android:background="?attr/colorBackground"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -39,13 +36,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="28sp"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp"
+                android:textColor="?attr/colorSubtitle"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:hint="@string/username"
+                android:textColorHint="?attr/colorSubtitle"
+                app:hintTextColor="?attr/colorSubtitle"
+                android:textColor="?attr/colorSubtitle"
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -63,6 +64,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:hint="@string/password"
+                android:textColorHint="?attr/colorSubtitle"
+                app:hintTextColor="?attr/colorSubtitle"
+                android:textColor="?attr/colorSubtitle"
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -80,6 +84,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:hint="@string/password_confirm"
+                android:textColorHint="?attr/colorSubtitle"
+                app:hintTextColor="?attr/colorSubtitle"
+                android:textColor="?attr/colorSubtitle"
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -98,6 +105,9 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/email"
+                android:textColorHint="?attr/colorSubtitle"
+                app:hintTextColor="?attr/colorSubtitle"
+                android:textColor="?attr/colorSubtitle"
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -113,7 +123,7 @@
                 android:id="@+id/message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorAccent"
+                android:textColor="?attr/colorAccent"
                 android:visibility="gone"/>
 
             <Button
@@ -121,6 +131,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/register"
+                android:backgroundTint="?attr/colorButton"
+                android:textColor="?attr/colorText"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"/>
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/colorBackground">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -24,6 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/user_setting"
+                android:textColor="#ffffff"
                 style="@style/Base.DialogWindowTitle.AppCompat"/>
 
         </androidx.appcompat.widget.Toolbar>
@@ -55,6 +56,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:textColorHint="?attr/colorSubtitle"
+                app:hintTextColor="?attr/colorSubtitle"
+                android:textColor="?attr/colorSubtitle"
                 android:hint="@string/username">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -69,6 +73,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:textColorHint="?attr/colorSubtitle"
+                app:hintTextColor="?attr/colorSubtitle"
+                android:textColor="?attr/colorSubtitle"
                 android:hint="@string/email">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -85,6 +92,9 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/avatar"
+                android:textColorHint="?attr/colorSubtitle"
+                app:hintTextColor="?attr/colorSubtitle"
+                android:textColor="?attr/colorSubtitle"
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -100,13 +110,15 @@
                 android:id="@+id/message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorAccent"
+                android:textColor="?attr/colorAccent"
                 android:visibility="gone"/>
 
             <Button
                 android:id="@+id/submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="?attr/colorButton"
+                android:textColor="?attr/colorText"
                 android:layout_marginTop="10dp"
                 android:text="@string/update"/>
 
@@ -114,6 +126,8 @@
                 android:id="@+id/logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="?attr/colorButton"
+                android:textColor="?attr/colorText"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
                 android:text="@string/logout"/>

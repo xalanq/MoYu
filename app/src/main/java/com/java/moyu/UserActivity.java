@@ -7,12 +7,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.google.android.material.textfield.TextInputEditText;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+
+import com.bumptech.glide.Glide;
+import com.google.android.material.textfield.TextInputEditText;
+
 import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -51,9 +52,9 @@ public class UserActivity extends SwipeActivity {
         emailEdit.setText(User.getInstance().getEmail());
         avatarEdit.setText(User.getInstance().getAvatar());
         Glide.with(this).load(User.getInstance().getAvatar())
-            .placeholder(R.drawable.loading_cover)
-            .error(R.drawable.default_avatar).centerCrop()
-            .into(avatarView);
+                .placeholder(R.drawable.loading_cover)
+                .error(R.drawable.default_avatar).centerCrop()
+                .into(avatarView);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

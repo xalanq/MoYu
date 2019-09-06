@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorBackground"
+        android:background="?attr/colorBackground"
         android:orientation="horizontal"
         android:paddingHorizontal="10dp"
         android:paddingTop="16dp">
@@ -19,7 +19,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_gravity="center_vertical"
-            android:background="@color/colorBackground"
+            android:background="?attr/colorBackground"
             android:src="@drawable/ic_close" />
 
         <TextView
@@ -30,14 +30,15 @@
             android:gravity="center"
             android:paddingStart="0dp"
             android:paddingEnd="28dp"
-            android:text="@string/category" />
+            android:text="@string/category"
+            android:textColor="?attr/colorText"/>
 
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorBackground">
+        android:background="?attr/colorBackground">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -58,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:text="@string/category_current"
-                    android:textColor="@color/colorTitle"
+                    android:textColor="?attr/colorTitle"
                     android:textSize="16sp" />
 
                 <TextView
@@ -69,7 +70,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:text="@string/category_current_hint"
-                    android:textColor="@color/colorSubtitle"
+                    android:textColor="?attr/colorSubtitle"
                     android:textSize="12sp" />
 
                 <TextView
@@ -79,7 +80,7 @@
                     android:clickable="true"
                     android:gravity="center_vertical"
                     android:text="@string/edit"
-                    android:textColor="#969696" />
+                    android:textColor="?attr/colorTextButton"/>
 
             </LinearLayout>
 
@@ -102,7 +103,7 @@
                     android:paddingTop="20dp"
                     android:paddingBottom="10dp"
                     android:text="@string/category_remain"
-                    android:textColor="@color/colorTitle"
+                    android:textColor="?attr/colorTitle"
                     android:textSize="16sp" />
 
                 <TextView
@@ -112,7 +113,7 @@
                     android:layout_marginEnd="0dp"
                     android:gravity="center_vertical"
                     android:text="@string/category_remain_hint"
-                    android:textColor="@color/colorSubtitle"
+                    android:textColor="?attr/colorSubtitle"
                     android:textSize="12sp" />
 
             </LinearLayout>
