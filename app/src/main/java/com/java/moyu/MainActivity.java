@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
@@ -209,6 +212,25 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         Switch mode = (Switch) navigationView.getMenu().findItem(R.id.main_navigation_menu_night_mode).getActionView();
         mode.setChecked(isNight);
         updateTheme();
+        refreshUI();
+    }
+
+    void refreshUI() {
+        Resources r = getResources();
+        Resources.Theme theme = getTheme();
+        TypedValue colorPrimary = new TypedValue();
+        TypedValue colorTopBackground = new TypedValue();
+        TypedValue colorSubtitle = new TypedValue();
+        theme.resolveAttribute(R.attr.colorPrimary, colorPrimary, true);
+        theme.resolveAttribute(R.attr.colorTopBackground, colorTopBackground, true);
+        theme.resolveAttribute(R.attr.colorSubtitle, colorSubtitle, true);
+
+        navigationView.setBackgroundResource(colorTopBackground.resourceId);
+        navigationView.setItemTextColor(ColorStateList.valueOf(r.getColor(colorSubtitle.resourceId, theme)));
+        navigationView.getHeaderView(0).setBackgroundResource(colorPrimary.resourceId);
+        getWindow().setStatusBarColor(r.getColor(colorPrimary.resourceId, theme));
+
+        fragmentAllocator.refreshUI();
     }
 
     private void clearCache() {
@@ -265,6 +287,17 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
             if (aboutFragment == null)
                 aboutFragment = new AboutFragment();
             return aboutFragment;
+        }
+
+        void refreshUI() {
+            if (indexFragment != null)
+                indexFragment.refreshUI();
+            if (favoriteFragment != null)
+                favoriteFragment.refreshUI();
+            if (historyFragment != null)
+                historyFragment.refreshUI();
+            if (aboutFragment != null)
+                aboutFragment.refreshUI();
         }
 
     }

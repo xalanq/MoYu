@@ -1,6 +1,8 @@
 package com.java.moyu;
 
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -115,6 +117,32 @@ public class FavoriteFragment extends BasicFragment {
                 loadMore(false);
             }
         });
+    }
+
+    void refreshUI() {
+        Resources r = getResources();
+        Resources.Theme theme = getActivity().getTheme();
+        TypedValue colorPrimary = new TypedValue();
+        TypedValue colorPrimaryDark = new TypedValue();
+        TypedValue colorAccent = new TypedValue();
+        TypedValue colorTitle = new TypedValue();
+        TypedValue colorSubtitle = new TypedValue();
+        TypedValue colorText = new TypedValue();
+        TypedValue colorBackground = new TypedValue();
+        TypedValue colorTabRipple = new TypedValue();
+        TypedValue colorTopBackground = new TypedValue();
+        TypedValue colorTabSelectedText = new TypedValue();
+        theme.resolveAttribute(R.attr.colorPrimary, colorPrimary, true);
+        theme.resolveAttribute(R.attr.colorPrimaryDark, colorPrimaryDark, true);
+        theme.resolveAttribute(R.attr.colorAccent, colorAccent, true);
+        theme.resolveAttribute(R.attr.colorTitle, colorTitle, true);
+        theme.resolveAttribute(R.attr.colorSubtitle, colorSubtitle, true);
+        theme.resolveAttribute(R.attr.colorText, colorText, true);
+        theme.resolveAttribute(R.attr.colorBackground, colorBackground, true);
+        theme.resolveAttribute(R.attr.colorTabRipple, colorTabRipple, true);
+        theme.resolveAttribute(R.attr.colorTopBackground, colorTopBackground, true);
+        theme.resolveAttribute(R.attr.colorTabSelectedText, colorTabSelectedText, true);
+
     }
 
 }
