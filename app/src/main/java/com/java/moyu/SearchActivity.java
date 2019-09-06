@@ -29,6 +29,14 @@ public class SearchActivity extends BasicActivity {
     }
 
     @Override
+    protected void updateTheme() {
+        if (BasicApplication.isNight())
+            setTheme(R.style.noAnimNightTheme);
+        else
+            setTheme(R.style.noAnimDayTheme);
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setSupportActionBar(toolbar);
