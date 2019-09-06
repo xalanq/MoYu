@@ -12,6 +12,7 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -209,7 +210,7 @@ public class IndexTabFragment extends BasicFragment {
                 public void ok(List<String> data) {
                     tags = data;
                     if (tags.size() == 0) {
-                        tags = NewsDatabase.getInstance().queryAllCategory();
+                        tags = Arrays.asList(Constants.category);
                     }
                     recommendData = new ArrayList<>();
                     recommendRemain = tags.size();
