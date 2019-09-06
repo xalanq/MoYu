@@ -17,9 +17,11 @@ import java.util.concurrent.ExecutionException;
 public class ShareUtil {
 
     private static ShareUtil instance;
+    private static Uri shareImageUri;
     private final String SHARE_PANEL_TITLE = "Share to:";
 
-    private ShareUtil() { }
+    private ShareUtil() {
+    }
 
     public static ShareUtil getInstance() {
 
@@ -64,7 +66,7 @@ public class ShareUtil {
     }
 
     private final String fileName(String file) {
-        return file.substring(file.lastIndexOf('/')+1);
+        return file.substring(file.lastIndexOf('/') + 1);
     }
 
     private final String fileExtension(String file) {
@@ -77,32 +79,6 @@ public class ShareUtil {
             + fileExtension(imgUrl);
         copyFile(imgPath, externalPath);
         return externalPath;
-    }
-
-    private static Uri shareImageUri;
-    private class getImageCacheAsyncTask extends AsyncTask<String, Void, Void> {
-
-        private final Context context;
-
-        public getImageCacheAsyncTask(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-            String imgUrl = params[0];
-            try {
-                String imgPath = Glide.with(context)
-                    .load(imgUrl)
-                    .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                    .get().getPath();
-                shareImageUri = Uri.parse(moveToExternal(context, imgUrl, imgPath));
-                return null;
-            } catch (Exception ex) {
-                return null;
-            }
-        }
-
     }
 
     private Uri getImageUri(Context context, String image) {
@@ -159,10 +135,11 @@ public class ShareUtil {
 
     /**
      * 分享图文
-     * @param context       上下文
-     * @param msgTitle      消息标题
-     * @param msgText       消息内容
-     * @param images        图片路径，不分享图片则传null
+     *
+     * @param context  上下文
+     * @param msgTitle 消息标题
+     * @param msgText  消息内容
+     * @param images   图片路径，不分享图片则传null
      */
     public void shareImageText(Context context, String msgTitle, String msgText, String[] images) {
 
@@ -189,4 +166,30 @@ public class ShareUtil {
         context.startActivity(Intent.createChooser(intent, SHARE_PANEL_TITLE));
 
     }
+
+    private class getImageCacheAsyncTask extends AsyncTask<String, Void, Void> {
+
+        private final Context context;
+
+        public getImageCacheAsyncTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            String imgUrl = params[0];
+            try {
+                String imgPath = Glide.with(context)
+                    .load(imgUrl)
+                    .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .get().getPath();
+                shareImageUri = Uri.parse(moveToExternal(context, imgUrl, imgPath));
+                return null;
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+
+    }
+
 }
