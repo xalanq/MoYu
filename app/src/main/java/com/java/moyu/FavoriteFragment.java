@@ -93,7 +93,7 @@ public class FavoriteFragment extends BasicFragment {
     }
 
     void initData() {
-        if (adapter == null)
+        if (!isAdded())
             return;
         adapter.clear();
         loadMore(true);

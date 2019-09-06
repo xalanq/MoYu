@@ -14,6 +14,7 @@ import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -55,6 +56,21 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
                     }
                 });
                 User.getInstance().addHistory(news.id, LocalDateTime.now(), new User.DefaultCallback() {
+                    @Override
+                    public void error(String msg) {
+                        BasicApplication.showToast(msg);
+                    }
+
+                    @Override
+                    public void ok() {
+
+                    }
+                });
+                List<News.ScoreData> tags = new ArrayList<>();
+                tags.addAll(Arrays.asList(news.keyword));
+                tags.addAll(Arrays.asList(news.who));
+                tags.addAll(Arrays.asList(news.where));
+                User.getInstance().addTag(tags, new User.DefaultCallback() {
                     @Override
                     public void error(String msg) {
                         BasicApplication.showToast(msg);

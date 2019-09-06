@@ -25,4 +25,5 @@ public abstract class SwipeActivity extends BasicActivity {
         super.finish();
         overridePendingTransition(R.anim.slide_stay, R.anim.slide_left_exit);
     }
+
 }

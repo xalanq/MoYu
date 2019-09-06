@@ -100,6 +100,8 @@ public class UserNetwork {
                 }
                 br.close();
                 httpUrlConn.disconnect();
+                // Log.d(TAG, "doInBackground put: " + new String(data, "UTF-8"));
+                // Log.d(TAG, "doInBackground get: " + sb.toString());
 
                 JSONObject jsonData = new JSONObject(sb.toString());
                 if (jsonData.has("error"))

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.transition.CircularPropagation;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
@@ -23,7 +22,6 @@ import java.io.File;
 import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -85,6 +83,19 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
                 clickUser();
             }
         });
+//        final Switch actionView = (Switch) navigationView.getMenu().findItem(R.id.main_navigation_menu_night_mode).getActionView();
+//        actionView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//                } else {
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//                }
+//                MainActivity.this.recreate();
+//            }
+//        });
     }
 
     void reloadUser(boolean refreshFragment) {
@@ -103,7 +114,7 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         }
         if (refreshFragment) {
             if (currentFragment == fragmentAllocator.getIndexFragment())
-                fragmentAllocator.getIndexFragment().updateTab();
+                fragmentAllocator.getIndexFragment().initData();
             else if (currentFragment == fragmentAllocator.getFavoriteFragment())
                 fragmentAllocator.getFavoriteFragment().initData();
             else if (currentFragment == fragmentAllocator.getHistoryFragment())
@@ -197,11 +208,6 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
 
     private void switchNightMode() {
         Switch mode = (Switch) navigationView.getMenu().findItem(R.id.main_navigation_menu_night_mode).getActionView();
-        if (mode.isChecked()) {
-
-        } else {
-
-        }
         mode.setChecked(!mode.isChecked());
     }
 

@@ -1,7 +1,5 @@
 package com.java.moyu;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -89,6 +87,8 @@ public class User {
                     }
                 }
             });
+        } else {
+            callback.ok();
         }
     }
 
@@ -216,7 +216,7 @@ public class User {
         }
     }
 
-    public void getSearchHistory(int skip, int limit, final SearchHistoryCallback callback) {
+    public void getSearchHistory(int skip, int limit, final StringListCallback callback) {
         if (isOffline) {
             List<String> history = NewsDatabase.getInstance().querySearchHistory(skip, limit);
             callback.ok(history);
@@ -257,6 +257,17 @@ public class User {
         } else {
             getNews("history", skip, limit, callback);
         }
+    }
+
+    public void getTopTag(int limit, final StringListCallback callback) {
+        callback.ok(NewsDatabase.getInstance().getTopTags(limit));
+        /*
+        if (isOffline) {
+            callback.ok(NewsDatabase.getInstance().getTopTags(limit));
+        } else {
+
+        }
+        */
     }
 
     public void addNews(News news, final DefaultCallback callback) {
@@ -303,6 +314,33 @@ public class User {
         } else {
             addList("search_history", keyword, callback);
         }
+    }
+
+    public void addTag(List<News.ScoreData> data, final DefaultCallback callback) {
+        NewsDatabase.getInstance().addTags(data);
+        callback.ok();
+        /*
+        if (isOffline) {
+            NewsDatabase.getInstance().addTags(data);
+            callback.ok();
+        } else {
+            new UserNetwork.Builder("/addList")
+                .add("token", token)
+                .add("type", "tag")
+                .add("data", new JSONArray(data).toString())
+                .build().run(new UserNetwork.Callback() {
+                @Override
+                public void error(String msg) {
+                    callback.error(msg);
+                }
+
+                @Override
+                public void ok(JSONObject data) {
+                    callback.ok();
+                }
+            });
+        }
+        */
     }
 
     public void delFavorite(String news_id, final DefaultCallback callback) {
@@ -509,7 +547,7 @@ public class User {
                         }
                     });
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
             }
         });
@@ -531,11 +569,11 @@ public class User {
 
     }
 
-    public interface SearchHistoryCallback {
+    public interface StringListCallback {
 
         void error(String msg);
 
-        void ok(final List<String> historyList);
+        void ok(final List<String> data);
 
     }
 

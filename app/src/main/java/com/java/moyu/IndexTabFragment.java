@@ -1,5 +1,6 @@
 package com.java.moyu;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,7 +11,12 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +34,6 @@ public class IndexTabFragment extends BasicFragment {
     Button emptyButton;
     private NewsAdapter adapter;
     private String category;
-    private String word;
 
     IndexTabFragment(String category) {
         this.category = category;
@@ -50,23 +55,8 @@ public class IndexTabFragment extends BasicFragment {
     }
 
     private void loadMore() {
-        new NewsNetwork.Builder()
-            .add("size", "" + Constants.PAGE_SIZE)
-            .add("words", word)
-            .add("categories", category)
-            .add("endDate", adapter.get(adapter.getItemCount() - 1).getPublishTime().minusSeconds(1).format(Constants.TIME_FORMATTER))
-            .build()
-            .run(new NewsNetwork.Callback() {
-                @Override
-                public void timeout() {
-                    refreshLayout.finishLoadMore(false);
-                }
-
-                @Override
-                public void error() {
-                    refreshLayout.finishLoadMore(false);
-                }
-
+        if (category.equals(getResources().getString(R.string.recommend))) {
+            new GetRecommendTask(Constants.RECOMMEND_TAGS_SIZE, LocalDateTime.now(), new GetRecommendTask.Callback() {
                 @Override
                 public void ok(List<News> data) {
                     if (data.isEmpty()) {
@@ -75,39 +65,41 @@ public class IndexTabFragment extends BasicFragment {
                         adapter.add(data);
                         refreshLayout.finishLoadMore();
                     }
-                    loadingLayout.setVisibility(View.GONE);
                 }
             });
+        } else {
+            new NewsNetwork.Builder()
+                .add("size", "" + Constants.PAGE_SIZE)
+                .add("categories", category)
+                .add("endDate", adapter.get(adapter.getItemCount() - 1).getPublishTime().minusSeconds(1).format(Constants.TIME_FORMATTER))
+                .build()
+                .run(new NewsNetwork.Callback() {
+                    @Override
+                    public void timeout() {
+                        refreshLayout.finishLoadMore(false);
+                    }
+
+                    @Override
+                    public void error() {
+                        refreshLayout.finishLoadMore(false);
+                    }
+
+                    @Override
+                    public void ok(List<News> data) {
+                        if (data.isEmpty()) {
+                            refreshLayout.finishLoadMoreWithNoMoreData();
+                        } else {
+                            adapter.add(data);
+                            refreshLayout.finishLoadMore();
+                        }
+                    }
+                });
+        }
     }
 
     void refresh(final boolean first) {
-        new NewsNetwork.Builder()
-            .add("size", "" + Constants.PAGE_SIZE)
-            .add("words", word)
-            .add("categories", category)
-            .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
-            .build()
-            .run(new NewsNetwork.Callback() {
-                @Override
-                public void timeout() {
-                    refreshLayout.finishRefresh(false);
-                    if (first) {
-                        loadingLayout.setVisibility(View.GONE);
-                        emptyLayout.setVisibility(View.VISIBLE);
-                        refreshLayout.setVisibility(View.INVISIBLE);
-                    }
-                }
-
-                @Override
-                public void error() {
-                    refreshLayout.finishRefresh(false);
-                    if (first) {
-                        loadingLayout.setVisibility(View.GONE);
-                        emptyLayout.setVisibility(View.VISIBLE);
-                        refreshLayout.setVisibility(View.INVISIBLE);
-                    }
-                }
-
+        if (category.equals(getResources().getString(R.string.recommend))) {
+            new GetRecommendTask(Constants.RECOMMEND_TAGS_SIZE, LocalDateTime.now(), new GetRecommendTask.Callback() {
                 @Override
                 public void ok(List<News> data) {
                     adapter.clear();
@@ -125,15 +117,54 @@ public class IndexTabFragment extends BasicFragment {
                     }
                 }
             });
+        } else {
+            new NewsNetwork.Builder()
+                .add("size", "" + Constants.PAGE_SIZE)
+                .add("categories", category)
+                .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
+                .build()
+                .run(new NewsNetwork.Callback() {
+                    @Override
+                    public void timeout() {
+                        refreshLayout.finishRefresh(false);
+                        if (first) {
+                            loadingLayout.setVisibility(View.GONE);
+                            emptyLayout.setVisibility(View.VISIBLE);
+                            refreshLayout.setVisibility(View.INVISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void error() {
+                        refreshLayout.finishRefresh(false);
+                        if (first) {
+                            loadingLayout.setVisibility(View.GONE);
+                            emptyLayout.setVisibility(View.VISIBLE);
+                            refreshLayout.setVisibility(View.INVISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void ok(List<News> data) {
+                        adapter.clear();
+                        adapter.add(data);
+                        refreshLayout.finishRefresh();
+                        if (first) {
+                            loadingLayout.setVisibility(View.GONE);
+                            if (data.isEmpty()) {
+                                emptyLayout.setVisibility(View.VISIBLE);
+                                refreshLayout.setVisibility(View.INVISIBLE);
+                            } else {
+                                emptyLayout.setVisibility(View.INVISIBLE);
+                                refreshLayout.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                });
+        }
     }
 
     void initData() {
-        if (category.equals(getResources().getString(R.string.recommend))) {
-            this.word = "香港";
-            this.category = "";
-        } else {
-            this.word = "";
-        }
         refresh(true);
         emptyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,6 +185,90 @@ public class IndexTabFragment extends BasicFragment {
                 refresh(false);
             }
         });
+    }
+
+    private static class GetRecommendTask extends AsyncTask<Void, Void, List<News>> {
+
+        List<String> tags;
+        List<News> recommendData;
+        String endDate;
+        Callback callback;
+        Integer recommendRemain;
+
+        GetRecommendTask(int limit, LocalDateTime endDate, final Callback callback) {
+            this.endDate = endDate.format(Constants.TIME_FORMATTER);
+            this.callback = callback;
+            User.getInstance().getTopTag(limit, new User.StringListCallback() {
+                @Override
+                public void error(String msg) {
+                    BasicApplication.showToast(msg);
+                    callback.ok(new ArrayList<News>());
+                }
+
+                @Override
+                public void ok(List<String> data) {
+                    tags = data;
+                    if (tags.size() == 0) {
+                        tags = NewsDatabase.getInstance().queryAllCategory();
+                    }
+                    recommendData = new ArrayList<>();
+                    recommendRemain = tags.size();
+                    for (String tag : tags) {
+                        new NewsNetwork.Builder()
+                            .add("size", "" + Constants.PAGE_SIZE)
+                            .add("words", tag)
+                            .add("endDate", GetRecommendTask.this.endDate)
+                            .build()
+                            .run(new NewsNetwork.Callback() {
+                                @Override
+                                public void timeout() {
+                                    recommendRemain--;
+                                }
+
+                                @Override
+                                public void error() {
+                                    recommendRemain--;
+                                }
+
+                                @Override
+                                public void ok(List<News> data) {
+                                    recommendData.addAll(data);
+                                    recommendRemain--;
+                                }
+                            });
+                    }
+                    execute();
+                }
+            });
+        }
+
+        @Override
+        protected List<News> doInBackground(Void... voids) {
+            while (recommendRemain > 0) ;
+
+            Set<News> set = new HashSet<>(recommendData);
+            List<News> tmp = (new ArrayList<>(set)).subList(0, Math.min(Constants.PAGE_SIZE, recommendData.size()));
+
+            Collections.sort(tmp, new Comparator<News>() {
+                public int compare(News arg0, News arg1) {
+                    return arg1.getTime().compareTo(arg0.getTime());
+                }
+            });
+
+            return tmp;
+        }
+
+        @Override
+        protected void onPostExecute(List<News> data) {
+            callback.ok(data);
+        }
+
+        public interface Callback {
+
+            void ok(List<News> data);
+
+        }
+
     }
 
 }

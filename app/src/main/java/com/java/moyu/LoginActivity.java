@@ -10,8 +10,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.billy.android.swipe.SmartSwipe;
-import com.billy.android.swipe.consumer.ActivitySlidingBackConsumer;
 import com.google.android.material.textfield.TextInputEditText;
 
 import androidx.annotation.Nullable;

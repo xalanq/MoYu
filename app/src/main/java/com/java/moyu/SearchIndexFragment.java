@@ -121,20 +121,20 @@ public class SearchIndexFragment extends BasicFragment {
     }
 
     private void test() {
-        User.getInstance().getSearchHistory(0, Constants.SEARCH_HISTORY_LIMIT, new User.SearchHistoryCallback() {
+        User.getInstance().getSearchHistory(0, Constants.SEARCH_HISTORY_LIMIT, new User.StringListCallback() {
             @Override
             public void error(String msg) {
                 BasicApplication.showToast(msg);
             }
 
             @Override
-            public void ok(List<String> historyList) {
+            public void ok(List<String> data) {
                 List<String> a = new ArrayList<>();
                 for (int i = 0; i < 9; ++i) {
                     a.add(String.format("热搜%d", new Random().nextInt() % 999));
                 }
                 hotAdapter.add(a);
-                historyAdapter.add(historyList);
+                historyAdapter.add(data);
             }
         });
     }

@@ -16,10 +16,12 @@ import java.util.List;
 public class NewsDatabase extends SQLiteOpenHelper {
 
     private static NewsDatabase instance;
+    private final String TAG = "NewsDatabase";
     private final String TABLE_NAME_NEWS = "news";
     private final String TABLE_NAME_CATEGORY = "category";
     private final String TABLE_NAME_SEARCH = "search";
     private final String TABLE_NAME_USER = "user";
+    private final String TABLE_NAME_TAG = "tag";
     private final String VALUE_ID = "_id";
     private final String VALUE_NEWS_ID = "news_id";
     private final String VALUE_DATA = "data";
@@ -31,6 +33,8 @@ public class NewsDatabase extends SQLiteOpenHelper {
     private final String VALUE_POSITION = "position";
     private final String VALUE_KEYWORD = "keyword";
     private final String VALUE_TOKEN = "token";
+    private final String VALUE_TAG = "tag";
+    private final String VALUE_TIMES = "times";
     private final String CREATE_NEWS = "create table " + TABLE_NAME_NEWS + "(" +
         VALUE_ID + " integer primary key," +
         VALUE_NEWS_ID + " text not null unique," +
@@ -53,7 +57,11 @@ public class NewsDatabase extends SQLiteOpenHelper {
         VALUE_ID + " integer primary key," +
         VALUE_TOKEN + " text not null unique" +
         ")";
-    private String TAG = "NewsDatabase";
+    private final String CREATE_TAG = "create table " + TABLE_NAME_TAG + "(" +
+        VALUE_ID + " integer primary key," +
+        VALUE_TAG + " text not null unique," +
+        VALUE_TIMES + " real not null" +
+        ")";
 
     private NewsDatabase(Context context) {
         super(context, Constants.DB_NAME, null, Constants.DB_VERSION);
@@ -73,6 +81,7 @@ public class NewsDatabase extends SQLiteOpenHelper {
         db.execSQL(CREATE_CATEGORY);
         db.execSQL(CREATE_SEARCH);
         db.execSQL(CREATE_USER);
+        db.execSQL(CREATE_TAG);
         int i = 1;
         for (String str : Constants.category) {
             ContentValues values = new ContentValues();
@@ -89,7 +98,6 @@ public class NewsDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d(TAG, "-------> onUpgrade" + "  oldVersion = " + oldVersion + "   newVersion = " + newVersion);
     }
 
     /**
@@ -353,6 +361,40 @@ public class NewsDatabase extends SQLiteOpenHelper {
         values.put(VALUE_ID, 1);
         values.put(VALUE_TOKEN, token);
         getWritableDatabase().update(TABLE_NAME_USER, values, null, null);
+    }
+
+    public void addTags(List<News.ScoreData> tags) {
+        for (News.ScoreData tag : tags) {
+            Cursor cursor = getWritableDatabase().query(TABLE_NAME_TAG, null, VALUE_TAG + " = ?", new String[]{tag.getWord()}, null, null, null, null);
+            if (cursor.getCount() == 0) {
+                ContentValues values = new ContentValues();
+                values.put(VALUE_TAG, tag.getWord());
+                values.put(VALUE_TIMES, tag.getScore());
+                getWritableDatabase().insert(TABLE_NAME_TAG, null, values);
+            } else {
+                cursor.moveToFirst();
+                ContentValues values = new ContentValues();
+                values.put(VALUE_TIMES, cursor.getDouble(cursor.getColumnIndex(VALUE_TIMES)) + tag.getScore());
+                getWritableDatabase().update(TABLE_NAME_TAG, values, VALUE_TAG + " = ? ", new String[]{tag.getWord()});
+            }
+        }
+    }
+
+    public void delAllTags() {
+        getWritableDatabase().delete(TABLE_NAME_TAG, null, null);
+    }
+
+    public List<String> getTopTags(Integer limit) {
+        List<String> list = new ArrayList<>();
+        Cursor cursor = getReadableDatabase().query(TABLE_NAME_TAG, null, null, null, null, null, VALUE_TIMES + " DESC", limit.toString());
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            for (int i = 0; i < cursor.getCount(); i++) {
+                list.add(cursor.getString(cursor.getColumnIndex(VALUE_TAG)));
+                cursor.moveToNext();
+            }
+        }
+        return list;
     }
 
 }

@@ -7,9 +7,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.billy.android.swipe.SmartSwipe;
-import com.billy.android.swipe.SwipeConsumer;
-import com.billy.android.swipe.consumer.ActivitySlidingBackConsumer;
 import com.google.android.material.chip.Chip;
 
 import java.util.List;

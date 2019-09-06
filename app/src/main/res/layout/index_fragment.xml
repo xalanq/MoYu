@@ -15,28 +15,28 @@
             android:id="@+id/index_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:fitsSystemWindows="true"
             android:layout_marginStart="0dp"
             android:layout_marginEnd="20dp"
+            android:background="?attr/colorPrimary"
+            android:fitsSystemWindows="true"
+            app:contentInsetStartWithNavigation="0dp"
             app:layout_scrollFlags="scroll|snap|enterAlways"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:contentInsetStartWithNavigation="0dp">
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
             <EditText
                 android:id="@+id/index_search_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:inputType="none"
                 android:autofillHints="none"
-                android:hint="@string/default_search_hint"
                 android:background="@drawable/search_box_background"
-                android:focusable="false"
-                android:textSize="14sp"
                 android:drawableStart="@drawable/ic_search"
                 android:drawablePadding="5dp"
-                android:textColorHint="#888888"/>
+                android:focusable="false"
+                android:hint="@string/default_search_hint"
+                android:inputType="none"
+                android:singleLine="true"
+                android:textColorHint="#888888"
+                android:textSize="14sp" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -44,27 +44,27 @@
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:orientation="horizontal"
-            android:background="#ffffff">
+            android:background="@color/colorTopBackground">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/index_tab_layout"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                app:tabBackground="@color/cardview_light_background"
-                app:tabTextColor="#888888"
-                app:tabRippleColor="#CCCCCC"
-                app:tabSelectedTextColor="@color/colorPrimary"
+                android:layout_weight="1"
+                app:tabBackground="@color/colorTopBackground"
                 app:tabIndicatorColor="@color/colorPrimary"
                 app:tabIndicatorHeight="2dp"
-                app:tabMode="scrollable"/>
+                app:tabMode="scrollable"
+                app:tabRippleColor="@color/colorTabRipple"
+                app:tabSelectedTextColor="@color/colorTabSelectedText"
+                app:tabTextColor="#888888" />
 
             <ImageButton
                 android:id="@+id/index_more_button"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:src="@drawable/ic_more"
-                android:background="#ffffff"
+                android:background="@color/colorTopBackground"
                 android:contentDescription="@string/more"/>
 
         </LinearLayout>
@@ -75,6 +75,7 @@
         android:id="@+id/index_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:background="@color/colorBackground"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

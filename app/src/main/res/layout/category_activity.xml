@@ -9,38 +9,40 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorBackground"
         android:orientation="horizontal"
-        android:paddingTop="16dp"
-        android:paddingHorizontal="10dp">
+        android:paddingHorizontal="10dp"
+        android:paddingTop="16dp">
 
         <ImageButton
             android:id="@+id/category_close"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_gravity="center_vertical"
-            android:background="#ffffff"
-            android:src="@drawable/ic_close"/>
+            android:background="@color/colorBackground"
+            android:src="@drawable/ic_close" />
 
         <TextView
+            style="@style/Base.DialogWindowTitle.AppCompat"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:paddingEnd="28dp"
-            android:paddingStart="0dp"
             android:layout_height="28dp"
+            android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/category"
-            style="@style/Base.DialogWindowTitle.AppCompat"/>
+            android:paddingStart="0dp"
+            android:paddingEnd="28dp"
+            android:text="@string/category" />
 
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:paddingHorizontal="16dp"
             android:paddingBottom="20dp">
 
@@ -54,30 +56,30 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/category_current"
-                    android:textSize="16sp"
                     android:gravity="center_vertical"
-                    android:textColor="#000000"/>
+                    android:text="@string/category_current"
+                    android:textColor="@color/colorTitle"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="0dp"
-                    android:text="@string/category_current_hint"
-                    android:textSize="12sp"
+                    android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:textColor="#7C7C7C"/>
+                    android:text="@string/category_current_hint"
+                    android:textColor="@color/colorSubtitle"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/category_edit_current"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/edit"
                     android:clickable="true"
                     android:gravity="center_vertical"
-                    android:textColor="@color/colorPrimary"/>
+                    android:text="@string/edit"
+                    android:textColor="#969696" />
 
             </LinearLayout>
 
@@ -86,7 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layoutDirection="locale"
-                android:nestedScrollingEnabled="false"/>
+                android:nestedScrollingEnabled="false" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -96,22 +98,22 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/category_remain"
-                    android:textSize="16sp"
+                    android:gravity="center_vertical"
                     android:paddingTop="20dp"
                     android:paddingBottom="10dp"
-                    android:gravity="center_vertical"
-                    android:textColor="#000000"/>
+                    android:text="@string/category_remain"
+                    android:textColor="@color/colorTitle"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="0dp"
-                    android:text="@string/category_remain_hint"
-                    android:textSize="12sp"
                     android:gravity="center_vertical"
-                    android:textColor="#7C7C7C"/>
+                    android:text="@string/category_remain_hint"
+                    android:textColor="@color/colorSubtitle"
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -120,7 +122,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layoutDirection="locale"
-                android:nestedScrollingEnabled="false"/>
+                android:nestedScrollingEnabled="false" />
 
         </LinearLayout>
 

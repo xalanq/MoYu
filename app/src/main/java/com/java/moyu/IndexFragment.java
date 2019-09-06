@@ -75,13 +75,14 @@ public class IndexFragment extends BasicFragment {
         });
 
         tabLayout.setupWithViewPager(viewPager);
+        initData();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             if (data.getBooleanExtra("hasEdited", false)) {
-                updateTab();
+                initData();
             }
             int position = data.getIntExtra("selectPosition", -1);
             if (position != -1) {
@@ -92,7 +93,9 @@ public class IndexFragment extends BasicFragment {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    void updateTab() {
+    void initData() {
+        if (!isAdded())
+            return;
         User.getInstance().getCategory(new User.CategoryCallback() {
             @Override
             public void error(String msg) {
@@ -101,6 +104,7 @@ public class IndexFragment extends BasicFragment {
 
             @Override
             public void ok(List<String> chosen, List<String> remain) {
+                chosen.add(0, BasicApplication.getContext().getString(R.string.recommend));
                 pagerAdapter = new PagerAdapter(getChildFragmentManager(), chosen);
                 viewPager.setAdapter(pagerAdapter);
                 viewPager.setOffscreenPageLimit(2);

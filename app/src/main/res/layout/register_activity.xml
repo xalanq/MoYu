@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff">
+    android:background="@color/colorBackground">
 
     <ImageButton
         android:id="@+id/back"
@@ -12,7 +12,7 @@
         android:layout_height="40dp"
         android:layout_gravity="center_vertical"
         android:src="@drawable/ic_back"
-        android:background="#ffffff"
+        android:background="@color/colorBackground"
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="0dp"/>

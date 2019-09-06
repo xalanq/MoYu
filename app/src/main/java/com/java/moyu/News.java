@@ -94,6 +94,10 @@ class News {
         return this.id;
     }
 
+    public LocalDateTime getTime() {
+        return this.publishTime;
+    }
+
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
         try {
@@ -184,6 +188,14 @@ class News {
             return json;
         }
 
+        public final Double getScore() {
+            return score;
+        }
+
+        public final String getWord() {
+            return word;
+        }
+
     }
 
     class MentionData {
@@ -199,7 +211,6 @@ class News {
                 this.word = data.getString("mention");
             } catch (JSONException e) {
                 e.printStackTrace();
-                Log.e("MentionData", data.toString());
             }
         }
 

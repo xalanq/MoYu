@@ -75,7 +75,7 @@ public class NewsNetwork {
                 URL url = new URL(this.url);
                 HttpURLConnection httpUrlConn = (HttpURLConnection) url.openConnection();
                 httpUrlConn.setRequestMethod("GET");
-                httpUrlConn.setReadTimeout(10000);
+                httpUrlConn.setReadTimeout(3000);
                 httpUrlConn.setConnectTimeout(3000);
                 httpUrlConn.setDoInput(true);
                 httpUrlConn.connect();
@@ -90,6 +90,8 @@ public class NewsNetwork {
                 }
                 br.close();
                 httpUrlConn.disconnect();
+                // Log.d(TAG, "doInBackground put: " + url);
+                // Log.d(TAG, "doInBackground get: " + sb.toString());
 
                 JSONObject jsonData = new JSONObject(sb.toString());
                 JSONArray allNewsData = jsonData.getJSONArray("data");
