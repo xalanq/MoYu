@@ -341,7 +341,9 @@ public class NewsDatabase extends SQLiteOpenHelper {
 
     final public String getToken() {
         Cursor cursor = getReadableDatabase().query(TABLE_NAME_USER, null, VALUE_TOKEN, null, null, null, null);
-        return cursor.getString(0);
+        if (cursor.getCount() > 0)
+            return cursor.getString(0);
+        return "";
     }
 
     public void setToken(String token) {

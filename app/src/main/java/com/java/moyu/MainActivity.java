@@ -42,6 +42,17 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         fragmentAllocator = new FragmentAllocator();
 
         setNavigation();
+        User.getInstance().updateUserInfo(new User.DefaultCallback() {
+            @Override
+            public void error(String msg) {
+                BasicApplication.showToast(msg);
+            }
+
+            @Override
+            public void ok() {
+
+            }
+        });
 
         backDefault();
     }

@@ -67,8 +67,10 @@
     <string name="favorite">收藏</string>
     <string name="share">分享</string>
     <string name="recommend">推荐</string>
-    <string name="timeout">超时</string>
+    <string name="timeout">请求超时</string>
     <string name="unknown_error">未知错误</string>
+    <string name="empty">~ 啥也没有呢 ~</string>
+    <string name="retry">重试刷新</string>
 
     <string name="cache_title">清除缓存</string>
     <string name="cache_calculate">正在计算中</string>

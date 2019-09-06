@@ -2,7 +2,9 @@ package com.java.moyu;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -13,6 +15,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import butterknife.BindInt;
 import butterknife.BindView;
 
 public class SearchResultFragment extends BasicFragment {
@@ -22,6 +25,10 @@ public class SearchResultFragment extends BasicFragment {
     SmartRefreshLayout refreshLayout;
     @BindView(R.id.loading_layout)
     LinearLayout loadingLayout;
+    @BindView(R.id.empty_layout)
+    LinearLayout emptyLayout;
+    @BindView(R.id.empty_button)
+    Button emptyButton;
     private NewsAdapter adapter;
 
     public SearchResultFragment(String text) {
@@ -36,10 +43,11 @@ public class SearchResultFragment extends BasicFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout),
             NewsAdapter.defaultOnclick(getActivity()));
 
-        test();
+        init();
     }
 
     void refresh(final boolean first) {
@@ -54,7 +62,8 @@ public class SearchResultFragment extends BasicFragment {
                     refreshLayout.finishRefresh(false);
                     if (first) {
                         loadingLayout.setVisibility(View.GONE);
-                        refreshLayout.setVisibility(View.VISIBLE);
+                        emptyLayout.setVisibility(View.VISIBLE);
+                        refreshLayout.setVisibility(View.INVISIBLE);
                     }
                 }
 
@@ -63,7 +72,8 @@ public class SearchResultFragment extends BasicFragment {
                     refreshLayout.finishRefresh(false);
                     if (first) {
                         loadingLayout.setVisibility(View.GONE);
-                        refreshLayout.setVisibility(View.VISIBLE);
+                        emptyLayout.setVisibility(View.VISIBLE);
+                        refreshLayout.setVisibility(View.INVISIBLE);
                     }
                 }
 
@@ -74,7 +84,13 @@ public class SearchResultFragment extends BasicFragment {
                     refreshLayout.finishRefresh();
                     if (first) {
                         loadingLayout.setVisibility(View.GONE);
-                        refreshLayout.setVisibility(View.VISIBLE);
+                        if (data.isEmpty()) {
+                            emptyLayout.setVisibility(View.VISIBLE);
+                            refreshLayout.setVisibility(View.INVISIBLE);
+                        } else {
+                            emptyLayout.setVisibility(View.INVISIBLE);
+                            refreshLayout.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             });
@@ -109,8 +125,16 @@ public class SearchResultFragment extends BasicFragment {
             });
     }
 
-    private void test() {
+    private void init() {
         refresh(true);
+        emptyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                emptyLayout.setVisibility(View.INVISIBLE);
+                loadingLayout.setVisibility(View.VISIBLE);
+                refresh(true);
+            }
+        });
         refreshLayout.setEnableLoadMoreWhenContentNotFull(false);
         refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override

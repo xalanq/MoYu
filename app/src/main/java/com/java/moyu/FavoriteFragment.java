@@ -2,6 +2,7 @@ package com.java.moyu;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -25,6 +26,10 @@ public class FavoriteFragment extends BasicFragment {
     SmartRefreshLayout refreshLayout;
     @BindView(R.id.loading_layout)
     LinearLayout loadingLayout;
+    @BindView(R.id.empty_layout)
+    LinearLayout emptyLayout;
+    @BindView(R.id.empty_button)
+    Button emptyButton;
     @BindView(R.id.favorite_toolbar)
     Toolbar toolbar;
 
@@ -55,21 +60,36 @@ public class FavoriteFragment extends BasicFragment {
         initData();
     }
 
-    void loadMore(boolean first) {
+    void loadMore(final boolean first) {
         if (first)
             offset = 0;
-        List<News> data = NewsDatabase.getInstance().queryFavorList(offset, Constants.PAGE_SIZE);
-        if (data.isEmpty()) {
-            refreshLayout.finishLoadMoreWithNoMoreData();
-        } else {
-            offset += data.size();
-            adapter.add(data);
-            refreshLayout.finishLoadMore();
-        }
-        if (first) {
-            loadingLayout.setVisibility(View.GONE);
-            refreshLayout.setVisibility(View.VISIBLE);
-        }
+        User.getInstance().getFavorite(offset, Constants.PAGE_SIZE, new User.NewsCallback() {
+            @Override
+            public void error(String msg) {
+                BasicApplication.showToast(msg);
+            }
+
+            @Override
+            public void ok(List<News> newsList) {
+                if (newsList.isEmpty()) {
+                    refreshLayout.finishLoadMoreWithNoMoreData();
+                } else {
+                    offset += newsList.size();
+                    adapter.add(newsList);
+                    refreshLayout.finishLoadMore();
+                }
+                if (first) {
+                    loadingLayout.setVisibility(View.GONE);
+                    if (newsList.isEmpty()) {
+                        emptyLayout.setVisibility(View.VISIBLE);
+                        refreshLayout.setVisibility(View.INVISIBLE);
+                    } else {
+                        emptyLayout.setVisibility(View.INVISIBLE);
+                        refreshLayout.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
     }
 
     void initData() {
@@ -77,6 +97,14 @@ public class FavoriteFragment extends BasicFragment {
             return;
         adapter.clear();
         loadMore(true);
+        emptyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                emptyLayout.setVisibility(View.INVISIBLE);
+                loadingLayout.setVisibility(View.VISIBLE);
+                loadMore(true);
+            }
+        });
         refreshLayout.resetNoMoreData();
         refreshLayout.setEnableRefresh(false);
         refreshLayout.setEnableLoadMoreWhenContentNotFull(false);

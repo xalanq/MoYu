@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.billy.android.swipe.SmartSwipe;
 import com.billy.android.swipe.SwipeConsumer;
@@ -96,7 +97,7 @@ public class NewsActivity extends VideoActivity {
     private void initData() {
         try {
             news = new News(new JSONObject(getIntent().getExtras().getString("news")));
-            isStarred = NewsDatabase.getInstance().queryFavor(news.id);
+            isStarred = true;
 
             getSupportActionBar().setTitle(news.publisher);
             if (news.image != null) {
@@ -135,33 +136,51 @@ public class NewsActivity extends VideoActivity {
         }
     }
 
-    void clickStar(MenuItem item) {
-
+    void clickStar(final MenuItem item) {
         isStarred = !isStarred;
         if (isStarred) {
-            new Thread(new Runnable() {
+            User.getInstance().addFavorite(news.id, LocalDateTime.now(), new User.DefaultCallback() {
                 @Override
-                public void run() {
-                    NewsDatabase.getInstance().addFavor(news.id, LocalDateTime.now());
+                public void error(String msg) {
+                    BasicApplication.showToast(msg);
                 }
-            }).start();
+
+                @Override
+                public void ok() {
+                }
+            });
             item.setIcon(R.drawable.ic_starred);
         } else {
-            new Thread(new Runnable() {
+            User.getInstance().delFavorite(news.id, new User.DefaultCallback() {
                 @Override
-                public void run() {
-                    NewsDatabase.getInstance().delFavor(news.id);
+                public void error(String msg) {
+                    BasicApplication.showToast(msg);
                 }
-            }).start();
+
+                @Override
+                public void ok() {
+                }
+            });
             item.setIcon(R.drawable.ic_star_light);
         }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.news_toolbar, menu);
-        if (isStarred)
-            menu.findItem(R.id.star_button).setIcon(R.drawable.ic_starred);
+        User.getInstance().hasStarred(news.id, new User.HasCallback() {
+            @Override
+            public void error(String msg) {
+                BasicApplication.showToast(msg);
+            }
+
+            @Override
+            public void ok(boolean has) {
+                isStarred = has;
+                if (isStarred)
+                    menu.findItem(R.id.star_button).setIcon(R.drawable.ic_starred);
+            }
+        });
         return true;
     }
 

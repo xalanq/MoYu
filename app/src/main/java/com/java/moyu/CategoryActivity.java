@@ -6,11 +6,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.billy.android.swipe.SmartSwipe;
 import com.billy.android.swipe.SwipeConsumer;
 import com.billy.android.swipe.consumer.ActivitySlidingBackConsumer;
 import com.google.android.material.chip.Chip;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,7 +55,17 @@ public class CategoryActivity extends BasicActivity {
                 currentAdapter.add(remainAdapter.get(position));
                 remainAdapter.remove(position);
                 hasEdited = true;
-                NewsDatabase.getInstance().updateCategory(currentAdapter.getData(), remainAdapter.getData());
+                User.getInstance().updateCategory(currentAdapter.getData(), remainAdapter.getData(), new User.DefaultCallback() {
+                    @Override
+                    public void error(String msg) {
+                        BasicApplication.showToast(msg);
+                    }
+
+                    @Override
+                    public void ok() {
+
+                    }
+                });
             }
 
             @Override
@@ -168,8 +181,18 @@ public class CategoryActivity extends BasicActivity {
     }
 
     void initData() {
-        currentAdapter.add(NewsDatabase.getInstance().queryCategory(1));
-        remainAdapter.add(NewsDatabase.getInstance().queryCategory(0));
+        User.getInstance().getCategory(new User.CategoryCallback() {
+            @Override
+            public void error(String msg) {
+                BasicApplication.showToast(msg);
+            }
+
+            @Override
+            public void ok(List<String> chosen, List<String> remain) {
+                currentAdapter.add(chosen);
+                remainAdapter.add(remain);
+            }
+        });
     }
 
 }

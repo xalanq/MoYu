@@ -43,14 +43,28 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             @Override
             public void click(final News news) {
                 Intent intent = new Intent(activity, NewsActivity.class);
-                new Thread(new Runnable() {
+                User.getInstance().addNews(news, new User.DefaultCallback() {
                     @Override
-                    public void run() {
-                        NewsDatabase db = NewsDatabase.getInstance();
-                        db.addNews(news);
-                        db.addHistory(news.id, LocalDateTime.now());
+                    public void error(String msg) {
+                        BasicApplication.showToast(msg);
                     }
-                }).start();
+
+                    @Override
+                    public void ok() {
+
+                    }
+                });
+                User.getInstance().addHistory(news.id, LocalDateTime.now(), new User.DefaultCallback() {
+                    @Override
+                    public void error(String msg) {
+                        BasicApplication.showToast(msg);
+                    }
+
+                    @Override
+                    public void ok() {
+
+                    }
+                });
                 intent.putExtra("news", news.toJSONObject().toString());
                 activity.startActivity(intent);
                 activity.overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);

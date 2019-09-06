@@ -2,7 +2,9 @@ package com.java.moyu;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -21,6 +23,10 @@ public class IndexTabFragment extends BasicFragment {
     SmartRefreshLayout refreshLayout;
     @BindView(R.id.loading_layout)
     LinearLayout loadingLayout;
+    @BindView(R.id.empty_layout)
+    LinearLayout emptyLayout;
+    @BindView(R.id.empty_button)
+    Button emptyButton;
     private NewsAdapter adapter;
     private String category;
     private String word;
@@ -88,7 +94,8 @@ public class IndexTabFragment extends BasicFragment {
                     refreshLayout.finishRefresh(false);
                     if (first) {
                         loadingLayout.setVisibility(View.GONE);
-                        refreshLayout.setVisibility(View.VISIBLE);
+                        emptyLayout.setVisibility(View.VISIBLE);
+                        refreshLayout.setVisibility(View.INVISIBLE);
                     }
                 }
 
@@ -97,7 +104,8 @@ public class IndexTabFragment extends BasicFragment {
                     refreshLayout.finishRefresh(false);
                     if (first) {
                         loadingLayout.setVisibility(View.GONE);
-                        refreshLayout.setVisibility(View.VISIBLE);
+                        emptyLayout.setVisibility(View.VISIBLE);
+                        refreshLayout.setVisibility(View.INVISIBLE);
                     }
                 }
 
@@ -108,7 +116,13 @@ public class IndexTabFragment extends BasicFragment {
                     refreshLayout.finishRefresh();
                     if (first) {
                         loadingLayout.setVisibility(View.GONE);
-                        refreshLayout.setVisibility(View.VISIBLE);
+                        if (data.isEmpty()) {
+                            emptyLayout.setVisibility(View.VISIBLE);
+                            refreshLayout.setVisibility(View.INVISIBLE);
+                        } else {
+                            emptyLayout.setVisibility(View.INVISIBLE);
+                            refreshLayout.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             });
@@ -121,8 +135,15 @@ public class IndexTabFragment extends BasicFragment {
         } else {
             this.word = "";
         }
-
         refresh(true);
+        emptyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                emptyLayout.setVisibility(View.INVISIBLE);
+                loadingLayout.setVisibility(View.VISIBLE);
+                refresh(true);
+            }
+        });
         refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull final RefreshLayout refreshLayout) {

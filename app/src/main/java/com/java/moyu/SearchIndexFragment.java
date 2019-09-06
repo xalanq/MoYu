@@ -62,7 +62,17 @@ public class SearchIndexFragment extends BasicFragment {
 
             @Override
             public void close(Chip chip, int position) {
-                NewsDatabase.getInstance().delSearchHistory(historyAdapter.get(position));
+                User.getInstance().delSearchHistory(historyAdapter.get(position), new User.DefaultCallback() {
+                    @Override
+                    public void error(String msg) {
+                        BasicApplication.showToast(msg);
+                    }
+
+                    @Override
+                    public void ok() {
+
+                    }
+                });
                 historyAdapter.remove(position);
             }
         });
@@ -86,8 +96,18 @@ public class SearchIndexFragment extends BasicFragment {
                     .setPositiveButton(getResources().getText(R.string.yes), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            User.getInstance().delAllSearchHistory(new User.DefaultCallback() {
+                                @Override
+                                public void error(String msg) {
+                                    BasicApplication.showToast(msg);
+                                }
+
+                                @Override
+                                public void ok() {
+
+                                }
+                            });
                             historyAdapter.clear();
-                            NewsDatabase.getInstance().delAllSearchHistory();
                         }
                     })
                     .setNegativeButton(getResources().getText(R.string.no), new DialogInterface.OnClickListener() {
@@ -102,17 +122,22 @@ public class SearchIndexFragment extends BasicFragment {
     }
 
     private void test() {
-        new Handler().postDelayed(new Runnable() {
+        User.getInstance().getSearchHistory(0, Constants.SEARCH_HISTORY_LIMIT, new User.SearchHistoryCallback() {
             @Override
-            public void run() {
+            public void error(String msg) {
+                BasicApplication.showToast(msg);
+            }
+
+            @Override
+            public void ok(List<String> historyList) {
                 List<String> a = new ArrayList<>();
                 for (int i = 0; i < 9; ++i) {
                     a.add(String.format("热搜%d", new Random().nextInt() % 999));
                 }
                 hotAdapter.add(a);
-                historyAdapter.add(NewsDatabase.getInstance().querySearchHistory(0, Constants.SEARCH_HISTORY_LIMIT));
+                historyAdapter.add(historyList);
             }
-        }, 10);
+        });
     }
 
 }

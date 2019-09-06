@@ -7,6 +7,7 @@ import android.os.StrictMode;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -95,10 +96,19 @@ public class IndexFragment extends BasicFragment {
     }
 
     void updateTab() {
-        List<String> tabs = NewsDatabase.getInstance().queryCategory(1);
-        pagerAdapter = new PagerAdapter(getChildFragmentManager(), tabs);
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.setOffscreenPageLimit(2);
+        User.getInstance().getCategory(new User.CategoryCallback() {
+            @Override
+            public void error(String msg) {
+                BasicApplication.showToast(msg);
+            }
+
+            @Override
+            public void ok(List<String> chosen, List<String> remain) {
+                pagerAdapter = new PagerAdapter(getChildFragmentManager(), chosen);
+                viewPager.setAdapter(pagerAdapter);
+                viewPager.setOffscreenPageLimit(2);
+            }
+        });
     }
 
     class PagerAdapter extends FragmentPagerAdapter {

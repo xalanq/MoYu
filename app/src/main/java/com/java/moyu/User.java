@@ -9,14 +9,13 @@ import java.util.List;
 
 public class User {
 
-    private static String TAG = "User";
     private static User instance;
     private String token;
     private int ID;
     private String username;
     private String email;
     private String avatar;
-    private boolean isOffline;
+    private boolean isOffline = true;
 
     private User(String token) {
         this.token = token;
@@ -60,29 +59,31 @@ public class User {
     }
 
     public void updateUserInfo(final DefaultCallback callback) {
-        new UserNetwork.Builder("/userInfo")
-            .add("token", token)
-            .build().run(new UserNetwork.Callback() {
-            @Override
-            public void error(String msg) {
-                isOffline = true;
-                callback.error(msg);
-            }
-
-            @Override
-            public void ok(JSONObject data) {
-                try {
-                    init();
-                    ID = data.getInt("id");
-                    username = data.getString("username");
-                    email = data.getString("email");
-                    avatar = data.getString("avatar");
-                    isOffline = false;
-                    callback.ok();
-                } catch (Exception e) {
+        if (!token.isEmpty()) {
+            new UserNetwork.Builder("/userInfo")
+                .add("token", token)
+                .build().run(new UserNetwork.Callback() {
+                @Override
+                public void error(String msg) {
+                    isOffline = true;
+                    callback.error(msg);
                 }
-            }
-        });
+
+                @Override
+                public void ok(JSONObject data) {
+                    try {
+                        init();
+                        ID = data.getInt("id");
+                        username = data.getString("username");
+                        email = data.getString("email");
+                        avatar = data.getString("avatar");
+                        isOffline = false;
+                        callback.ok();
+                    } catch (Exception e) {
+                    }
+                }
+            });
+        }
     }
 
     public void register(String username, String password, String email, final DefaultCallback callback) {
@@ -323,6 +324,32 @@ public class User {
         }
     }
 
+    public void hasStarred(String news_id, final HasCallback callback) {
+        if (isOffline) {
+            callback.ok(NewsDatabase.getInstance().queryFavor(news_id));
+        } else {
+            new UserNetwork.Builder("/hasList")
+                .add("token", token)
+                .add("type", "favorite")
+                .add("data", news_id)
+                .build().run(new UserNetwork.Callback() {
+                @Override
+                public void error(String msg) {
+                    callback.error(msg);
+                }
+
+                @Override
+                public void ok(JSONObject data) {
+                    try {
+                        callback.ok(data.getBoolean("data"));
+                    } catch (Exception e) {
+
+                    }
+                }
+            });
+        }
+    }
+
     private void addList(String type, String data, final DefaultCallback callback) {
         new UserNetwork.Builder("/addList")
             .add("token", token)
@@ -468,6 +495,11 @@ public class User {
     public interface NewsCallback {
         void error(String msg);
         void ok(final List<News> newsList);
+    }
+
+    public interface HasCallback {
+        void error(String msg);
+        void ok(final boolean has);
     }
 
 }
