@@ -64,6 +64,7 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
 
             @Override
             public void ok() {
+                BasicApplication.showToast(getResources().getString(R.string.login_success));
                 reloadUser(true);
             }
         });
