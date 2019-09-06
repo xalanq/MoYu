@@ -1,16 +1,11 @@
 package com.java.moyu;
 
-import android.content.ContentValues;
-import android.telecom.Call;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import tv.danmaku.ijk.media.player.annotations.CalledByNative;
 
 public class User {
 
@@ -64,7 +59,7 @@ public class User {
         return instance;
     }
 
-    public void updateUserInfo(final Callback callback) {
+    public void updateUserInfo(final DefaultCallback callback) {
         new UserNetwork.Builder("/userInfo")
             .add("token", token)
             .build().run(new UserNetwork.Callback() {
@@ -83,14 +78,14 @@ public class User {
                     email = data.getString("email");
                     avatar = data.getString("avatar");
                     isOffline = false;
-                    callback.ok(User.this);
+                    callback.ok();
                 } catch (Exception e) {
                 }
             }
         });
     }
 
-    public void register(String username, String password, String email, final Callback callback) {
+    public void register(String username, String password, String email, final DefaultCallback callback) {
         new UserNetwork.Builder("/register")
             .add("username", username)
             .add("password", password)
@@ -107,14 +102,14 @@ public class User {
                     init();
                     ID = data.getInt("ID");
                     setToken(data.getString("token"));
-                    callback.ok(User.this);
+                    callback.ok();
                 } catch (Exception e) {
                 }
             }
         });
     }
 
-    public void login(String username, String password, final Callback callback) {
+    public void login(String username, String password, final DefaultCallback callback) {
         new UserNetwork.Builder("/login")
             .add("username", username)
             .add("password", password)
@@ -133,7 +128,7 @@ public class User {
                     email = data.getString("email");
                     avatar = data.getString("avatar");
                     setToken(data.getString("token"));
-                    callback.ok(User.this);
+                    callback.ok();
                 } catch (Exception e) {
                 }
             }
@@ -174,10 +169,10 @@ public class User {
         }
     }
 
-    public void updateCategory(List<String> chosen, List<String> remain, Callback callback) {
+    public void updateCategory(List<String> chosen, List<String> remain, DefaultCallback callback) {
         if (isOffline) {
             NewsDatabase.getInstance().updateCategory(chosen, remain);
-            callback.ok(User.this);
+            callback.ok();
         } else {
             JSONArray data = new JSONArray();
             for (String s : chosen)
@@ -231,7 +226,7 @@ public class User {
         }
     }
 
-    public void addNews(News news, final Callback callback) {
+    public void addNews(News news, final DefaultCallback callback) {
         NewsDatabase.getInstance().addNews(news);
         new UserNetwork.Builder("/addNews")
             .add("data", news.toJSONObject().toString())
@@ -243,12 +238,12 @@ public class User {
 
             @Override
             public void ok(JSONObject data) {
-                callback.ok(User.this);
+                callback.ok();
             }
         });
     }
 
-    public void addHistory(String news_id, LocalDateTime time, final Callback callback) {
+    public void addHistory(String news_id, LocalDateTime time, final DefaultCallback callback) {
         if (isOffline) {
             NewsDatabase.getInstance().addHistory(news_id, time);
         } else {
@@ -256,79 +251,79 @@ public class User {
         }
     }
 
-    public void addFavorite(String news_id, LocalDateTime time, final Callback callback) {
+    public void addFavorite(String news_id, LocalDateTime time, final DefaultCallback callback) {
         if (isOffline) {
             NewsDatabase.getInstance().addFavor(news_id, time);
-            callback.ok(User.this);
+            callback.ok();
         } else {
             addList("favorite", news_id, time, callback);
         }
     }
 
-    public void addSearchHistory(String keyword, final Callback callback) {
+    public void addSearchHistory(String keyword, final DefaultCallback callback) {
         if (isOffline) {
             NewsDatabase.getInstance().addSearchHistory(keyword);
-            callback.ok(User.this);
+            callback.ok();
         } else {
             addList("search_history", keyword, callback);
         }
     }
 
-    public void delFavorite(String news_id, final Callback callback) {
+    public void delFavorite(String news_id, final DefaultCallback callback) {
         if (isOffline) {
             NewsDatabase.getInstance().delFavor(news_id);
-            callback.ok(User.this);
+            callback.ok();
         } else {
             delList("favorite", news_id, callback);
         }
     }
 
-    public void delAllFavorite(final Callback callback) {
+    public void delAllFavorite(final DefaultCallback callback) {
         if (isOffline) {
             NewsDatabase.getInstance().delAllFavor();
-            callback.ok(User.this);
+            callback.ok();
         } else {
             setList("favorite", new JSONArray(), callback);
         }
     }
 
-    public void delHistory(String news_id, final Callback callback) {
+    public void delHistory(String news_id, final DefaultCallback callback) {
         if (isOffline) {
             NewsDatabase.getInstance().delHistory(news_id);
-            callback.ok(User.this);
+            callback.ok();
         } else {
             delList("history", news_id, callback);
         }
     }
 
-    public void delAllHistory(final Callback callback) {
+    public void delAllHistory(final DefaultCallback callback) {
         if (isOffline) {
             NewsDatabase.getInstance().delAllHistory();
-            callback.ok(User.this);
+            callback.ok();
         } else {
             setList("history", new JSONArray(), callback);
         }
     }
 
-    public void delSearchHistory(String keyword, final Callback callback) {
+    public void delSearchHistory(String keyword, final DefaultCallback callback) {
         if (isOffline) {
             NewsDatabase.getInstance().delSearchHistory(keyword);
-            callback.ok(User.this);
+            callback.ok();
         } else {
             delList("search_history", keyword, callback);
         }
     }
 
-    public void delAllSearchHistory(final Callback callback) {
+    public void delAllSearchHistory(final DefaultCallback callback) {
         if (isOffline) {
             NewsDatabase.getInstance().delAllSearchHistory();
-            callback.ok(User.this);
+            callback.ok();
         } else {
             setList("history", new JSONArray(), callback);
         }
     }
 
-    private void addList(String type, String data, final Callback callback) {
+    private void addList(String type, String data, final DefaultCallback callback) {
         new UserNetwork.Builder("/addList")
             .add("token", token)
             .add("type", type)
@@ -341,12 +336,12 @@ public class User {
 
             @Override
             public void ok(JSONObject data) {
-                callback.ok(User.this);
+                callback.ok();
             }
         });
     }
 
-    private void addList(String type, String news_id, LocalDateTime time, final Callback callback) {
+    private void addList(String type, String news_id, LocalDateTime time, final DefaultCallback callback) {
         JSONObject json = new JSONObject();
         try {
             json.put("news_id", news_id);
@@ -366,12 +361,12 @@ public class User {
 
             @Override
             public void ok(JSONObject data) {
-                callback.ok(User.this);
+                callback.ok();
             }
         });
     }
 
-    private void delList(String type, String data, final Callback callback) {
+    private void delList(String type, String data, final DefaultCallback callback) {
         new UserNetwork.Builder("/delList")
             .add("token", token)
             .add("type", type)
@@ -384,12 +379,12 @@ public class User {
 
                 @Override
                 public void ok(JSONObject data) {
-                    callback.ok(User.this);
+                    callback.ok();
                 }
             });
     }
 
-    private void setList(String type, JSONArray data, final Callback callback) {
+    private void setList(String type, JSONArray data, final DefaultCallback callback) {
         new UserNetwork.Builder("/setList")
             .add("token", token)
             .add("type", type)
@@ -402,7 +397,7 @@ public class User {
 
             @Override
             public void ok(JSONObject data) {
-                callback.ok(User.this);
+                callback.ok();
             }
         });
     }
@@ -455,9 +450,9 @@ public class User {
         });
     }
 
-    public interface Callback {
+    public interface DefaultCallback {
         void error(String msg);
-        void ok(final User user);
+        void ok();
     }
 
     public interface CategoryCallback {
