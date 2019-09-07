@@ -156,7 +156,10 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
             ft.add(R.id.main_layout, fragment);
         }
         if (currentFragment != null) {
-            ft.remove(currentFragment);
+            if (currentFragment instanceof IndexFragment)
+                ft.hide(currentFragment);
+            else
+                ft.remove(currentFragment);
         }
         ft.show(fragment);
         ft.commitAllowingStateLoss();
