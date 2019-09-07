@@ -8,7 +8,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
@@ -133,7 +132,8 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if ((requestCode == 1 && resultCode == RESULT_OK) || (requestCode == 2 && resultCode == 2)) {
+        if ((requestCode == 1 && resultCode == RESULT_OK) || (requestCode == 2 && resultCode == 2) ||
+            (requestCode == 3 && resultCode == RESULT_OK)) {
             reloadUser();
             refreshIndexFragment();
             if (currentFragment instanceof FavoriteFragment) {
@@ -151,10 +151,8 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
     void switchFragment(BasicFragment fragment) {
         if (currentFragment == fragment)
             return;
-        Log.d("ggmf", "switchFragment: 0");
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (!fragment.isAdded()) {
-            Log.d("ggmf", "switchFragment: 1");
             ft.add(R.id.main_layout, fragment);
         }
         if (currentFragment != null) {

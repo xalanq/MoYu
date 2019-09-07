@@ -88,7 +88,9 @@ public class IndexFragment extends BasicFragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == 3 && resultCode == Activity.RESULT_OK) {
             if (data.getBooleanExtra("hasEdited", false)) {
-                initData();
+                MainActivity a = (MainActivity) getActivity();
+                a.onActivityResult(requestCode, resultCode, data);
+                return;
             }
             int position = data.getIntExtra("selectPosition", -1);
             if (position != -1) {
