@@ -20,6 +20,7 @@ public class BasicApplication extends Application {
 
     public static void setNight(boolean value) {
         isNight = value;
+        NewsDatabase.getInstance().setNight(value);
     }
 
     public static void showToast(String text) {
@@ -34,6 +35,7 @@ public class BasicApplication extends Application {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
+        isNight = NewsDatabase.getInstance().getNight();
     }
 
 }

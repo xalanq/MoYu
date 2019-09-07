@@ -93,6 +93,8 @@ public class NewsDatabase extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(VALUE_TOKEN, "");
         db.insertWithOnConflict(TABLE_NAME_USER, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+        values.put(VALUE_TOKEN, "0");
+        db.insertWithOnConflict(TABLE_NAME_USER, null, values, SQLiteDatabase.CONFLICT_IGNORE);
         Log.d(TAG, "-------> onCreate");
     }
 
@@ -358,9 +360,8 @@ public class NewsDatabase extends SQLiteOpenHelper {
 
     public void setToken(String token) {
         ContentValues values = new ContentValues();
-        values.put(VALUE_ID, 1);
         values.put(VALUE_TOKEN, token);
-        getWritableDatabase().update(TABLE_NAME_USER, values, null, null);
+        getWritableDatabase().update(TABLE_NAME_USER, values, VALUE_ID + " = ?", new String[]{"1"});
     }
 
     public void addTags(List<News.ScoreData> tags) {
@@ -395,6 +396,22 @@ public class NewsDatabase extends SQLiteOpenHelper {
             }
         }
         return list;
+    }
+
+    public void setNight(boolean isNight) {
+        ContentValues values = new ContentValues();
+        values.put(VALUE_TOKEN, isNight ? "1" : "0");
+        getWritableDatabase().update(TABLE_NAME_USER, values, VALUE_ID + " = ?", new String[]{"2"});
+    }
+
+    public boolean getNight() {
+        Cursor cursor = getReadableDatabase().query(TABLE_NAME_USER, null, null, null, null, null, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            cursor.moveToNext();
+            return cursor.getString(cursor.getColumnIndex(VALUE_TOKEN)).equals("1");
+        }
+        return false;
     }
 
 }
