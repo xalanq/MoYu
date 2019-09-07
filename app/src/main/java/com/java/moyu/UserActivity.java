@@ -1,6 +1,5 @@
 package com.java.moyu;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -68,7 +67,7 @@ public class UserActivity extends SwipeActivity {
 
                     @Override
                     public void ok() {
-                        setResult(Activity.RESULT_OK);
+                        setResult(1);
                         finish();
                     }
                 });
@@ -78,7 +77,8 @@ public class UserActivity extends SwipeActivity {
             @Override
             public void onClick(View view) {
                 User.getInstance().logout();
-                setResult(Activity.RESULT_OK);
+                setResult(2);
+                BasicApplication.showToast(getString(R.string.logout_success));
                 finish();
             }
         });

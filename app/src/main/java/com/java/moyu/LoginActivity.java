@@ -75,7 +75,7 @@ public class LoginActivity extends SwipeActivity {
         String username = usernameEdit.getText().toString();
         String password = passwordEdit.getText().toString();
         message.setVisibility(View.GONE);
-        final LoadingDialog dialog = new LoadingDialog(LoginActivity.this,
+        final LoadingDialog dialog = new LoadingDialog(this,
             getResources().getString(R.string.login_loading));
         User.getInstance().login(username, password, new User.DefaultCallback() {
             @Override

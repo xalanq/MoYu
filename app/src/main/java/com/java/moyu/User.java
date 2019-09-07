@@ -31,6 +31,10 @@ public class User {
         NewsDatabase.getInstance().setToken(token);
     }
 
+    public boolean hasToken() {
+        return !token.isEmpty();
+    }
+
     private void init() {
         token = "";
         ID = 0;
@@ -61,35 +65,31 @@ public class User {
     }
 
     public void updateUserInfo(final DefaultCallback callback) {
-        if (!token.isEmpty()) {
-            new UserNetwork.Builder("/userInfo")
-                .add("token", token)
-                .build().run(new UserNetwork.Callback() {
-                @Override
-                public void error(String msg) {
-                    isOffline = true;
-                    callback.error(msg);
-                }
+        new UserNetwork.Builder("/userInfo")
+            .add("token", token)
+            .build().run(new UserNetwork.Callback() {
+            @Override
+            public void error(String msg) {
+                isOffline = true;
+                callback.error(msg);
+            }
 
-                @Override
-                public void ok(JSONObject data) {
-                    try {
-                        init();
-                        ID = data.getInt("id");
-                        username = data.getString("username");
-                        email = data.getString("email");
-                        avatar = data.getString("avatar");
-                        setToken(data.getString("token"));
-                        isOffline = false;
-                        callback.ok();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            @Override
+            public void ok(JSONObject data) {
+                try {
+                    init();
+                    ID = data.getInt("id");
+                    username = data.getString("username");
+                    email = data.getString("email");
+                    avatar = data.getString("avatar");
+                    setToken(data.getString("token"));
+                    isOffline = false;
+                    callback.ok();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
-        } else {
-            callback.ok();
-        }
+            }
+        });
     }
 
     public void editUserInfo(final String avatar, final DefaultCallback callback) {

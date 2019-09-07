@@ -53,7 +53,7 @@ public class IndexFragment extends BasicFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final MainActivity a = (MainActivity) getActivity();
+        MainActivity a = (MainActivity) getActivity();
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -100,8 +100,6 @@ public class IndexFragment extends BasicFragment {
     }
 
     void initData() {
-        if (!isAdded())
-            return;
         User.getInstance().getCategory(new User.CategoryCallback() {
             @Override
             public void error(String msg) {

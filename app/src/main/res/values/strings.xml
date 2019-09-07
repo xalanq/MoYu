@@ -88,6 +88,7 @@
     <string name="user_setting">用户设置</string>
     <string name="update">更新</string>
     <string name="logout">注销</string>
+    <string name="logout_success">已注销</string>
 
     <string name="cache_title">清除缓存</string>
     <string name="cache_calculate">正在计算中</string>
@@ -105,4 +106,5 @@
     <string name="no_more_data">没有更多的数据啦</string>
     <string name="load_timeout">加载超时啦</string>
     <string name="load_error">加载出错啦，是不是没网？</string>
+    <string name="switch_local">切换回本地模式</string>
 </resources>

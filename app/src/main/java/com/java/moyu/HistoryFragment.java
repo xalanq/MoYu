@@ -60,7 +60,7 @@ public class HistoryFragment extends BasicFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final MainActivity a = (MainActivity) getActivity();
+        MainActivity a = (MainActivity) getActivity();
         a.setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
             a, a.drawerLayout, toolbar, R.string.main_navigation_drawer_open, R.string.main_navigation_drawer_close);
@@ -160,9 +160,6 @@ public class HistoryFragment extends BasicFragment {
     }
 
     void initData() {
-        if (!isAdded())
-            return;
-
         adapter = NewsAdapter.newAdapter(getContext(), newsView, new NewsAdapter.OnClick() {
             @Override
             public void click(View view, int position, final News news) {

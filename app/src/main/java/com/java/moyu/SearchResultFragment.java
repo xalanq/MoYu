@@ -15,6 +15,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
 public class SearchResultFragment extends BasicFragment {
@@ -22,6 +23,8 @@ public class SearchResultFragment extends BasicFragment {
     private final String text;
     @BindView(R.id.refresh_layout)
     SmartRefreshLayout refreshLayout;
+    @BindView(R.id.news_layout)
+    RecyclerView newsView;
     @BindView(R.id.loading_layout)
     LinearLayout loadingLayout;
     @BindView(R.id.empty_layout)
@@ -43,7 +46,7 @@ public class SearchResultFragment extends BasicFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout), new NewsAdapter.OnClick() {
+        adapter = NewsAdapter.newAdapter(getContext(), newsView, new NewsAdapter.OnClick() {
                 @Override
                 public void click(View view, int position, final News news) {
                     Intent intent = new Intent(getActivity(), NewsActivity.class);
@@ -61,12 +64,15 @@ public class SearchResultFragment extends BasicFragment {
         new NewsNetwork.Builder()
             .add("size", "" + Constants.PAGE_SIZE)
             .add("words", text)
+            .add("startDate", first ? LocalDateTime.now().minusYears(2019).format(Constants.TIME_FORMATTER)
+                : adapter.get(0).getPublishTime().plusSeconds(1).format(Constants.TIME_FORMATTER))
             .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
             .build()
             .run(new NewsNetwork.Callback() {
                 @Override
                 public void timeout() {
                     refreshLayout.finishRefresh(false);
+                    BasicApplication.showToast(getString(R.string.load_timeout));
                     if (first) {
                         loadingLayout.setVisibility(View.GONE);
                         emptyLayout.setVisibility(View.VISIBLE);
@@ -77,6 +83,7 @@ public class SearchResultFragment extends BasicFragment {
                 @Override
                 public void error() {
                     refreshLayout.finishRefresh(false);
+                    BasicApplication.showToast(getString(R.string.load_error));
                     if (first) {
                         loadingLayout.setVisibility(View.GONE);
                         emptyLayout.setVisibility(View.VISIBLE);
@@ -86,10 +93,10 @@ public class SearchResultFragment extends BasicFragment {
 
                 @Override
                 public void ok(List<News> data) {
-                    adapter.clear();
-                    adapter.add(data);
-                    refreshLayout.finishRefresh();
                     if (first) {
+                        adapter.clear();
+                        adapter.add(data);
+                        refreshLayout.finishRefresh();
                         loadingLayout.setVisibility(View.GONE);
                         if (data.isEmpty()) {
                             emptyLayout.setVisibility(View.VISIBLE);
@@ -98,6 +105,14 @@ public class SearchResultFragment extends BasicFragment {
                             emptyLayout.setVisibility(View.INVISIBLE);
                             refreshLayout.setVisibility(View.VISIBLE);
                         }
+                    } else {
+                        if (data.isEmpty()) {
+                            BasicApplication.showToast(getString(R.string.no_more_data));
+                        } else {
+                            adapter.add(data, 0);
+                            newsView.scrollToPosition(0);
+                        }
+                        refreshLayout.finishRefresh();
                     }
                 }
             });

@@ -1,6 +1,5 @@
 package com.java.moyu;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,23 +54,30 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
 
         setNavigation();
 
-        backDefault();
-        reloadUser(false);
-        User.getInstance().updateUserInfo(new User.DefaultCallback() {
-            @Override
-            public void error(String msg) {
-                BasicApplication.showToast(msg);
-                reloadUser(true);
-            }
-
-            @Override
-            public void ok() {
-                if (User.getInstance().isLogged()) {
-                    BasicApplication.showToast(getResources().getString(R.string.login_success));
-                    reloadUser(true);
+        if (User.getInstance().hasToken()) {
+            final LoadingDialog dialog = new LoadingDialog(this,
+                getResources().getString(R.string.login_loading));
+            User.getInstance().updateUserInfo(new User.DefaultCallback() {
+                @Override
+                public void error(String msg) {
+                    BasicApplication.showToast(msg + " - " + getString(R.string.switch_local));
+                    reloadUser();
+                    backDefault();
                 }
-            }
-        });
+
+                @Override
+                public void ok() {
+                    if (User.getInstance().isLogged()) {
+                        BasicApplication.showToast(getResources().getString(R.string.login_success));
+                        reloadUser();
+                        backDefault();
+                    }
+                }
+            });
+        } else {
+            reloadUser();
+            backDefault();
+        }
     }
 
     private void setNavigation() {
@@ -99,7 +106,7 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         });
     }
 
-    void reloadUser(boolean refreshFragment) {
+    void reloadUser() {
         String name = User.getInstance().getUsername();
         if (name.isEmpty())
             name = getResources().getString(R.string.main_navigation_login);
@@ -112,14 +119,6 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
                 .placeholder(R.drawable.loading_cover)
                 .error(R.drawable.default_avatar).centerCrop()
                 .into(avatarView);
-        }
-        if (refreshFragment) {
-            if (currentFragment instanceof IndexFragment)
-                ((IndexTabFragment) currentFragment).initData();
-            else if (currentFragment instanceof FavoriteFragment)
-                ((FavoriteFragment) currentFragment).initData();
-            else if (currentFragment instanceof HistoryFragment)
-                ((HistoryFragment) currentFragment).initData();
         }
     }
 
@@ -134,11 +133,17 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == 1)
-                reloadUser(true);
-            else if (requestCode == 2)
-                reloadUser(false);
+        if ((requestCode == 1 && resultCode == RESULT_OK) || (requestCode == 2 && resultCode == 2)) {
+            reloadUser();
+            refreshIndexFragment();
+            if (currentFragment instanceof FavoriteFragment) {
+                switchFragment(fragmentAllocator.getFavoriteFragment());
+            } else if (currentFragment instanceof HistoryFragment) {
+                switchFragment(fragmentAllocator.getHistoryFragment());
+            }
+        }
+        if (requestCode == 2 && resultCode == 1) {
+            reloadUser();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -146,14 +151,28 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
     void switchFragment(BasicFragment fragment) {
         if (currentFragment == fragment)
             return;
+        Log.d("ggmf", "switchFragment: 0");
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        if (!fragment.isAdded())
+        if (!fragment.isAdded()) {
+            Log.d("ggmf", "switchFragment: 1");
             ft.add(R.id.main_layout, fragment);
-        if (currentFragment != null)
-            ft.hide(currentFragment);
+        }
+        if (currentFragment != null) {
+            ft.remove(currentFragment);
+        }
         ft.show(fragment);
-        ft.commit();
+        ft.commitAllowingStateLoss();
         currentFragment = fragment;
+    }
+
+    void refreshIndexFragment() {
+        IndexFragment f = fragmentAllocator.getIndexFragment();
+        getSupportFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
+        fragmentAllocator.refreshIndexFragment();
+        if (currentFragment == f) {
+            currentFragment = null;
+            backDefault();
+        }
     }
 
     @Override
@@ -163,10 +182,8 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
             switchFragment(fragmentAllocator.getIndexFragment());
         } else if (id == R.id.main_navigation_menu_favorite) {
             switchFragment(fragmentAllocator.getFavoriteFragment());
-            fragmentAllocator.getFavoriteFragment().initData();
         } else if (id == R.id.main_navigation_menu_history) {
             switchFragment(fragmentAllocator.getHistoryFragment());
-            fragmentAllocator.getHistoryFragment().initData();
         } else if (id == R.id.main_navigation_menu_about) {
             switchFragment(fragmentAllocator.getAboutFragment());
         } else if (id == R.id.main_navigation_menu_night_mode) {
@@ -183,7 +200,7 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
 
     @Override
     public void onBackPressed() {
-        if (currentFragment == fragmentAllocator.getIndexFragment()) {
+        if (currentFragment instanceof IndexFragment) {
             if (!checkExit) {
                 Toast.makeText(this, R.string.check_exit, Toast.LENGTH_SHORT).show();
                 checkExit = true;
@@ -269,9 +286,13 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
 
         private IndexFragment indexFragment;
 
+        IndexFragment refreshIndexFragment() {
+            return indexFragment = new IndexFragment();
+        }
+
         IndexFragment getIndexFragment() {
             if (indexFragment == null)
-                indexFragment = new IndexFragment();
+                return refreshIndexFragment();
             return indexFragment;
         }
 
