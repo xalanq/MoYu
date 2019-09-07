@@ -8,9 +8,7 @@ import android.widget.TextView;
 
 import com.google.android.material.chip.Chip;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -117,10 +115,22 @@ public class SearchIndexFragment extends BasicFragment {
                     }).show();
             }
         });
-        test();
+
+        initData();
     }
 
-    private void test() {
+    void initData() {
+        User.getInstance().getHotWord(new User.StringListCallback() {
+            @Override
+            public void error(String msg) {
+                BasicApplication.showToast(msg);
+            }
+
+            @Override
+            public void ok(List<String> data) {
+                hotAdapter.add(data);
+            }
+        });
         User.getInstance().getSearchHistory(0, Constants.SEARCH_HISTORY_LIMIT, new User.StringListCallback() {
             @Override
             public void error(String msg) {
@@ -129,11 +139,6 @@ public class SearchIndexFragment extends BasicFragment {
 
             @Override
             public void ok(List<String> data) {
-                List<String> a = new ArrayList<>();
-                for (int i = 0; i < 9; ++i) {
-                    a.add(String.format("热搜%d", new Random().nextInt() % 999));
-                }
-                hotAdapter.add(a);
                 historyAdapter.add(data);
             }
         });

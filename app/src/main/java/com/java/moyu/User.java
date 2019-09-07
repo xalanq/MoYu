@@ -260,14 +260,55 @@ public class User {
     }
 
     public void getTopTag(int limit, final StringListCallback callback) {
-        callback.ok(NewsDatabase.getInstance().getTopTags(limit));
-        /*
         if (isOffline) {
             callback.ok(NewsDatabase.getInstance().getTopTags(limit));
         } else {
+            new UserNetwork.Builder("/getTags")
+                .add("token", token)
+                .add("limit", "" + limit)
+                .build().run(new UserNetwork.Callback() {
+                @Override
+                public void error(String msg) {
+                    callback.error(msg);
+                }
 
+                @Override
+                public void ok(JSONObject data) {
+                    try {
+                        JSONArray a = data.getJSONArray("data");
+                        List<String> tags = new ArrayList<>();
+                        for (int i = 0; i < a.length(); ++i)
+                            tags.add(a.getString(i));
+                        callback.ok(tags);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
-        */
+    }
+
+    public void getHotWord(final StringListCallback callback) {
+        new UserNetwork.Builder("/hotWord")
+            .build().run(new UserNetwork.Callback() {
+            @Override
+            public void error(String msg) {
+                callback.error(msg);
+            }
+
+            @Override
+            public void ok(JSONObject data) {
+                try {
+                    JSONArray a = data.getJSONArray("data");
+                    List<String> words = new ArrayList<>();
+                    for (int i = 0; i < a.length(); ++i)
+                        words.add(a.getString(i));
+                    callback.ok(words);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public void addNews(News news, final DefaultCallback callback) {
@@ -317,17 +358,16 @@ public class User {
     }
 
     public void addTag(List<News.ScoreData> data, final DefaultCallback callback) {
-        NewsDatabase.getInstance().addTags(data);
-        callback.ok();
-        /*
         if (isOffline) {
             NewsDatabase.getInstance().addTags(data);
             callback.ok();
         } else {
-            new UserNetwork.Builder("/addList")
+            JSONArray d = new JSONArray();
+            for (News.ScoreData t : data)
+                d.put(t.toJSONObject());
+            new UserNetwork.Builder("/addTags")
                 .add("token", token)
-                .add("type", "tag")
-                .add("data", new JSONArray(data).toString())
+                .add("data", d.toString())
                 .build().run(new UserNetwork.Callback() {
                 @Override
                 public void error(String msg) {
@@ -340,7 +380,6 @@ public class User {
                 }
             });
         }
-        */
     }
 
     public void delFavorite(String news_id, final DefaultCallback callback) {
