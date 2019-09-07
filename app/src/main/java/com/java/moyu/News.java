@@ -28,6 +28,7 @@ class News {
     MentionData[] organization; // 发布新闻组织
     MentionData[] person; // 新闻提及人物，提及次数和在 xlore 中的知识卡片 URL
     LocationData[] location; // 新闻提及位置，位置经纬度，提及次数
+    boolean isRead;
 
     public News() {
 

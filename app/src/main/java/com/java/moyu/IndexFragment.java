@@ -113,7 +113,7 @@ public class IndexFragment extends BasicFragment {
                 chosen.add(0, BasicApplication.getContext().getString(R.string.recommend));
                 pagerAdapter = new PagerAdapter(getChildFragmentManager(), chosen);
                 viewPager.setAdapter(pagerAdapter);
-                viewPager.setOffscreenPageLimit(2);
+                viewPager.setOffscreenPageLimit(0);
             }
         });
     }

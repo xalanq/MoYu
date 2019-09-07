@@ -133,12 +133,14 @@ public class HistoryFragment extends BasicFragment {
         TypedValue colorText = new TypedValue();
         TypedValue colorBackground = new TypedValue();
         TypedValue colorButton = new TypedValue();
+        TypedValue colorHasRead = new TypedValue();
         theme.resolveAttribute(R.attr.colorPrimary, colorPrimary, true);
         theme.resolveAttribute(R.attr.colorTitle, colorTitle, true);
         theme.resolveAttribute(R.attr.colorSubtitle, colorSubtitle, true);
         theme.resolveAttribute(R.attr.colorText, colorText, true);
         theme.resolveAttribute(R.attr.colorBackground, colorBackground, true);
         theme.resolveAttribute(R.attr.colorButton, colorButton, true);
+        theme.resolveAttribute(R.attr.colorHasRead, colorHasRead, true);
 
         toolbar.setBackgroundResource(colorPrimary.resourceId);
         getView().findViewById(R.id.news_frame_layout).setBackgroundResource(colorBackground.resourceId);
@@ -154,6 +156,11 @@ public class HistoryFragment extends BasicFragment {
 
         for (int i = 0; i < newsView.getChildCount(); ++i) {
             View view = newsView.getChildAt(i).findViewById(R.id.news_card);
+            int position = newsView.getChildAdapterPosition(newsView.getChildAt(i));
+            if (adapter.get(position).isRead)
+                view.setBackgroundResource(colorHasRead.resourceId);
+            else
+                view.setBackgroundResource(colorBackground.resourceId);
             view.setBackgroundResource(colorBackground.resourceId);
             TextView title = view.findViewById(R.id.title);
             title.setTextColor(r.getColor(colorTitle.resourceId, theme));

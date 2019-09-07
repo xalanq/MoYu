@@ -3,8 +3,10 @@ package com.java.moyu;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +47,7 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     static OnClick defaultOnclick(final Activity activity) {
         return new OnClick() {
             @Override
-            public void click(final News news) {
+            public void click(View view, final News news) {
                 Intent intent = new Intent(activity, NewsActivity.class);
                 User.getInstance().addNews(news, new User.DefaultCallback() {
                     @Override
@@ -98,8 +100,17 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
                 intent.putExtra("news", news.toJSONObject().toString());
                 activity.startActivity(intent);
                 activity.overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);
+                news.isRead = true;
+                updateHasRead(view);
             }
         };
+    }
+
+    static void updateHasRead(final View view) {
+        Resources.Theme theme = view.getContext().getTheme();
+        final TypedValue colorHasRead = new TypedValue();
+        theme.resolveAttribute(R.attr.colorHasRead, colorHasRead, true);
+        view.findViewById(R.id.news_card).setBackgroundResource(colorHasRead.resourceId);
     }
 
     static NewsAdapter newAdapter(final Context context, View view, OnClick onClick) {
@@ -229,6 +240,9 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         holder.publisher.setText(d.publisher);
         holder.publishTime.setText(Util.parseTime(d.publishTime));
         holder.setOnClick(onClick, d);
+        if (d.isRead) {
+            updateHasRead(holder.itemView);
+        }
         if (viewType == SINGLE) {
             Glide.with(context).load(d.image[0])
                 .placeholder(R.drawable.loading_cover)
@@ -260,7 +274,7 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     public interface OnClick {
 
-        void click(News news);
+        void click(View view, News news);
 
     }
 
@@ -282,7 +296,7 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onClick.click(news);
+                    onClick.click(view, news);
                 }
             });
         }
