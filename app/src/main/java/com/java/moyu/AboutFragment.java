@@ -62,26 +62,17 @@ public class AboutFragment extends BasicFragment {
         Resources r = getResources();
         Resources.Theme theme = getActivity().getTheme();
         TypedValue colorPrimary = new TypedValue();
-        TypedValue colorPrimaryDark = new TypedValue();
-        TypedValue colorAccent = new TypedValue();
-        TypedValue colorTitle = new TypedValue();
         TypedValue colorSubtitle = new TypedValue();
-        TypedValue colorText = new TypedValue();
         TypedValue colorBackground = new TypedValue();
-        TypedValue colorTabRipple = new TypedValue();
-        TypedValue colorTopBackground = new TypedValue();
-        TypedValue colorTabSelectedText = new TypedValue();
         theme.resolveAttribute(R.attr.colorPrimary, colorPrimary, true);
-        theme.resolveAttribute(R.attr.colorPrimaryDark, colorPrimaryDark, true);
-        theme.resolveAttribute(R.attr.colorAccent, colorAccent, true);
-        theme.resolveAttribute(R.attr.colorTitle, colorTitle, true);
         theme.resolveAttribute(R.attr.colorSubtitle, colorSubtitle, true);
-        theme.resolveAttribute(R.attr.colorText, colorText, true);
         theme.resolveAttribute(R.attr.colorBackground, colorBackground, true);
-        theme.resolveAttribute(R.attr.colorTabRipple, colorTabRipple, true);
-        theme.resolveAttribute(R.attr.colorTopBackground, colorTopBackground, true);
-        theme.resolveAttribute(R.attr.colorTabSelectedText, colorTabSelectedText, true);
 
+        getView().setBackgroundResource(colorBackground.resourceId);
+        toolbar.setBackgroundResource(colorPrimary.resourceId);
+        version.setTextColor(r.getColor(colorSubtitle.resourceId, theme));
+        TextView app_name = getView().findViewById(R.id.about_app_name);
+        app_name.setTextColor(r.getColor(colorSubtitle.resourceId, theme));
     }
 
 }
