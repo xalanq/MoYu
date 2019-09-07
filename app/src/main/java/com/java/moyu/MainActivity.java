@@ -262,8 +262,12 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         final TextView resultView = new TextView(this);
         resultView.setPadding(64, 16, 64, 16);
         resultView.setTextSize(16);
-        resultView.setTextColor(Color.parseColor("#000000"));
-        new AlertDialog.Builder(this)
+        int AlertDialogStyle;
+        if (BasicApplication.isNight())
+            AlertDialogStyle = android.R.style.Theme_Material_Dialog_Alert;
+        else
+            AlertDialogStyle = android.R.style.Theme_Material_Light_Dialog_Alert;
+        AlertDialog dialog = new AlertDialog.Builder(this, AlertDialogStyle)
             .setTitle(R.string.cache_title).setView(resultView)
             .setPositiveButton(getResources().getText(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
