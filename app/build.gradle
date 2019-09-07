@@ -7,8 +7,8 @@ android {
         applicationId "com.java.moyu"
         minSdkVersion 28
         targetSdkVersion 29
-        versionCode 3
-        versionName "v0.1.2"
+        versionCode 4
+        versionName "0.2.0_beta"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
