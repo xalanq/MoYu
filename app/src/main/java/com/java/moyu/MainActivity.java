@@ -135,7 +135,7 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         if ((requestCode == 1 && resultCode == RESULT_OK) || (requestCode == 2 && resultCode == 2) ||
             (requestCode == 3 && resultCode == RESULT_OK)) {
             reloadUser();
-            refreshIndexFragment(data.getIntExtra("selectPosition", -1));
+            refreshIndexFragment(data != null ? data.getIntExtra("selectPosition", -1) : -1);
             if (currentFragment instanceof FavoriteFragment) {
                 switchFragment(fragmentAllocator.getFavoriteFragment());
             } else if (currentFragment instanceof HistoryFragment) {
