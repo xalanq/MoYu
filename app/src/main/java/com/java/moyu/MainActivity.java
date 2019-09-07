@@ -135,7 +135,7 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         if ((requestCode == 1 && resultCode == RESULT_OK) || (requestCode == 2 && resultCode == 2) ||
             (requestCode == 3 && resultCode == RESULT_OK)) {
             reloadUser();
-            refreshIndexFragment();
+            refreshIndexFragment(data.getIntExtra("selectPosition", -1));
             if (currentFragment instanceof FavoriteFragment) {
                 switchFragment(fragmentAllocator.getFavoriteFragment());
             } else if (currentFragment instanceof HistoryFragment) {
@@ -166,10 +166,10 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         currentFragment = fragment;
     }
 
-    void refreshIndexFragment() {
+    void refreshIndexFragment(int index) {
         IndexFragment f = fragmentAllocator.getIndexFragment();
         getSupportFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
-        fragmentAllocator.refreshIndexFragment();
+        fragmentAllocator.refreshIndexFragment(index);
         if (currentFragment == f) {
             currentFragment = null;
             backDefault();
@@ -287,13 +287,13 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
 
         private IndexFragment indexFragment;
 
-        IndexFragment refreshIndexFragment() {
-            return indexFragment = new IndexFragment();
+        IndexFragment refreshIndexFragment(int index) {
+            return indexFragment = new IndexFragment(index);
         }
 
         IndexFragment getIndexFragment() {
             if (indexFragment == null)
-                return refreshIndexFragment();
+                return refreshIndexFragment(-1);
             return indexFragment;
         }
 

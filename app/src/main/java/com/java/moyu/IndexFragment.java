@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +43,11 @@ public class IndexFragment extends BasicFragment {
     ImageButton btnMore;
 
     private PagerAdapter pagerAdapter;
+    private int initIndex;
+
+    IndexFragment(int index) {
+        this.initIndex = index;
+    }
 
     @Override
     protected int getLayoutResource() {
@@ -54,9 +58,6 @@ public class IndexFragment extends BasicFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         MainActivity a = (MainActivity) getActivity();
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
 
         a.setSupportActionBar(toolbar);
         a.getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -113,6 +114,12 @@ public class IndexFragment extends BasicFragment {
                 chosen.add(0, BasicApplication.getContext().getString(R.string.recommend));
                 pagerAdapter = new PagerAdapter(getChildFragmentManager(), chosen);
                 viewPager.setAdapter(pagerAdapter);
+                int index = initIndex + 1;
+                if (index >= chosen.size())
+                    index = chosen.size() - 1;
+                if (index < 0)
+                    index = 0;
+                tabLayout.getTabAt(index).select();
             }
         });
     }

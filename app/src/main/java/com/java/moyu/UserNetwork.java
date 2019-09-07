@@ -85,7 +85,7 @@ public class UserNetwork {
                 httpUrlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 httpUrlConn.setRequestProperty("Content-Length", String.valueOf(data.length));
                 httpUrlConn.setRequestProperty("charset", "utf-8");
-                httpUrlConn.setReadTimeout(10000);
+                httpUrlConn.setReadTimeout(3000);
                 httpUrlConn.setConnectTimeout(3000);
                 httpUrlConn.setDoOutput(true);
                 httpUrlConn.getOutputStream().write(data);
