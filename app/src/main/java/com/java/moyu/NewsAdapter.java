@@ -3,6 +3,8 @@ package com.java.moyu;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,21 +69,32 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
                     }
                 });
-                List<News.ScoreData> tags = new ArrayList<>();
-                tags.addAll(Arrays.asList(news.keyword));
-                tags.addAll(Arrays.asList(news.who));
-                tags.addAll(Arrays.asList(news.where));
-                User.getInstance().addTag(tags, new User.DefaultCallback() {
+                new Thread(new Runnable() {
                     @Override
-                    public void error(String msg) {
-                        BasicApplication.showToast(msg);
-                    }
+                    public void run() {
+                        List<News.ScoreData> tags = new ArrayList<>();
+                        tags.addAll(Arrays.asList(news.keyword));
+                        tags.addAll(Arrays.asList(news.who));
+                        tags.addAll(Arrays.asList(news.where));
+                        final List<News.ScoreData> param = tags;
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                User.getInstance().addTag(param, new User.DefaultCallback() {
+                                    @Override
+                                    public void error(String msg) {
+                                        BasicApplication.showToast(msg);
+                                    }
 
-                    @Override
-                    public void ok() {
+                                    @Override
+                                    public void ok() {
 
+                                    }
+                                });
+                            }
+                        });
                     }
-                });
+                }).start();
                 intent.putExtra("news", news.toJSONObject().toString());
                 activity.startActivity(intent);
                 activity.overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);

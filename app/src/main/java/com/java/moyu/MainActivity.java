@@ -220,13 +220,13 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         Resources.Theme theme = getTheme();
         TypedValue colorPrimary = new TypedValue();
         TypedValue colorTopBackground = new TypedValue();
-        TypedValue colorSubtitle = new TypedValue();
+        TypedValue colorText = new TypedValue();
         theme.resolveAttribute(R.attr.colorPrimary, colorPrimary, true);
         theme.resolveAttribute(R.attr.colorTopBackground, colorTopBackground, true);
-        theme.resolveAttribute(R.attr.colorSubtitle, colorSubtitle, true);
+        theme.resolveAttribute(R.attr.colorText, colorText, true);
 
         navigationView.setBackgroundResource(colorTopBackground.resourceId);
-        navigationView.setItemTextColor(ColorStateList.valueOf(r.getColor(colorSubtitle.resourceId, theme)));
+        navigationView.setItemTextColor(ColorStateList.valueOf(r.getColor(colorText.resourceId, theme)));
         navigationView.getHeaderView(0).setBackgroundResource(colorPrimary.resourceId);
         getWindow().setStatusBarColor(r.getColor(colorPrimary.resourceId, theme));
 
