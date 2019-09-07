@@ -101,4 +101,8 @@
     <string name="clear_all_confirm_title">清空全部</string>
     <string name="clear_all_confirm_content">你确定要这样做吗？</string>
     <string name="slide_delete">滑动删除哦</string>
+
+    <string name="no_more_data">没有更多的数据啦</string>
+    <string name="load_timeout">加载超时啦</string>
+    <string name="load_error">加载出错啦，是不是没网？</string>
 </resources>

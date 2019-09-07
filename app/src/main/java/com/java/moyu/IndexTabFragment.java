@@ -35,6 +35,8 @@ public class IndexTabFragment extends BasicFragment {
 
     @BindView(R.id.refresh_layout)
     SmartRefreshLayout refreshLayout;
+    @BindView(R.id.news_layout)
+    RecyclerView newsView;
     @BindView(R.id.loading_layout)
     LinearLayout loadingLayout;
     @BindView(R.id.empty_layout)
@@ -57,7 +59,7 @@ public class IndexTabFragment extends BasicFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout), new NewsAdapter.OnClick() {
+        adapter = NewsAdapter.newAdapter(getContext(), newsView, new NewsAdapter.OnClick() {
             @Override
             public void click(View view, int position, final News news) {
                 Intent intent = new Intent(getActivity(), NewsActivity.class);
@@ -72,15 +74,12 @@ public class IndexTabFragment extends BasicFragment {
 
     private void loadMore() {
         if (category.equals(getResources().getString(R.string.recommend))) {
-            new GetRecommendTask(Constants.RECOMMEND_TAGS_SIZE, LocalDateTime.now(), new GetRecommendTask.Callback() {
+            new GetRecommendTask(Constants.RECOMMEND_TAGS_SIZE, LocalDateTime.now().minusWeeks(1),
+                LocalDateTime.now(), new GetRecommendTask.Callback() {
                 @Override
                 public void ok(List<News> data) {
-                    if (data.isEmpty()) {
-                        refreshLayout.finishLoadMoreWithNoMoreData();
-                    } else {
-                        adapter.add(data);
-                        refreshLayout.finishLoadMore();
-                    }
+                    adapter.add(data);
+                    refreshLayout.finishLoadMore();
                 }
             });
         } else {
@@ -115,13 +114,14 @@ public class IndexTabFragment extends BasicFragment {
 
     void refresh(final boolean first) {
         if (category.equals(getResources().getString(R.string.recommend))) {
-            new GetRecommendTask(Constants.RECOMMEND_TAGS_SIZE, LocalDateTime.now(), new GetRecommendTask.Callback() {
+            new GetRecommendTask(Constants.RECOMMEND_TAGS_SIZE, LocalDateTime.now().minusWeeks(1),
+                LocalDateTime.now(), new GetRecommendTask.Callback() {
                 @Override
                 public void ok(List<News> data) {
-                    adapter.clear();
-                    adapter.add(data);
-                    refreshLayout.finishRefresh();
                     if (first) {
+                        adapter.clear();
+                        adapter.add(data);
+                        refreshLayout.finishRefresh();
                         loadingLayout.setVisibility(View.GONE);
                         if (data.isEmpty()) {
                             emptyLayout.setVisibility(View.VISIBLE);
@@ -130,6 +130,14 @@ public class IndexTabFragment extends BasicFragment {
                             emptyLayout.setVisibility(View.INVISIBLE);
                             refreshLayout.setVisibility(View.VISIBLE);
                         }
+                    } else {
+                        if (data.isEmpty()) {
+                            BasicApplication.showToast(getString(R.string.no_more_data));
+                        } else {
+                            adapter.add(data, 0);
+                            newsView.scrollToPosition(0);
+                        }
+                        refreshLayout.finishRefresh();
                     }
                 }
             });
@@ -137,12 +145,15 @@ public class IndexTabFragment extends BasicFragment {
             new NewsNetwork.Builder()
                 .add("size", "" + Constants.PAGE_SIZE)
                 .add("categories", category)
+                .add("startDate", first ? LocalDateTime.now().minusWeeks(1).format(Constants.TIME_FORMATTER)
+                    : adapter.get(0).getPublishTime().plusSeconds(1).format(Constants.TIME_FORMATTER))
                 .add("endDate", LocalDateTime.now().format(Constants.TIME_FORMATTER))
                 .build()
                 .run(new NewsNetwork.Callback() {
                     @Override
                     public void timeout() {
                         refreshLayout.finishRefresh(false);
+                        BasicApplication.showToast(getString(R.string.load_timeout));
                         if (first) {
                             loadingLayout.setVisibility(View.GONE);
                             emptyLayout.setVisibility(View.VISIBLE);
@@ -153,6 +164,7 @@ public class IndexTabFragment extends BasicFragment {
                     @Override
                     public void error() {
                         refreshLayout.finishRefresh(false);
+                        BasicApplication.showToast(getString(R.string.load_error));
                         if (first) {
                             loadingLayout.setVisibility(View.GONE);
                             emptyLayout.setVisibility(View.VISIBLE);
@@ -162,10 +174,10 @@ public class IndexTabFragment extends BasicFragment {
 
                     @Override
                     public void ok(List<News> data) {
-                        adapter.clear();
-                        adapter.add(data);
-                        refreshLayout.finishRefresh();
                         if (first) {
+                            adapter.clear();
+                            adapter.add(data);
+                            refreshLayout.finishRefresh();
                             loadingLayout.setVisibility(View.GONE);
                             if (data.isEmpty()) {
                                 emptyLayout.setVisibility(View.VISIBLE);
@@ -174,6 +186,14 @@ public class IndexTabFragment extends BasicFragment {
                                 emptyLayout.setVisibility(View.INVISIBLE);
                                 refreshLayout.setVisibility(View.VISIBLE);
                             }
+                        } else {
+                            if (data.isEmpty()) {
+                                BasicApplication.showToast(getString(R.string.no_more_data));
+                            } else {
+                                adapter.add(data, 0);
+                                newsView.scrollToPosition(0);
+                            }
+                            refreshLayout.finishRefresh();
                         }
                     }
                 });
@@ -265,12 +285,14 @@ public class IndexTabFragment extends BasicFragment {
 
         List<String> tags;
         List<News> recommendData;
+        String startDate;
         String endDate;
         Callback callback;
         Integer recommendRemain;
 
-        GetRecommendTask(int limit, LocalDateTime endDate, final Callback callback) {
-            this.endDate = endDate.format(Constants.TIME_FORMATTER);
+        GetRecommendTask(int limit, LocalDateTime start, LocalDateTime end, final Callback callback) {
+            startDate = start.format(Constants.TIME_FORMATTER);
+            endDate = end.format(Constants.TIME_FORMATTER);
             this.callback = callback;
             User.getInstance().getTopTag(limit, new User.StringListCallback() {
                 @Override
@@ -291,6 +313,7 @@ public class IndexTabFragment extends BasicFragment {
                         new NewsNetwork.Builder()
                             .add("size", "" + Constants.PAGE_SIZE)
                             .add("words", tag)
+                            .add("startDate", GetRecommendTask.this.startDate)
                             .add("endDate", GetRecommendTask.this.endDate)
                             .build()
                             .run(new NewsNetwork.Callback() {
@@ -321,7 +344,9 @@ public class IndexTabFragment extends BasicFragment {
             while (recommendRemain > 0) ;
 
             Set<News> set = new HashSet<>(recommendData);
-            List<News> tmp = (new ArrayList<>(set)).subList(0, Math.min(Constants.PAGE_SIZE, recommendData.size()));
+            List<News> tmp = new ArrayList<>(set);
+            Collections.shuffle(tmp);
+            tmp = tmp.subList(0, Math.min(Constants.PAGE_SIZE, recommendData.size()));
 
             Collections.sort(tmp, new Comparator<News>() {
                 public int compare(News arg0, News arg1) {

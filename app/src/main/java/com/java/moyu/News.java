@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import androidx.annotation.Nullable;
+
 class News {
 
     String id; // 新闻ID
@@ -97,6 +99,16 @@ class News {
 
     public LocalDateTime getTime() {
         return this.publishTime;
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return id.equals(((News) obj).id);
     }
 
     public JSONObject toJSONObject() {
