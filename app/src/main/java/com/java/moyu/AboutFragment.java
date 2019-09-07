@@ -71,6 +71,7 @@ public class AboutFragment extends BasicFragment {
         getView().setBackgroundResource(colorBackground.resourceId);
         toolbar.setBackgroundResource(colorPrimary.resourceId);
         version.setTextColor(r.getColor(colorSubtitle.resourceId, theme));
+        author.setTextColor(r.getColor(colorSubtitle.resourceId, theme));
         TextView app_name = getView().findViewById(R.id.about_app_name);
         app_name.setTextColor(r.getColor(colorSubtitle.resourceId, theme));
     }
