@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -112,7 +113,6 @@ public class IndexFragment extends BasicFragment {
                 chosen.add(0, BasicApplication.getContext().getString(R.string.recommend));
                 pagerAdapter = new PagerAdapter(getChildFragmentManager(), chosen);
                 viewPager.setAdapter(pagerAdapter);
-                viewPager.setOffscreenPageLimit(0);
             }
         });
     }
@@ -172,16 +172,20 @@ public class IndexFragment extends BasicFragment {
     class PagerAdapter extends FragmentPagerAdapter {
 
         List<String> tabs;
+        Fragment[] fragments;
 
         PagerAdapter(FragmentManager fm, List<String> tabs) {
             super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
             this.tabs = tabs;
+            fragments = new Fragment[tabs.size()];
         }
 
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            return new IndexTabFragment(tabs.get(position));
+            if (fragments[position] != null)
+                return fragments[position];
+            return fragments[position] = new IndexTabFragment(tabs.get(position));
         }
 
         @Override
@@ -193,6 +197,10 @@ public class IndexFragment extends BasicFragment {
         @Override
         public CharSequence getPageTitle(int position) {
             return tabs.get(position);
+        }
+
+        @Override
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         }
 
     }
