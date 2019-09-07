@@ -1,6 +1,7 @@
 package com.java.moyu;
 
 import android.content.Context;
+import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,15 +23,17 @@ class ChipAdapter extends RecyclerView.Adapter<ChipAdapter.ViewHolder> {
     private List<String> data;
     private boolean isEdit;
     private OnClick onClick;
+    private Context context;
 
-    private ChipAdapter(OnClick onClick) {
-        data = new ArrayList<>();
-        isEdit = false;
+    private ChipAdapter(OnClick onClick, Context context) {
+        this.data = new ArrayList<>();
+        this.isEdit = false;
         this.onClick = onClick;
+        this.context = context;
     }
 
     static ChipAdapter newAdapter(Context context, View view, OnClick onClick) {
-        ChipAdapter adapter = new ChipAdapter(onClick);
+        ChipAdapter adapter = new ChipAdapter(onClick, context);
         ChipsLayoutManager.Builder c = ChipsLayoutManager.newBuilder(context);
         RecyclerView rv = (RecyclerView) view;
         rv.setLayoutManager(c.build());
@@ -97,6 +100,12 @@ class ChipAdapter extends RecyclerView.Adapter<ChipAdapter.ViewHolder> {
         Chip view = new Chip(new ContextThemeWrapper(parent.getContext(), R.style.Theme_MaterialComponents_Light));
         view.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
         view.setChipCornerRadius(10);
+        TypedValue colorChip = new TypedValue();
+        TypedValue colorTitle = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.colorChip, colorChip, true);
+        context.getTheme().resolveAttribute(R.attr.colorTitle, colorTitle, true);
+        view.setChipBackgroundColorResource(colorChip.resourceId);
+        view.setTextColor(context.getResources().getColor(colorTitle.resourceId, context.getTheme()));
         return new ViewHolder(view, onClick);
     }
 

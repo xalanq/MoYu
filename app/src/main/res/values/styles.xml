@@ -19,6 +19,7 @@
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="searchBoxBackground">@drawable/search_box_background</item>
         <item name="icon">@drawable/icon</item>
+        <item name="colorChip">@color/colorChip</item>
     </style>
 
     <style name="NightTheme" parent="AppTheme">
@@ -38,6 +39,7 @@
         <item name="android:statusBarColor">@color/colorPrimaryNight</item>
         <item name="searchBoxBackground">@drawable/search_box_background_night</item>
         <item name="icon">@drawable/icon_night</item>
+        <item name="colorChip">@color/colorChipNight</item>
     </style>
 
     <style name="noAnimDayTheme" parent="DayTheme">

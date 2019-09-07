@@ -15,4 +15,5 @@
     <attr name="colorHasRead" format="reference|color" />
     <attr name="searchBoxBackground" format="reference" />
     <attr name="icon" format="reference" />
+    <attr name="colorChip" format="reference|color" />
 </resources>

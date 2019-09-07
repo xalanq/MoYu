@@ -13,6 +13,7 @@
     <color name="colorTopBackground">#FFFFFF</color>
     <color name="colorTabSelectedText">#714CB9</color>
     <color name="colorHasRead">#EBEBEB</color>
+    <color name="colorChip">#E5E5E5</color>
 
     <color name="colorPrimaryNight">#4F4F4F</color>
     <color name="colorPrimaryDarkNight">#303030</color>
@@ -27,5 +28,6 @@
     <color name="colorTopBackgroundNight">#303030</color>
     <color name="colorTabSelectedTextNight">#C0C0C0</color>
     <color name="colorHasReadNight">#3C3C3C</color>
+    <color name="colorChipNight">#4E4E4E</color>
 
 </resources>
