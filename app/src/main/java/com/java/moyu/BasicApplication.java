@@ -8,7 +8,7 @@ public class BasicApplication extends Application {
 
     private static Context context;
     private static Toast toast;
-    private static boolean isNight = true;
+    private static boolean isNight;
 
     public static Context getContext() {
         return context;

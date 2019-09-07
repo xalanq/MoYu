@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/favorite_fragment_title"
-                android:textColor="?attr/colorTitle"
+                android:textColor="#ffffff"
                 style="@style/Base.DialogWindowTitle.AppCompat"/>
 
         </androidx.appcompat.widget.Toolbar>

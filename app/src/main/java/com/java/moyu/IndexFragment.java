@@ -2,6 +2,7 @@ package com.java.moyu;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -21,6 +22,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import butterknife.BindView;
@@ -30,6 +32,8 @@ import butterknife.BindView;
  */
 public class IndexFragment extends BasicFragment {
 
+    @BindView(R.id.index_toolbar)
+    Toolbar toolbar;
     @BindView(R.id.index_search_box)
     EditText searchBox;
     @BindView(R.id.index_tab_layout)
@@ -54,7 +58,6 @@ public class IndexFragment extends BasicFragment {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        Toolbar toolbar = view.findViewById(R.id.index_toolbar);
         a.setSupportActionBar(toolbar);
         a.getSupportActionBar().setDisplayShowTitleEnabled(false);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -119,26 +122,52 @@ public class IndexFragment extends BasicFragment {
         Resources r = getResources();
         Resources.Theme theme = getActivity().getTheme();
         TypedValue colorPrimary = new TypedValue();
-        TypedValue colorPrimaryDark = new TypedValue();
-        TypedValue colorAccent = new TypedValue();
         TypedValue colorTitle = new TypedValue();
         TypedValue colorSubtitle = new TypedValue();
         TypedValue colorText = new TypedValue();
         TypedValue colorBackground = new TypedValue();
+        TypedValue colorButton = new TypedValue();
         TypedValue colorTabRipple = new TypedValue();
         TypedValue colorTopBackground = new TypedValue();
         TypedValue colorTabSelectedText = new TypedValue();
+        TypedValue searchBoxBackground = new TypedValue();
         theme.resolveAttribute(R.attr.colorPrimary, colorPrimary, true);
-        theme.resolveAttribute(R.attr.colorPrimaryDark, colorPrimaryDark, true);
-        theme.resolveAttribute(R.attr.colorAccent, colorAccent, true);
         theme.resolveAttribute(R.attr.colorTitle, colorTitle, true);
         theme.resolveAttribute(R.attr.colorSubtitle, colorSubtitle, true);
         theme.resolveAttribute(R.attr.colorText, colorText, true);
         theme.resolveAttribute(R.attr.colorBackground, colorBackground, true);
+        theme.resolveAttribute(R.attr.colorButton, colorButton, true);
         theme.resolveAttribute(R.attr.colorTabRipple, colorTabRipple, true);
         theme.resolveAttribute(R.attr.colorTopBackground, colorTopBackground, true);
         theme.resolveAttribute(R.attr.colorTabSelectedText, colorTabSelectedText, true);
+        theme.resolveAttribute(R.attr.searchBoxBackground, searchBoxBackground, true);
 
+        searchBox.setBackgroundResource(searchBoxBackground.resourceId);
+        getView().setBackgroundResource(colorBackground.resourceId);
+        getView().findViewById(R.id.app_bar_layout).setBackgroundResource(colorPrimary.resourceId);
+        toolbar.setBackgroundResource(colorPrimary.resourceId);
+        getView().findViewById(R.id.news_frame_layout).setBackgroundResource(colorBackground.resourceId);
+        searchBox.setHintTextColor(r.getColor(colorSubtitle.resourceId, theme));
+        try {
+            Field field;
+            field = tabLayout.getClass().getDeclaredField("tabBackgroundResId");
+            field.setAccessible(true);
+            field.set(tabLayout, colorTopBackground.resourceId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        tabLayout.setTabTextColors(r.getColor(colorSubtitle.resourceId, theme), r.getColor(colorTabSelectedText.resourceId, theme));
+        tabLayout.setTabRippleColor(ColorStateList.valueOf(r.getColor(colorTabRipple.resourceId, theme)));
+        tabLayout.setSelectedTabIndicatorColor(r.getColor(colorPrimary.resourceId, theme));
+        btnMore.setBackgroundResource(colorTopBackground.resourceId);
+        viewPager.setBackgroundResource(colorBackground.resourceId);
+        for (Fragment tmp : getChildFragmentManager().getFragments()) {
+            if (tmp instanceof IndexTabFragment) {
+                IndexTabFragment f = (IndexTabFragment) tmp;
+                f.refreshUI();
+            }
+        }
+        getView().findViewById(R.id.index_tab_linear_layout).setBackgroundResource(colorTopBackground.resourceId);
     }
 
     class PagerAdapter extends FragmentPagerAdapter {

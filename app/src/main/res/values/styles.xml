@@ -16,6 +16,7 @@
         <item name="colorTopBackground">@color/colorTopBackground</item>
         <item name="colorTabSelectedText">@color/colorTabSelectedText</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="searchBoxBackground">@drawable/search_box_background</item>
     </style>
 
     <style name="NightTheme" parent="AppTheme">
@@ -32,6 +33,7 @@
         <item name="colorTopBackground">@color/colorTopBackgroundNight</item>
         <item name="colorTabSelectedText">@color/colorTabSelectedTextNight</item>
         <item name="android:statusBarColor">@color/colorPrimaryNight</item>
+        <item name="searchBoxBackground">@drawable/search_box_background_night</item>
     </style>
 
     <style name="noAnimDayTheme" parent="DayTheme">

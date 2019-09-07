@@ -46,7 +46,6 @@
                 android:hint="@string/username"
                 android:textColorHint="?attr/colorSubtitle"
                 app:hintTextColor="?attr/colorSubtitle"
-                android:textColor="?attr/colorSubtitle"
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -55,6 +54,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:inputType="text"
+                    android:textColor="?attr/colorSubtitle"
                     android:nextFocusForward="@id/password"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -67,7 +67,6 @@
                 android:hint="@string/password"
                 android:textColorHint="?attr/colorSubtitle"
                 app:hintTextColor="?attr/colorSubtitle"
-                android:textColor="?attr/colorSubtitle"
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -75,6 +74,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionGo"
+                    android:textColor="?attr/colorSubtitle"
                     android:inputType="textPassword"/>
 
             </com.google.android.material.textfield.TextInputLayout>

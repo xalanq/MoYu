@@ -12,4 +12,5 @@
     <attr name="colorTabRipple" format="reference|color" />
     <attr name="colorTopBackground" format="reference|color" />
     <attr name="colorTabSelectedText" format="reference|color" />
+    <attr name="searchBoxBackground" format="reference" />
 </resources>

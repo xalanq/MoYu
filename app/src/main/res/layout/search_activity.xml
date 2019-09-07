@@ -33,7 +33,7 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:hint="@string/default_search_hint"
-                android:background="@drawable/search_box_background"
+                android:background="?attr/searchBoxBackground"
                 android:textSize="14sp"
                 android:drawableStart="@drawable/ic_search"
                 android:drawablePadding="5dp"

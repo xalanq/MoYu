@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
+    android:id="@+id/news_frame_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -17,12 +18,13 @@
         android:visibility="invisible">
 
         <TextView
+            android:id="@+id/empty_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/empty"
             android:textSize="20sp"
             android:layout_gravity="center"
-            android:textColor="?attr/colorText"/>
+            android:textColor="?attr/colorSubtitle"/>
 
         <Button
             android:id="@+id/empty_button"

@@ -1,21 +1,26 @@
 package com.java.moyu;
 
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import butterknife.BindView;
@@ -123,26 +128,56 @@ public class HistoryFragment extends BasicFragment {
         Resources r = getResources();
         Resources.Theme theme = getActivity().getTheme();
         TypedValue colorPrimary = new TypedValue();
-        TypedValue colorPrimaryDark = new TypedValue();
-        TypedValue colorAccent = new TypedValue();
         TypedValue colorTitle = new TypedValue();
         TypedValue colorSubtitle = new TypedValue();
         TypedValue colorText = new TypedValue();
         TypedValue colorBackground = new TypedValue();
-        TypedValue colorTabRipple = new TypedValue();
-        TypedValue colorTopBackground = new TypedValue();
-        TypedValue colorTabSelectedText = new TypedValue();
+        TypedValue colorButton = new TypedValue();
         theme.resolveAttribute(R.attr.colorPrimary, colorPrimary, true);
-        theme.resolveAttribute(R.attr.colorPrimaryDark, colorPrimaryDark, true);
-        theme.resolveAttribute(R.attr.colorAccent, colorAccent, true);
         theme.resolveAttribute(R.attr.colorTitle, colorTitle, true);
         theme.resolveAttribute(R.attr.colorSubtitle, colorSubtitle, true);
         theme.resolveAttribute(R.attr.colorText, colorText, true);
         theme.resolveAttribute(R.attr.colorBackground, colorBackground, true);
-        theme.resolveAttribute(R.attr.colorTabRipple, colorTabRipple, true);
-        theme.resolveAttribute(R.attr.colorTopBackground, colorTopBackground, true);
-        theme.resolveAttribute(R.attr.colorTabSelectedText, colorTabSelectedText, true);
+        theme.resolveAttribute(R.attr.colorButton, colorButton, true);
 
+        toolbar.setBackgroundResource(colorPrimary.resourceId);
+        getView().findViewById(R.id.news_frame_layout).setBackgroundResource(colorBackground.resourceId);
+        loadingLayout.setBackgroundResource(colorBackground.resourceId);
+        TextView loadingText = loadingLayout.findViewById(R.id.loading_text);
+        loadingText.setTextColor(r.getColor(colorSubtitle.resourceId, theme));
+        emptyLayout.setBackgroundResource(colorBackground.resourceId);
+        TextView emptyText = emptyLayout.findViewById(R.id.empty_text);
+        emptyText.setTextColor(r.getColor(colorSubtitle.resourceId, theme));
+        emptyButton.setTextColor(r.getColor(colorText.resourceId, theme));
+        emptyButton.setBackgroundTintList(ColorStateList.valueOf(r.getColor(colorButton.resourceId, theme)));
+        RecyclerView newsView = refreshLayout.findViewById(R.id.news_layout);
+
+        for (int i = 0; i < newsView.getChildCount(); ++i) {
+            View view = newsView.getChildAt(i).findViewById(R.id.news_card);
+            view.setBackgroundResource(colorBackground.resourceId);
+            TextView title = view.findViewById(R.id.title);
+            title.setTextColor(r.getColor(colorTitle.resourceId, theme));
+            TextView publisher = view.findViewById(R.id.publisher);
+            publisher.setTextColor(r.getColor(colorSubtitle.resourceId, theme));
+            TextView publishTime = view.findViewById(R.id.publish_time);
+            publishTime.setTextColor(r.getColor(colorSubtitle.resourceId, theme));
+            View divider = view.findViewById(R.id.divider);
+            divider.setBackgroundResource(colorSubtitle.resourceId);
+        }
+
+        try {
+            Class<RecyclerView> recyclerViewClass = RecyclerView.class;
+            Field declaredField = recyclerViewClass.getDeclaredField("mRecycler");
+            declaredField.setAccessible(true);
+            Method declaredMethod = Class.forName(RecyclerView.Recycler.class.getName()).getDeclaredMethod("clear", (Class<?>[]) new Class[0]);
+            declaredMethod.setAccessible(true);
+            declaredMethod.invoke(declaredField.get(newsView));
+            RecyclerView.RecycledViewPool recycledViewPool = newsView.getRecycledViewPool();
+            recycledViewPool.clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 
 }

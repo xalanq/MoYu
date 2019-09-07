@@ -58,13 +58,13 @@
                 android:layout_marginTop="10dp"
                 android:textColorHint="?attr/colorSubtitle"
                 app:hintTextColor="?attr/colorSubtitle"
-                android:textColor="?attr/colorSubtitle"
                 android:hint="@string/username">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="?attr/colorSubtitle"
                     android:inputType="none"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -75,13 +75,13 @@
                 android:layout_marginTop="10dp"
                 android:textColorHint="?attr/colorSubtitle"
                 app:hintTextColor="?attr/colorSubtitle"
-                android:textColor="?attr/colorSubtitle"
                 android:hint="@string/email">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="?attr/colorSubtitle"
                     android:inputType="none"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -94,7 +94,6 @@
                 android:hint="@string/avatar"
                 android:textColorHint="?attr/colorSubtitle"
                 app:hintTextColor="?attr/colorSubtitle"
-                android:textColor="?attr/colorSubtitle"
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -102,6 +101,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"
+                    android:textColor="?attr/colorSubtitle"
                     android:inputType="text"/>
 
             </com.google.android.material.textfield.TextInputLayout>
