@@ -1,12 +1,10 @@
 package com.java.moyu;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -15,6 +13,8 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import butterknife.BindView;
 
 public class SearchResultFragment extends BasicFragment {
@@ -43,8 +43,16 @@ public class SearchResultFragment extends BasicFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout),
-            NewsAdapter.defaultOnclick(getActivity()));
+        adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout), new NewsAdapter.OnClick() {
+                @Override
+                public void click(View view, int position, final News news) {
+                    Intent intent = new Intent(getActivity(), NewsActivity.class);
+                    intent.putExtra("news", news.toJSONObject().toString());
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);
+                }
+            }
+        );
 
         init();
     }

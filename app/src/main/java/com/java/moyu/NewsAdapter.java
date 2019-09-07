@@ -2,7 +2,6 @@ package com.java.moyu;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,10 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
@@ -25,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -42,68 +40,6 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         data = new ArrayList<>();
         this.onClick = onClick;
         this.context = context.getApplicationContext();
-    }
-
-    static OnClick defaultOnclick(final Activity activity) {
-        return new OnClick() {
-            @Override
-            public void click(View view, final News news) {
-                Intent intent = new Intent(activity, NewsActivity.class);
-                User.getInstance().addNews(news, new User.DefaultCallback() {
-                    @Override
-                    public void error(String msg) {
-                        BasicApplication.showToast(msg);
-                    }
-
-                    @Override
-                    public void ok() {
-
-                    }
-                });
-                User.getInstance().addHistory(news.id, LocalDateTime.now(), new User.DefaultCallback() {
-                    @Override
-                    public void error(String msg) {
-                        BasicApplication.showToast(msg);
-                    }
-
-                    @Override
-                    public void ok() {
-
-                    }
-                });
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<News.ScoreData> tags = new ArrayList<>();
-                        tags.addAll(Arrays.asList(news.keyword));
-                        tags.addAll(Arrays.asList(news.who));
-                        tags.addAll(Arrays.asList(news.where));
-                        final List<News.ScoreData> param = tags;
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                User.getInstance().addTag(param, new User.DefaultCallback() {
-                                    @Override
-                                    public void error(String msg) {
-                                        BasicApplication.showToast(msg);
-                                    }
-
-                                    @Override
-                                    public void ok() {
-
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }).start();
-                intent.putExtra("news", news.toJSONObject().toString());
-                activity.startActivity(intent);
-                activity.overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);
-                news.isRead = true;
-                updateHasRead(view);
-            }
-        };
     }
 
     static void updateHasRead(final View view) {
@@ -274,7 +210,7 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     public interface OnClick {
 
-        void click(View view, News news);
+        void click(View view, int position, News news);
 
     }
 
@@ -296,7 +232,57 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onClick.click(view, news);
+                    User.getInstance().addNews(news, new User.DefaultCallback() {
+                        @Override
+                        public void error(String msg) {
+                            BasicApplication.showToast(msg);
+                        }
+
+                        @Override
+                        public void ok() {
+
+                        }
+                    });
+                    User.getInstance().addHistory(news.id, LocalDateTime.now(), new User.DefaultCallback() {
+                        @Override
+                        public void error(String msg) {
+                            BasicApplication.showToast(msg);
+                        }
+
+                        @Override
+                        public void ok() {
+
+                        }
+                    });
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            List<News.ScoreData> tags = new ArrayList<>();
+                            tags.addAll(Arrays.asList(news.keyword));
+                            tags.addAll(Arrays.asList(news.who));
+                            tags.addAll(Arrays.asList(news.where));
+                            final List<News.ScoreData> param = tags;
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    User.getInstance().addTag(param, new User.DefaultCallback() {
+                                        @Override
+                                        public void error(String msg) {
+                                            BasicApplication.showToast(msg);
+                                        }
+
+                                        @Override
+                                        public void ok() {
+
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }).start();
+                    onClick.click(view, getAdapterPosition(), news);
+                    news.isRead = true;
+                    updateHasRead(view);
                 }
             });
         }

@@ -117,15 +117,15 @@ public class NewsNetwork {
         @Override
         protected void onPostExecute(Result result) {
             switch (result.state) {
-                case OK:
-                    callback.ok(result.data);
-                    break;
-                case TIMEOUT:
-                    callback.timeout();
-                    break;
-                case UNKNOWN:
-                    callback.error();
-                    break;
+            case OK:
+                callback.ok(result.data);
+                break;
+            case TIMEOUT:
+                callback.timeout();
+                break;
+            case UNKNOWN:
+                callback.error();
+                break;
             }
         }
 

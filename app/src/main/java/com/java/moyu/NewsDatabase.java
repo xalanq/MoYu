@@ -398,12 +398,6 @@ public class NewsDatabase extends SQLiteOpenHelper {
         return list;
     }
 
-    public void setNight(boolean isNight) {
-        ContentValues values = new ContentValues();
-        values.put(VALUE_TOKEN, isNight ? "1" : "0");
-        getWritableDatabase().update(TABLE_NAME_USER, values, VALUE_ID + " = ?", new String[]{"2"});
-    }
-
     public boolean getNight() {
         Cursor cursor = getReadableDatabase().query(TABLE_NAME_USER, null, null, null, null, null, null);
         if (cursor.getCount() > 0) {
@@ -412,6 +406,12 @@ public class NewsDatabase extends SQLiteOpenHelper {
             return cursor.getString(cursor.getColumnIndex(VALUE_TOKEN)).equals("1");
         }
         return false;
+    }
+
+    public void setNight(boolean isNight) {
+        ContentValues values = new ContentValues();
+        values.put(VALUE_TOKEN, isNight ? "1" : "0");
+        getWritableDatabase().update(TABLE_NAME_USER, values, VALUE_ID + " = ?", new String[]{"2"});
     }
 
 }

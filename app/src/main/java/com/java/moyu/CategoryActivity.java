@@ -7,15 +7,14 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.chip.Chip;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
 public class CategoryActivity extends SwipeActivity {
@@ -83,13 +82,13 @@ public class CategoryActivity extends SwipeActivity {
             @Override
             public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
                 switch (e.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        if (currentAdapter.isEditable())
-                            consumer.lockLeft();
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        consumer.unlockLeft();
-                        break;
+                case MotionEvent.ACTION_DOWN:
+                    if (currentAdapter.isEditable())
+                        consumer.lockLeft();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    consumer.unlockLeft();
+                    break;
                 }
                 return false;
             }

@@ -11,6 +11,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.google.android.material.tabs.TabLayout;
+
+import java.lang.reflect.Field;
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -19,12 +24,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
-import com.google.android.material.tabs.TabLayout;
-
-import java.lang.reflect.Field;
-import java.util.List;
-
 import butterknife.BindView;
 
 /**
@@ -75,7 +74,7 @@ public class IndexFragment extends BasicFragment {
         btnMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getActivity(), CategoryActivity.class), 1);
+                startActivityForResult(new Intent(getActivity(), CategoryActivity.class), 3);
                 getActivity().overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);
             }
         });
@@ -86,7 +85,7 @@ public class IndexFragment extends BasicFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+        if (requestCode == 3 && resultCode == Activity.RESULT_OK) {
             if (data.getBooleanExtra("hasEdited", false)) {
                 initData();
             }

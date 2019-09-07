@@ -2,11 +2,11 @@ package com.java.moyu;
 
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
-
 import com.billy.android.swipe.SmartSwipe;
 import com.billy.android.swipe.SwipeConsumer;
 import com.billy.android.swipe.consumer.ActivitySlidingBackConsumer;
+
+import androidx.annotation.Nullable;
 
 public abstract class SwipeActivity extends BasicActivity {
 

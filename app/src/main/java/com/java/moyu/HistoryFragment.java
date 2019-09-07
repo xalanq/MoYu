@@ -1,5 +1,6 @@
 package com.java.moyu;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -9,12 +10,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
@@ -23,6 +18,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 
 /**
@@ -62,8 +62,16 @@ public class HistoryFragment extends BasicFragment {
 
         a.getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout),
-            NewsAdapter.defaultOnclick(getActivity()));
+        adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout), new NewsAdapter.OnClick() {
+                @Override
+                public void click(View view, int position, final News news) {
+                    Intent intent = new Intent(getActivity(), NewsActivity.class);
+                    intent.putExtra("news", news.toJSONObject().toString());
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);
+                }
+            }
+        );
 
         initData();
     }

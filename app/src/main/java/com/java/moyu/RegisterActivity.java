@@ -8,10 +8,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
-
 import com.google.android.material.textfield.TextInputEditText;
 
+import androidx.annotation.Nullable;
 import butterknife.BindView;
 
 public class RegisterActivity extends SwipeActivity {
