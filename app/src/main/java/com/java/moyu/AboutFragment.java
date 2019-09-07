@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,8 @@ public class AboutFragment extends BasicFragment {
     Toolbar toolbar;
     @BindView(R.id.about_version)
     TextView version;
+    @BindView(R.id.about_logo)
+    ImageView logo;
 
     @Override
     protected int getLayoutResource() {
@@ -61,16 +64,22 @@ public class AboutFragment extends BasicFragment {
         Resources r = getResources();
         Resources.Theme theme = getActivity().getTheme();
         TypedValue colorPrimary = new TypedValue();
+        TypedValue colorAccent = new TypedValue();
         TypedValue colorSubtitle = new TypedValue();
         TypedValue colorBackground = new TypedValue();
+        TypedValue icon = new TypedValue();
         theme.resolveAttribute(R.attr.colorPrimary, colorPrimary, true);
         theme.resolveAttribute(R.attr.colorSubtitle, colorSubtitle, true);
         theme.resolveAttribute(R.attr.colorBackground, colorBackground, true);
+        theme.resolveAttribute(R.attr.colorAccent, colorAccent, true);
+        theme.resolveAttribute(R.attr.icon, icon, true);
 
         getView().setBackgroundResource(colorBackground.resourceId);
         toolbar.setBackgroundResource(colorPrimary.resourceId);
         version.setTextColor(r.getColor(colorSubtitle.resourceId, theme));
         author.setTextColor(r.getColor(colorSubtitle.resourceId, theme));
+        author.setLinkTextColor(r.getColor(colorAccent.resourceId, theme));
+        logo.setImageResource(icon.resourceId);
         TextView app_name = getView().findViewById(R.id.about_app_name);
         app_name.setTextColor(r.getColor(colorSubtitle.resourceId, theme));
     }

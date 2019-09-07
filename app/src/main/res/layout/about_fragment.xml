@@ -40,9 +40,10 @@
         android:paddingBottom="80dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/about_logo"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@mipmap/ic_launcher"/>
+            android:src="?attr/icon"/>
 
         <TextView
             android:id="@+id/about_app_name"
@@ -64,6 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingVertical="10dp"
+            android:textColor="?attr/colorSubtitle"
             android:textSize="18sp"/>
 
     </LinearLayout>

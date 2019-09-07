@@ -18,6 +18,7 @@
         <item name="colorHasRead">@color/colorHasRead</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="searchBoxBackground">@drawable/search_box_background</item>
+        <item name="icon">@drawable/icon</item>
     </style>
 
     <style name="NightTheme" parent="AppTheme">
@@ -36,6 +37,7 @@
         <item name="colorHasRead">@color/colorHasReadNight</item>
         <item name="android:statusBarColor">@color/colorPrimaryNight</item>
         <item name="searchBoxBackground">@drawable/search_box_background_night</item>
+        <item name="icon">@drawable/icon_night</item>
     </style>
 
     <style name="noAnimDayTheme" parent="DayTheme">
