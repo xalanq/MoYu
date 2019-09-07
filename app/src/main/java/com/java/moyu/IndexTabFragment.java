@@ -58,15 +58,14 @@ public class IndexTabFragment extends BasicFragment {
         super.onViewCreated(view, savedInstanceState);
 
         adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout), new NewsAdapter.OnClick() {
-                @Override
-                public void click(View view, int position, final News news) {
-                    Intent intent = new Intent(getActivity(), NewsActivity.class);
-                    intent.putExtra("news", news.toJSONObject().toString());
-                    startActivity(intent);
-                    getActivity().overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);
-                }
+            @Override
+            public void click(View view, int position, final News news) {
+                Intent intent = new Intent(getActivity(), NewsActivity.class);
+                intent.putExtra("news", news.toJSONObject().toString());
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);
             }
-        );
+        });
 
         initData();
     }

@@ -97,4 +97,8 @@
 
     <string name="gallery_hint">&lt;- 滑动可查看多张图片 -&gt;</string>
 
+    <string name="clear_all">清空</string>
+    <string name="clear_all_confirm_title">清空全部</string>
+    <string name="clear_all_confirm_content">你确定要这样做吗？</string>
+    <string name="slide_delete">滑动删除哦</string>
 </resources>

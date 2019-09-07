@@ -1,10 +1,15 @@
 package com.java.moyu;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -32,6 +37,8 @@ public class HistoryFragment extends BasicFragment {
 
     @BindView(R.id.refresh_layout)
     SmartRefreshLayout refreshLayout;
+    @BindView(R.id.news_layout)
+    RecyclerView newsView;
     @BindView(R.id.loading_layout)
     LinearLayout loadingLayout;
     @BindView(R.id.empty_layout)
@@ -52,28 +59,72 @@ public class HistoryFragment extends BasicFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final MainActivity a = (MainActivity) getActivity();
 
+        final MainActivity a = (MainActivity) getActivity();
         a.setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
             a, a.drawerLayout, toolbar, R.string.main_navigation_drawer_open, R.string.main_navigation_drawer_close);
         a.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-
         a.getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        adapter = NewsAdapter.newAdapter(getContext(), view.findViewById(R.id.news_layout), new NewsAdapter.OnClick() {
-                @Override
-                public void click(View view, int position, final News news) {
-                    Intent intent = new Intent(getActivity(), NewsActivity.class);
-                    intent.putExtra("news", news.toJSONObject().toString());
-                    startActivity(intent);
-                    getActivity().overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);
-                }
-            }
-        );
+        setHasOptionsMenu(true);
 
         initData();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.edit_news, menu);
+        if (adapter.isEditable())
+            menu.findItem(R.id.edit).setIcon(R.drawable.ic_edit_done);
+        menu.findItem(R.id.clear_all).setVisible(adapter.isEditable());
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.clear_all:
+            new AlertDialog.Builder(getContext())
+                .setTitle(R.string.clear_all_confirm_title)
+                .setMessage(R.string.clear_all_confirm_content)
+                .setPositiveButton(getResources().getText(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        User.getInstance().delAllHistory(new User.DefaultCallback() {
+                            @Override
+                            public void error(String msg) {
+                                BasicApplication.showToast(msg);
+                            }
+
+                            @Override
+                            public void ok() {
+
+                            }
+                        });
+                        adapter.clear();
+                        emptyLayout.setVisibility(View.VISIBLE);
+                        refreshLayout.setVisibility(View.INVISIBLE);
+                        adapter.setEditable(!adapter.isEditable());
+                        getActivity().invalidateOptionsMenu();
+                    }
+                })
+                .setNegativeButton(getResources().getText(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                })
+                .show();
+            break;
+        case R.id.edit:
+            adapter.setEditable(!adapter.isEditable());
+            getActivity().invalidateOptionsMenu();
+            if (adapter.isEditable())
+                BasicApplication.showToast(getString(R.string.slide_delete));
+            break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     void loadMore(final boolean first) {
@@ -111,7 +162,40 @@ public class HistoryFragment extends BasicFragment {
     void initData() {
         if (!isAdded())
             return;
-        adapter.clear();
+
+        adapter = NewsAdapter.newAdapter(getContext(), newsView, new NewsAdapter.OnClick() {
+            @Override
+            public void click(View view, int position, final News news) {
+                Intent intent = new Intent(getActivity(), NewsActivity.class);
+                intent.putExtra("news", news.toJSONObject().toString());
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_stay);
+            }
+        }, new NewsAdapter.SwipeCallback() {
+            @Override
+            public void remove(int position) {
+                News news = adapter.get(position);
+                adapter.remove(position);
+                User.getInstance().delHistory(news.id, new User.DefaultCallback() {
+                    @Override
+                    public void error(String msg) {
+                        BasicApplication.showToast(msg);
+                    }
+
+                    @Override
+                    public void ok() {
+
+                    }
+                });
+                if (adapter.getItemCount() == 0) {
+                    emptyLayout.setVisibility(View.VISIBLE);
+                    refreshLayout.setVisibility(View.INVISIBLE);
+                    adapter.setEditable(!adapter.isEditable());
+                    getActivity().invalidateOptionsMenu();
+                }
+            }
+        });
+
         loadMore(true);
         emptyButton.setOnClickListener(new View.OnClickListener() {
             @Override

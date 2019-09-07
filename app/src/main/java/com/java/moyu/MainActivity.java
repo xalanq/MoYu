@@ -114,12 +114,12 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
                 .into(avatarView);
         }
         if (refreshFragment) {
-            if (currentFragment == fragmentAllocator.getIndexFragment())
-                fragmentAllocator.getIndexFragment().initData();
-            else if (currentFragment == fragmentAllocator.getFavoriteFragment())
-                fragmentAllocator.getFavoriteFragment().initData();
-            else if (currentFragment == fragmentAllocator.getHistoryFragment())
-                fragmentAllocator.getHistoryFragment().initData();
+            if (currentFragment instanceof IndexFragment)
+                ((IndexTabFragment) currentFragment).initData();
+            else if (currentFragment instanceof FavoriteFragment)
+                ((FavoriteFragment) currentFragment).initData();
+            else if (currentFragment instanceof HistoryFragment)
+                ((HistoryFragment) currentFragment).initData();
         }
     }
 
@@ -231,7 +231,13 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         navigationView.getHeaderView(0).setBackgroundResource(colorPrimary.resourceId);
         getWindow().setStatusBarColor(r.getColor(colorPrimary.resourceId, theme));
 
-        fragmentAllocator.refreshUI();
+        fragmentAllocator.getIndexFragment().refreshUI();
+        if (currentFragment instanceof FavoriteFragment)
+            ((FavoriteFragment) currentFragment).refreshUI();
+        else if (currentFragment instanceof HistoryFragment)
+            ((HistoryFragment) currentFragment).refreshUI();
+        else if (currentFragment instanceof AboutFragment)
+            ((AboutFragment) currentFragment).refreshUI();
     }
 
     private void clearCache() {
@@ -262,9 +268,6 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
     class FragmentAllocator {
 
         private IndexFragment indexFragment;
-        private FavoriteFragment favoriteFragment;
-        private HistoryFragment historyFragment;
-        private AboutFragment aboutFragment;
 
         IndexFragment getIndexFragment() {
             if (indexFragment == null)
@@ -273,32 +276,15 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         }
 
         FavoriteFragment getFavoriteFragment() {
-            if (favoriteFragment == null)
-                favoriteFragment = new FavoriteFragment();
-            return favoriteFragment;
+            return new FavoriteFragment();
         }
 
         HistoryFragment getHistoryFragment() {
-            if (historyFragment == null)
-                historyFragment = new HistoryFragment();
-            return historyFragment;
+            return new HistoryFragment();
         }
 
         AboutFragment getAboutFragment() {
-            if (aboutFragment == null)
-                aboutFragment = new AboutFragment();
-            return aboutFragment;
-        }
-
-        void refreshUI() {
-            if (indexFragment != null)
-                indexFragment.refreshUI();
-            if (favoriteFragment != null)
-                favoriteFragment.refreshUI();
-            if (historyFragment != null)
-                historyFragment.refreshUI();
-            if (aboutFragment != null)
-                aboutFragment.refreshUI();
+            return new AboutFragment();
         }
 
     }

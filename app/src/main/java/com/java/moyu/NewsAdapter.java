@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -35,11 +36,14 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     private final Context context;
     private List<News> data;
     private OnClick onClick;
+    private SwipeCallback swipeCallback;
+    private boolean editable;
 
-    private NewsAdapter(Context context, OnClick onClick) {
+    private NewsAdapter(Context context, OnClick onClick, SwipeCallback swipeCallback) {
         data = new ArrayList<>();
         this.onClick = onClick;
         this.context = context.getApplicationContext();
+        this.swipeCallback = swipeCallback;
     }
 
     static void updateHasRead(final View view) {
@@ -49,8 +53,8 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         view.findViewById(R.id.news_card).setBackgroundResource(colorHasRead.resourceId);
     }
 
-    static NewsAdapter newAdapter(final Context context, View view, OnClick onClick) {
-        final NewsAdapter adapter = new NewsAdapter(context, onClick);
+    static NewsAdapter newAdapter(final Context context, View view, OnClick onClick, final SwipeCallback swipeCallback) {
+        final NewsAdapter adapter = new NewsAdapter(context, onClick, swipeCallback);
         RecyclerView rv = (RecyclerView) view;
         final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         rv.setLayoutManager(layoutManager);
@@ -76,7 +80,58 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
                 }
             }
         });
+        if (swipeCallback != null) {
+            ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
+                @Override
+                public float getSwipeThreshold(@NonNull RecyclerView.ViewHolder viewHolder) {
+                    return 0.8f;
+                }
+
+                @Override
+                public boolean isLongPressDragEnabled() {
+                    return false;
+                }
+
+                @Override
+                public boolean isItemViewSwipeEnabled() {
+                    return true;
+                }
+
+                @Override
+                public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                    if (adapter.isEditable()) {
+                        return makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+                    }
+                    return 0;
+                }
+
+                @Override
+                public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                    return true;
+                }
+
+                @Override
+                public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                    if (adapter.isEditable()) {
+                        swipeCallback.remove(viewHolder.getAdapterPosition());
+                    }
+                }
+            });
+            helper.attachToRecyclerView(rv);
+        }
         return adapter;
+    }
+
+    static NewsAdapter newAdapter(final Context context, View view, OnClick onClick) {
+        return newAdapter(context, view, onClick, null);
+    }
+
+    boolean isEditable() {
+        return editable;
+    }
+
+    void setEditable(boolean value) {
+        editable = value;
     }
 
     /**
@@ -214,7 +269,13 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public interface SwipeCallback {
+
+        void remove(int position);
+
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.title)
         TextView title;
