@@ -55,9 +55,11 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         if (User.getInstance().hasToken()) {
             final LoadingDialog dialog = new LoadingDialog(this,
                 getResources().getString(R.string.login_loading));
+            dialog.show();
             User.getInstance().updateUserInfo(new User.DefaultCallback() {
                 @Override
                 public void error(String msg) {
+                    dialog.dismiss();
                     BasicApplication.showToast(msg + " - " + getString(R.string.switch_local));
                     reloadUser();
                     backDefault();
@@ -65,6 +67,7 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
 
                 @Override
                 public void ok() {
+                    dialog.dismiss();
                     if (User.getInstance().isLogged()) {
                         BasicApplication.showToast(getResources().getString(R.string.login_success));
                         reloadUser();
