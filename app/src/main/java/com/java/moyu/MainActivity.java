@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.TypedValue;
@@ -262,11 +261,15 @@ public class MainActivity extends VideoActivity implements NavigationView.OnNavi
         final TextView resultView = new TextView(this);
         resultView.setPadding(64, 16, 64, 16);
         resultView.setTextSize(16);
+        TypedValue colorText = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorText, colorText, true);
+        resultView.setTextColor(getColor(colorText.resourceId));
         int AlertDialogStyle;
-        if (BasicApplication.isNight())
+        if (BasicApplication.isNight()) {
             AlertDialogStyle = android.R.style.Theme_Material_Dialog_Alert;
-        else
+        } else {
             AlertDialogStyle = android.R.style.Theme_Material_Light_Dialog_Alert;
+        }
         AlertDialog dialog = new AlertDialog.Builder(this, AlertDialogStyle)
             .setTitle(R.string.cache_title).setView(resultView)
             .setPositiveButton(getResources().getText(R.string.yes), new DialogInterface.OnClickListener() {
