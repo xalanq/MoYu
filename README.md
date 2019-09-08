@@ -8,6 +8,10 @@
 - 用户系统，数据云存储
 - 离线数据本地数据库存储
 
+## Contributors
+
+[![](https://opencollective.com/RSSHub/contributors.svg?width=890)](https://github.com/DIYgod/RSSHub/graphs/contributors)
+
 ## 界面
 
 |              描述              |                             预览                             |
